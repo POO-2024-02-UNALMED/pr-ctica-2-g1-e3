@@ -33,12 +33,28 @@ imagenes = [
 ]
 indice_imagen = 0  # Índice para alternar entre las imágenes
 
+#Descripciones de los desarrolladores
+descripciones = [
+    "Nombre: Mateo Pérez\nCédula: 1000761827\nCarrera: Ingeniería de Sistemas\nNacimiento: 18/06/2003",
+    "Nombre: NOMBRE1\nCédula: CEDULA1\nCarrera: CARRERA1\nNacimiento: FECHANACIMIENTO1",
+    "Nombre: NOMBRE2\nCédula: CEDULA2\nCarrera: CARRERA2\nNacimiento: FECHANACIMIENTO2",
+    "Nombre: NOMBRE3\nCédula: CEDULA3\nCarrera: CARRERA3\nNacimiento: FECHANACIMIENTO3",
+]
+indice_descripcion = 0  # Índice para alternar entre las descripciones
+
 # Evento que modifica las 4 imagenes en el rectangulo inferior izquierdo
 def EventoP4(evento):
     global indice_imagen
     nueva_imagen = imagenes[indice_imagen]
     labelP4.config(image=nueva_imagen)
-    indice_imagen = (indice_imagen + 1) % len(imagenes)  # Alternar entre las imágenes
+    indice_imagen = (indice_imagen + 1) % len(imagenes)  # Alternar entre las 
+
+# Evento para cambiar la descripción en labelP5
+def EventoP5(evento):
+    global indice_descripcion
+    labelP5.config(text=descripciones[indice_descripcion])
+    indice_descripcion = (indice_descripcion + 1) % len(descripciones)
+    
 
 #Creacion de los frames
 frameP1 = tk.Frame(ventana,bg="black")
@@ -51,6 +67,7 @@ frameP6 = tk.Frame(frameP2,bg="#2F4F4F")
 #Creacion de los labels
 labelP3 = tk.Label(frameP3,bg="#2F4F4F",fg="white",text="Bienvenidos(as)")
 labelP4 = tk.Label(frameP4, bg="#2F4F4F", fg="white", text="hola", image=imagenes[0])
+labelP5 = tk.Label(frameP5,bg="#2F4F4F",fg="white",text="Hojas de vida (Click para ver la primera)")
 inicio = tk.Button(ventana,text="Inicio")
 
 #Posicionamiento de los frames
@@ -63,9 +80,12 @@ frameP6.place(relx=0.02,rely=0.37,relwidth=0.96,relheight=0.62)
 
 labelP3.pack(expand=True,fill='both')
 labelP4.pack(expand=True, fill='both')
+labelP5.pack(expand=True, fill='both')
 
-# Asignar evento de cambio de imagen al pasar el mouse
+# Asignar los eventos evento
 labelP4.bind("<Enter>", EventoP4)
+labelP5.bind("<Button-1>", EventoP5)
+
 inicio.place(relx=0.02,rely=0.02)
 
 ventana.mainloop()
