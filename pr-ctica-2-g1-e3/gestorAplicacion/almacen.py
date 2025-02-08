@@ -1,4 +1,4 @@
-from menu import Menu
+from .menu import Menu
 
 class Almacen:
     _almacen = []

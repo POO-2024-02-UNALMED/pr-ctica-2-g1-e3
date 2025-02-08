@@ -9,6 +9,7 @@ class Calificacion:
         self._calidad_mesero = calidad_mesero
         self._tiempo_espera = tiempo_espera
         self._comentario = comentario
+        Calificacion._calificaciones.append(self)
         
         if pedido:
             self._promedio_calificacion = self._calcular_prom_calificacion()

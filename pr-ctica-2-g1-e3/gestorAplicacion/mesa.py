@@ -1,4 +1,4 @@
-from mesero import Mesero
+from .mesero import Mesero
 from datetime import datetime, timedelta
 
 class Mesa:

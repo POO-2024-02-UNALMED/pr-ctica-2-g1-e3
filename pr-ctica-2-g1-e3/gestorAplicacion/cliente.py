@@ -1,8 +1,8 @@
-from persona import Persona
-from calificacion import Calificacion
+from .persona import Persona
+from .calificacion import Calificacion
 
 class Cliente(Persona):
-    clientes = []
+    _clientes = []
     
     def __init__(self, nombre=None, identificacion=None, restaurante=None, reserva=None):
         super().__init__(nombre, identificacion)
@@ -13,7 +13,7 @@ class Cliente(Persona):
         self._descuento_por_visitas = 0
         
         restaurante.agregar_cliente(self)
-        Cliente.clientes.append(self)
+        Cliente._clientes.append(self)
     
     def set_reserva(self, reserva):
         self._reserva = reserva
@@ -96,7 +96,7 @@ class Cliente(Persona):
     
     @staticmethod
     def get_clientes():
-        return Cliente.clientes
+        return Cliente._clientes
     
     def tipo_cliente(self):
         return self._reserva is not None

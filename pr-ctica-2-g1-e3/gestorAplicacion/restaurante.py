@@ -1,4 +1,4 @@
-from cliente import Cliente
+from .cliente import Cliente
 from datetime import datetime, time
 
 class Restaurante:

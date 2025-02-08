@@ -1,4 +1,4 @@
-from factura import Factura
+from .factura import Factura
 from datetime import datetime
 
 class Reserva:

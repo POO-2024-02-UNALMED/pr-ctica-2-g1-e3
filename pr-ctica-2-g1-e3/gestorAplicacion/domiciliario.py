@@ -1,7 +1,7 @@
-from persona import Persona
+from .persona import Persona
 
 class Domiciliario(Persona):
-    lista_domiciliarios = []
+    _lista_domiciliarios = []
 
     def __init__(self, nombre, identificacion, prom_calificaciones, total_calificaciones):
         super().__init__(nombre, identificacion)
@@ -10,7 +10,7 @@ class Domiciliario(Persona):
         self._prom_calificaciones = prom_calificaciones
         self._total_calificaciones = total_calificaciones
         self._inicializar_billetera()
-        Domiciliario.lista_domiciliarios.append(self)
+        Domiciliario._lista_domiciliarios.append(self)
 
     def _inicializar_billetera(self):
         self.agregar_billetes(50000, 4)
@@ -25,7 +25,7 @@ class Domiciliario(Persona):
 
     @staticmethod
     def inicializar_domiciliarios():
-        if not Domiciliario.lista_domiciliarios:
+        if not Domiciliario._lista_domiciliarios:
             Domiciliario("Carlos", 123, 4, 8)
             Domiciliario("María", 456, 3, 12)
             Domiciliario("Luis", 789, 5, 3)
@@ -61,7 +61,7 @@ class Domiciliario(Persona):
 
     @staticmethod
     def get_lista_domiciliarios():
-        return Domiciliario.lista_domiciliarios
+        return Domiciliario._lista_domiciliarios
 
     def get_nombre(self):
         return self._nombre
