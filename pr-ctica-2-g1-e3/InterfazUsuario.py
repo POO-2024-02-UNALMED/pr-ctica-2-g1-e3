@@ -1,6 +1,6 @@
-from tkinter import Tk,Label,Button,Frame
+import tkinter as tk
 
-ventana = Tk()
+ventana = tk.Tk()
 ventana.geometry("650x650")
 ventana.title("Aura Gourmet System")
 
@@ -10,15 +10,15 @@ ventana.title("Aura Gourmet System")
 #Blanco:white
 #Gris pizarra:#2F4F4F
 
-frameP1 = Frame(ventana,bg="black")
-frameP2 = Frame(ventana,bg="#D4AF37")
-frameP3 = Frame(frameP1,bg="white")
-frameP4 = Frame(frameP1,bg="#2F4F4F")
-frameP5 = Frame(frameP2,bg="#2F4F4F")
-frameP6 = Frame(frameP2,bg="#2F4F4F")
+frameP1 = tk.Frame(ventana,bg="black")
+frameP2 = tk.Frame(ventana,bg="#D4AF37")
+frameP3 = tk.Frame(frameP1,bg="white")
+frameP4 = tk.Frame(frameP1,bg="#2F4F4F")
+frameP5 = tk.Frame(frameP2,bg="#2F4F4F")
+frameP6 = tk.Frame(frameP2,bg="#2F4F4F")
 
-labelP3 = Label(frameP3,bg="#2F4F4F",fg="white",text="Bienvenidos(as)")
-inicio = Button(ventana,text="Inicio")
+labelP3 = tk.Label(frameP3,bg="#2F4F4F",fg="white",text="Bienvenidos(as)")
+inicio = tk.Button(ventana,text="Inicio")
 
 frameP1.place(relx=0.02,rely=0.1,relwidth=0.47,relheight=0.85)
 frameP2.place(relx=0.51,rely=0.1,relwidth=0.47,relheight=0.85)
