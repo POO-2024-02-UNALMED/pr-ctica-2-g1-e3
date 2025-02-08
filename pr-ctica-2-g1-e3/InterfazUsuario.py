@@ -1,8 +1,22 @@
 import tkinter as tk
 
+#Ubica la ventana en el centro de la pantalla
+def centrarVentana(ventana, ancho, alto):
+    # Obtiene las dimensiones de la pantalla
+    ancho_pantalla = ventana.winfo_screenwidth()
+    alto_pantalla = ventana.winfo_screenheight()
+    
+    # Calcula las coordenadas para centrar la ventana
+    x = (ancho_pantalla - ancho) // 2
+    y = (alto_pantalla - alto) // 2
+
+    # Establece la geometría de la ventana
+    ventana.geometry(f"{ancho}x{alto}+{x}+{y}")
+
+
 ventana = tk.Tk()
-ventana.geometry("650x650")
 ventana.title("Aura Gourmet System")
+centrarVentana(ventana, 650, 650)
 
 #Colores usados:
 #Dorado oscuro:#D4AF37
