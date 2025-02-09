@@ -21,7 +21,7 @@ def salir():
 #Cambia el texto del labelP3 para describir el programa
 def descripcionSistema():
     labelP3.config(text="Bienvenidos(as) al sistema de gestión\npara usuarios de Aura Gourmet."
-                   + "\n\nEste sistema de encarga de proporcionar al cliente\nuna herramienta para realizar:"
+                   + "\n\nEste sistema se encarga de proporcionar al cliente\nuna herramienta para realizar:"
                    + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left")
     
 
