@@ -1,4 +1,5 @@
 import tkinter as tk
+from field_frame import FieldFrame
 
 #Ubica la ventana en el centro de la pantalla
 def centrarVentana(ventana, ancho, alto):
@@ -50,7 +51,7 @@ indice_imagen = 0  # Índice para alternar entre las imágenes
 descripciones = [
     "Nombre: Mateo Pérez\nCédula: 1000761827\nCarrera: Ingeniería de Sistemas\nNacimiento: 18/06/2003",
     "Nombre: Kevin Rubiano\nCédula: 1035417435\nCarrera: Ciencias de la computación\nNacimiento: 19/07/2005",
-    "Nombre: NOMBRE2\nCédula: CEDULA2\nCarrera: CARRERA2\nNacimiento: FECHANACIMIENTO2",
+    "Nombre: Andrés Chica\nCédula: 1041351362\nCarrera: Ingeniería de sistemas e informática\nNacimiento: 24/04/2007",
     "Nombre: NOMBRE3\nCédula: CEDULA3\nCarrera: CARRERA3\nNacimiento: FECHANACIMIENTO3",
     "Nombre: NOMBRE4\nCédula: CEDULA4\nCarrera: CARRERA4\nNacimiento: FECHANACIMIENTO4",
 ]
@@ -111,6 +112,9 @@ secciones_p6 = [
     tk.Label(labelP6, bg="#2F4F4F", width=20, height=5),
 ]
 
+# Creación de los botones
+buttonP4 = tk.Button(frameP4,text="Ingreso al Sistema",width=20,height=3)
+
 # Distribuir las 4 secciones en una cuadrícula 2x2
 secciones_p6[0].grid(row=0, column=0, sticky="nsew")
 secciones_p6[1].grid(row=0, column=1, sticky="nsew")
@@ -139,14 +143,14 @@ frameP5.place(relx=0.02,rely=0.01,relwidth=0.96,relheight=0.35)
 frameP6.place(relx=0.02,rely=0.37,relwidth=0.96,relheight=0.62)
 
 labelP3.pack(expand=True,fill='both')
-labelP4.pack(expand=True, fill='both')
+labelP4.pack(side='top', fill='x')
 labelP5.pack(expand=True, fill='both')
 labelP6.pack(expand=True, fill='both')
+
+buttonP4.pack(side='bottom',expand = True)
 
 # Asignar los eventos evento
 labelP4.bind("<Enter>", EventoP4)
 labelP5.bind("<Button-1>", EventoP5)
-
-
 
 ventana.mainloop()
