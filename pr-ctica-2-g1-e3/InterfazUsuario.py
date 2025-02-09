@@ -13,10 +13,23 @@ def centrarVentana(ventana, ancho, alto):
     # Establece la geometría de la ventana
     ventana.geometry(f"{ancho}x{alto}+{x}+{y}")
 
+#Cierra la ventana principal y serializa
+def salir():
+    #Serializar
+    ventana.quit()
+
+#Cambia el texto del labelP3 para describir el programa
+def descripcionSistema():
+    labelP3.config(text="Bienvenidos(as) al sistema de gestión\npara usuarios de Aura Gourmet."
+                   + "\n\nEste sistema de encarga de proporcionar al cliente\nuna herramienta para realizar:"
+                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left")
+    
 
 ventana = tk.Tk()
 ventana.title("Aura Gourmet System")
 centrarVentana(ventana, 650, 650)
+ventana.iconbitmap('pr-ctica-2-g1-e3/imagenes/logoRes.ico')
+ventana.config(bg='#283d3d')
 
 #Colores usados:
 #Dorado oscuro:#D4AF37
@@ -36,7 +49,7 @@ indice_imagen = 0  # Índice para alternar entre las imágenes
 #Descripciones de los desarrolladores
 descripciones = [
     "Nombre: Mateo Pérez\nCédula: 1000761827\nCarrera: Ingeniería de Sistemas\nNacimiento: 18/06/2003",
-    "Nombre: NOMBRE1\nCédula: CEDULA1\nCarrera: CARRERA1\nNacimiento: FECHANACIMIENTO1",
+    "Nombre: Kevin Rubiano\nCédula: 1035417435\nCarrera: Ciencias de la computación\nNacimiento: 19/07/2005",
     "Nombre: NOMBRE2\nCédula: CEDULA2\nCarrera: CARRERA2\nNacimiento: FECHANACIMIENTO2",
     "Nombre: NOMBRE3\nCédula: CEDULA3\nCarrera: CARRERA3\nNacimiento: FECHANACIMIENTO3",
     "Nombre: NOMBRE4\nCédula: CEDULA4\nCarrera: CARRERA4\nNacimiento: FECHANACIMIENTO4",
@@ -85,9 +98,9 @@ frameP5 = tk.Frame(frameP2,bg="#2F4F4F")
 frameP6 = tk.Frame(frameP2,bg="#2F4F4F")
 
 #Creacion de los labels
-labelP3 = tk.Label(frameP3,bg="#2F4F4F",fg="white",text="Bienvenidos(as)")
+labelP3 = tk.Label(frameP3,bg="#2F4F4F",fg="white",text="Bienvenidos(as) al sistema de gestión \n para usuarios de Aura Gourmet.")
 labelP4 = tk.Label(frameP4, bg="#2F4F4F", fg="white", text="hola", image=imagenes[0])
-labelP5 = tk.Label(frameP5,bg="#2F4F4F",fg="white",text="Hojas de vida (Click para ver la primera)")
+labelP5 = tk.Label(frameP5,bg="#2F4F4F",fg="white",text="Hojas de vida (Click para cambiar)", justify="left")
 
 #PROVISIONAL PARA P6
 labelP6 = tk.Frame(frameP6, bg="#2F4F4F")  # Contenedor de las secciones
@@ -109,7 +122,13 @@ for i in range(2):
     labelP6.grid_rowconfigure(i, weight=1)
     labelP6.grid_columnconfigure(i, weight=1)
 
-inicio = tk.Button(ventana,text="Inicio")
+#Menu inicio
+menuInicio = tk.Menu(ventana)
+subMenuInicio = tk.Menu(menuInicio, tearoff=0, activebackground='#3f5f5f')
+subMenuInicio.add_cascade(label = 'Descripción del sistema', command= descripcionSistema)
+subMenuInicio.add_cascade(label = 'Salir', command=salir)
+menuInicio.add_cascade(label='Inicio', menu= subMenuInicio)
+ventana.config(menu= menuInicio)
 
 #Posicionamiento de los frames
 frameP1.place(relx=0.02,rely=0.1,relwidth=0.47,relheight=0.85)
@@ -128,6 +147,6 @@ labelP6.pack(expand=True, fill='both')
 labelP4.bind("<Enter>", EventoP4)
 labelP5.bind("<Button-1>", EventoP5)
 
-inicio.place(relx=0.02,rely=0.02)
+
 
 ventana.mainloop()
