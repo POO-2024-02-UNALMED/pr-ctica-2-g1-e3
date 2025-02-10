@@ -33,16 +33,16 @@ class FieldFrame(tk.Frame):
 # ---- Prueba de FieldFrame ----
 
 # Crear la ventana principal
-root = tk.Tk()
-root.title("Prueba de FieldFrame")  # Título de la ventana
+#root = tk.Tk()
+#root.title("Prueba de FieldFrame")  # Título de la ventana
 
 # Definir criterios y valores
-criterios = ["Nombre:", "Numero Personas:", "Tipo de Mesa:"]
-valores = [None]*3
+#criterios = ["Nombre:", "Numero Personas:", "Tipo de Mesa:"]
+#valores = [None]*3
 
 # Crear y agregar el FieldFrame a la ventana
-frame = FieldFrame(root, "Criterios", criterios, "Valores", valores)
-frame.pack(padx=20, pady=20)
+#frame = FieldFrame(root, "Criterios", criterios, "Valores", valores)
+#frame.pack(padx=20, pady=20)
 
 # Ejecutar la aplicación
-root.mainloop()
+#root.mainloop()
