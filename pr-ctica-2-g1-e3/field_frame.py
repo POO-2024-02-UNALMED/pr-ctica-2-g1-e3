@@ -30,19 +30,19 @@ class FieldFrame(tk.Frame):
             entryValor = tk.Entry(self)
             entryValor.grid(row=i+1,column=1,padx=50,pady=50)
 
-# ---- Prueba de FieldFrame ----
-
-# Crear la ventana principal
+## ---- Prueba de FieldFrame ----
+#
+## Crear la ventana principal
 #root = tk.Tk()
 #root.title("Prueba de FieldFrame")  # Título de la ventana
-
-# Definir criterios y valores
+#
+## Definir criterios y valores
 #criterios = ["Nombre:", "Numero Personas:", "Tipo de Mesa:"]
 #valores = [None]*3
-
-# Crear y agregar el FieldFrame a la ventana
+#
+## Crear y agregar el FieldFrame a la ventana
 #frame = FieldFrame(root, "Criterios", criterios, "Valores", valores)
 #frame.pack(padx=20, pady=20)
-
-# Ejecutar la aplicación
+#
+## Ejecutar la aplicación
 #root.mainloop()

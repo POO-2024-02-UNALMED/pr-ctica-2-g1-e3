@@ -1,3 +1,21 @@
+from gestorAplicacion.almacen import Almacen
+from gestorAplicacion.reserva import Reserva
+from gestorAplicacion.calificacion import Calificacion
+from gestorAplicacion.cliente import Cliente
+from gestorAplicacion.domiciliario import Domiciliario
+from gestorAplicacion.factura import Factura
+from gestorAplicacion.domicilio import Domicilio
+from gestorAplicacion.mesa  import Mesa
+from gestorAplicacion.mesero import Mesero
+from gestorAplicacion.pedidoItem import PedidoItem
+from gestorAplicacion.pedido import Pedido
+from gestorAplicacion.persona import Persona
+from gestorAplicacion.restaurante import Restaurante
+from datetime import datetime, time
+from baseDatos.serializador import Serializador
+from baseDatos.deserializador import Deserializador
+
+
 import tkinter as tk
 from field_frame import FieldFrame
 from tkinter import messagebox
@@ -17,7 +35,7 @@ def centrarVentana(ventana, ancho, alto):
 
 #Muestra la ventana de dialogo acerca de
 def acercaDe():
-    messagebox.showinfo('Acerca de', 'Lo que queramos poner')
+    messagebox.showinfo('Acerca de', 'Matías es un niño rata')
 
 #Muestra la ventana de dialogo que explica de forma básica el sistema
 def mensajeAplicacion():
@@ -32,17 +50,19 @@ def salir():
 def ventanaUsuario():
     ventana.withdraw()
     ventana2.deiconify()
+    ventana2.state('zoomed')
 
 #devuelve de la ventana2 a la ventana  
 def salirMenuInicio():
     ventana2.withdraw()
     ventana.deiconify()
+    ventana.state('zoomed')
 
 #Cambia el texto del labelP3 para describir el programa
 def descripcionSistema():
     labelP3.config(text="Bienvenidos(as) al sistema de gestión\npara usuarios de Aura Gourmet."
                    + "\n\nEste sistema se encarga de proporcionar al cliente\nuna herramienta para realizar:"
-                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left")
+                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left", font=("Segoe UI", 10, "bold"))
     
 #Ventana inicio
 ventana = tk.Tk()
@@ -50,13 +70,8 @@ ventana.title("Aura Gourmet System")
 centrarVentana(ventana, 650, 650)
 ventana.iconbitmap('pr-ctica-2-g1-e3/imagenes/logoRes.ico')
 ventana.config(bg='#1E1E1E')
+ventana.state('zoomed')
 
-ventana2 = tk.Tk()
-ventana2.title("Aura Gourmet System")
-ventana2.iconbitmap('pr-ctica-2-g1-e3/imagenes/logoRes.ico')
-centrarVentana(ventana2, 650, 650)
-ventana2.config(bg='#1E1E1E')
-ventana2.withdraw()
 
 
 #Colores usados:
@@ -118,17 +133,17 @@ def EventoP5(evento):
     
 
 #Creacion de los frames
-frameP1 = tk.Frame(ventana,bg="#2D2D2D")
-frameP2 = tk.Frame(ventana,bg="#2D2D2D")
-frameP3 = tk.Frame(frameP1,bg="white")
-frameP4 = tk.Frame(frameP1,bg="#1C2B2D")
-frameP5 = tk.Frame(frameP2,bg="#1C2B2D")
-frameP6 = tk.Frame(frameP2,bg="#1C2B2D")
+frameP1 = tk.Frame(ventana,bg="#2D2D2D", relief="solid", bd= 4)
+frameP2 = tk.Frame(ventana,bg="#2D2D2D", relief="solid", bd= 4)
+frameP3 = tk.Frame(frameP1,bg="white", relief="solid", bd= 4)
+frameP4 = tk.Frame(frameP1,bg="#1C2B2D", relief="solid", bd= 4)
+frameP5 = tk.Frame(frameP2,bg="#1C2B2D", relief="solid", bd= 4)
+frameP6 = tk.Frame(frameP2,bg="#1C2B2D", relief="solid", bd= 4)
 
 #Creacion de los labels
-labelP3 = tk.Label(frameP3,bg="#1C2B2D",fg="white",text="Bienvenidos(as) al sistema de gestión \n para usuarios de Aura Gourmet.")
+labelP3 = tk.Label(frameP3,bg="#1C2B2D",fg="white",text="Bienvenidos(as) al sistema de gestión \n para usuarios de Aura Gourmet.", font=("Segoe UI", 10, "bold"))
 labelP4 = tk.Label(frameP4, bg="#1C2B2D", fg="white", text="hola", image=imagenes[0])
-labelP5 = tk.Label(frameP5,bg="#1C2B2D",fg="white",text="Hojas de vida (Click para cambiar)", justify="left")
+labelP5 = tk.Label(frameP5,bg="#1C2B2D",fg="white",text="Hojas de vida (Click para cambiar)", justify="left", font=("Segoe UI", 10, "bold"))
 
 #PROVISIONAL PARA P6
 labelP6 = tk.Frame(frameP6, bg="#1C2B2D")  # Contenedor de las secciones
@@ -140,7 +155,8 @@ secciones_p6 = [
 ]
 
 # Creación de los botones
-buttonP4 = tk.Button(frameP4,text="Entrar",width=20,height=3, relief="solid", bd=3, font=("Arial", 10, "bold"), command=ventanaUsuario)
+buttonP4 = tk.Button(frameP4,text="Acceder al sistema",width=20,height=3,bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 20, "bold"), command=ventanaUsuario)
+buttonP4.pack(expand=True, fill="both", padx=10, pady=100)
 
 # Distribuir las 4 secciones en una cuadrícula 2x2
 secciones_p6[0].grid(row=0, column=0, sticky="nsew")
@@ -161,6 +177,34 @@ subMenuInicio.add_cascade(label = 'Salir', command=salir)
 menuInicio.add_cascade(label='Inicio', menu= subMenuInicio)
 ventana.config(menu= menuInicio)
 
+#Ventana Usuario
+ventana2 = tk.Tk()
+ventana2.title("Aura Gourmet System")
+ventana2.iconbitmap('pr-ctica-2-g1-e3/imagenes/logoRes.ico')
+centrarVentana(ventana2, 650, 650)
+ventana2.config(bg='#1E1E1E')
+ventana2.withdraw()
+
+
+#Frames ventana Usuario
+framev1 = tk.Frame(ventana2, bg='#2D2D2D', relief="solid", bd= 4)
+framev1.pack(expand=True, fill="both", padx=10, pady=10)
+framev2 = tk.Frame(framev1, bg='#1C2B2D', relief="solid", bd= 4)
+framev2.place(relx=0.01,rely=0.01,relwidth=0.98,relheight=0.2)
+framev3 = tk.Frame(framev1, bg='#1C2B2D', relief="solid", bd= 4)
+framev3.place(relx=0.01,rely=0.22,relwidth=0.98,relheight=0.2)
+framev4 = tk.Frame(framev1, bg='#1C2B2D', relief="solid", bd= 4)
+framev4.place(relx=0.01,rely=0.43,relwidth=0.98,relheight=0.56)
+
+#Labels ventana Usuario
+labelv1 = tk.Label(framev2, text='Funcionalidades', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+labelv1.pack(expand=True, fill="both")
+labelv2 = tk.Label(framev3, text='Descripciones', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+labelv2.pack(expand=True, fill="both")
+labelv3 = tk.Label(framev4, text='Información\n\n\nPara acceder a las funcionalidades dirijase a la pestaña Procesos y consultas.\nPosteriormente seleccione la funcionalidad que desea acceder.', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+labelv3.pack(expand=True, fill="both")
+
+
 #Menu ventana usuario
 menuUsuario = tk.Menu(ventana2)
 subMenuUsuario1 = tk.Menu(menuUsuario, tearoff=0, activebackground='#1C2B2D')
@@ -173,7 +217,7 @@ subMenuUsuario2.add_cascade(label = 'Realizar un domicilio')
 subMenuUsuario2.add_cascade(label = 'Realizar el pedido de mi reserva')
 subMenuUsuario2.add_cascade(label = 'Gestionar recompensas')
 subMenuUsuario2.add_cascade(label = 'Calificar el servicio')
-menuUsuario.add_cascade(label = 'Procesos y consultras', menu=subMenuUsuario2)
+menuUsuario.add_cascade(label = 'Procesos y Consultas', menu=subMenuUsuario2)
 subMenuUsuario3 = tk.Menu(menuUsuario, tearoff=0, activebackground='#1C2B2D')
 subMenuUsuario3.add_cascade(label = 'Acerca de', command=acercaDe)
 menuUsuario.add_cascade(label = 'Ayuda', menu=subMenuUsuario3)
@@ -198,4 +242,4 @@ buttonP4.pack(side='bottom',expand = True)
 labelP4.bind("<Enter>", EventoP4)
 labelP5.bind("<Button-1>", EventoP5)
 
-ventana.mainloop()
+ventana.mainloop()      
