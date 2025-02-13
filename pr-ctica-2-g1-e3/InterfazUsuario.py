@@ -52,6 +52,43 @@ def ventanaUsuario():
     ventana2.deiconify()
     ventana2.state('zoomed')
 
+#Vuelve la ventada de usario a sus valores por default 
+def ventanaUsuadarioDefault():
+    for widget in framev4.winfo_children():
+        if isinstance(widget, (tk.Button, tk.Label)):
+            if widget.winfo_manager() == 'pack':
+                widget.pack_forget()
+            elif widget.winfo_manager() == 'grid':
+                widget.grid_forget()
+            elif widget.winfo_manager() == 'place':
+                widget.place_forget()
+
+    for widget in framev3.winfo_children():
+        if isinstance(widget, (tk.Button, tk.Label)):
+            if widget.winfo_manager() == 'pack':
+                widget.pack_forget()
+            elif widget.winfo_manager() == 'grid':
+                widget.grid_forget()
+            elif widget.winfo_manager() == 'place':
+                widget.place_forget()
+
+    for widget in framev2.winfo_children():
+        if isinstance(widget, (tk.Button, tk.Label)):
+            if widget.winfo_manager() == 'pack':
+                widget.pack_forget()
+            elif widget.winfo_manager() == 'grid':
+                widget.grid_forget()
+            elif widget.winfo_manager() == 'place':
+                widget.place_forget()
+    
+
+    labelv1 = tk.Label(framev2, text='Funcionalidades', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+    labelv1.pack(expand=True, fill="both")
+    labelv2 = tk.Label(framev3, text='Descripciones', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+    labelv2.pack(expand=True, fill="both")
+    labelv3 = tk.Label(framev4, text='Información\n\n\nPara acceder a las funcionalidades dirijase a la pestaña Procesos y consultas.\nPosteriormente seleccione la funcionalidad que desea acceder.', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+    labelv3.pack(pady=15)
+
 #devuelve de la ventana2 a la ventana  
 def salirMenuInicio():
     ventana2.withdraw()
@@ -130,6 +167,9 @@ def EventoP5(evento):
         secciones_p6[i].config(bg=colores_actuales[i])
     
     indice_color = (indice_color + 1) % len(colores_p6)
+
+
+
     
 
 #Creacion de los frames
@@ -173,6 +213,7 @@ for i in range(2):
 menuInicio = tk.Menu(ventana)
 subMenuInicio = tk.Menu(menuInicio, tearoff=0, activebackground='#1C2B2D')
 subMenuInicio.add_cascade(label = 'Descripción del sistema', command= descripcionSistema)
+subMenuInicio.add_separator()
 subMenuInicio.add_cascade(label = 'Salir', command=salir)
 menuInicio.add_cascade(label='Inicio', menu= subMenuInicio)
 ventana.config(menu= menuInicio)
@@ -202,21 +243,58 @@ labelv1.pack(expand=True, fill="both")
 labelv2 = tk.Label(framev3, text='Descripciones', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
 labelv2.pack(expand=True, fill="both")
 labelv3 = tk.Label(framev4, text='Información\n\n\nPara acceder a las funcionalidades dirijase a la pestaña Procesos y consultas.\nPosteriormente seleccione la funcionalidad que desea acceder.', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-labelv3.pack(expand=True, fill="both")
+labelv3.pack(pady=15)
+
+# Funcionalidad5
+
+boton1f5 = tk.Button(framev4, text='Sí',bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 20, "bold"))
+boton2f5 = tk.Button(framev4, text='No',bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 20, "bold"), command= ventanaUsuadarioDefault)
+
+def funcionalidad5():
+    Mesero.organizar_meseros_por_calificacion()
+    idCliente = 0
+    calidadComida = 0
+    calidadMesero = 0
+    tiempoEspera = 0
+    comentrario = ''
+
+    for widget in framev4.winfo_children():
+        widget.destroy()
+
+    # Reconfigurar labels
+    labelv1.config(text="Sistema de calificación del servicio")
+    labelv2.config(text="Indique Sí o No dado el caso")
+
+    # Crear nuevos Labels
+    labelv3 = tk.Label(framev4, text='¿Desea realizar una calificación?', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+    labelv3.pack(pady=15)
+
+    boton1f5 = tk.Button(framev4, text='Sí', bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 20, "bold"))
+    boton2f5 = tk.Button(framev4, text='No', bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 20, "bold"), command=ventanaUsuadarioDefault)
+
+    boton1f5.place(x= 500, y = 100)
+    boton2f5.place(x=1250, y= 100)
+
+
 
 
 #Menu ventana usuario
 menuUsuario = tk.Menu(ventana2)
 subMenuUsuario1 = tk.Menu(menuUsuario, tearoff=0, activebackground='#1C2B2D')
 subMenuUsuario1.add_cascade(label = 'Aplicación', command=mensajeAplicacion)
+subMenuUsuario1.add_separator()
 subMenuUsuario1.add_cascade(label = 'Salir', command=salirMenuInicio)
 menuUsuario.add_cascade(label='Archivo', menu=subMenuUsuario1)
 subMenuUsuario2 = tk.Menu(menuUsuario, tearoff=0, activebackground='#1C2B2D')
 subMenuUsuario2.add_cascade(label = 'Realizar una reserva')
+subMenuUsuario2.add_separator()
 subMenuUsuario2.add_cascade(label = 'Realizar un domicilio')
+subMenuUsuario2.add_separator()
 subMenuUsuario2.add_cascade(label = 'Realizar el pedido de mi reserva')
+subMenuUsuario2.add_separator()
 subMenuUsuario2.add_cascade(label = 'Gestionar recompensas')
-subMenuUsuario2.add_cascade(label = 'Calificar el servicio')
+subMenuUsuario2.add_separator()
+subMenuUsuario2.add_cascade(label = 'Calificar el servicio', command= funcionalidad5)
 menuUsuario.add_cascade(label = 'Procesos y Consultas', menu=subMenuUsuario2)
 subMenuUsuario3 = tk.Menu(menuUsuario, tearoff=0, activebackground='#1C2B2D')
 subMenuUsuario3.add_cascade(label = 'Acerca de', command=acercaDe)
@@ -241,5 +319,9 @@ buttonP4.pack(side='bottom',expand = True)
 # Asignar los eventos evento
 labelP4.bind("<Enter>", EventoP4)
 labelP5.bind("<Button-1>", EventoP5)
+
+
+
+
 
 ventana.mainloop()      

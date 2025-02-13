@@ -55,6 +55,7 @@ class FieldFrame(tk.Frame):
         """Guarda los datos en self._valores y los imprime."""
         self._valores = self.obtener_datos()  # Guarda los datos actualizados
         print("Datos guardados:", self._valores)
+        
     
     def get_value(self, criterio):
         """Devuelve el valor ingresado en el campo del criterio especificado."""
@@ -69,15 +70,19 @@ class FieldFrame(tk.Frame):
 # Crear la ventana principal
 #root = tk.Tk()
 #root.title("Prueba de FieldFrame")  # Título de la ventana
-
-# Definir criterios y valores
+#
+## Definir criterios y valores
 #criterios = ["Nombre:", "Numero Personas:", "Tipo de Mesa:"]
 #valores = ["Andres",None,"basic"] #Predefinidos (Ingresarlos en el mismo orden que los criterios, colocar "None" para los que no tengran predefinidos)
 #criteriosNoEditables = ["Nombre:"] #¿Cúales no puede editar el usuaio?
-
-# Crear y agregar el FieldFrame a la ventana
+#
+##Crear y agregar el FieldFrame a la ventana
 #frame = FieldFrame(root, "Criterios", criterios, "Valores", valores,criteriosNoEditables)
 #frame.pack(padx=15, pady=15)
-
-# Ejecutar la aplicación
+#
+#
+#
+## Ejecutar la aplicación
+#
+#
 #root.mainloop()
