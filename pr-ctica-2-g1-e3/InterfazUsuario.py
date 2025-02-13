@@ -110,13 +110,6 @@ ventana.config(bg='#1E1E1E')
 ventana.state('zoomed')
 
 
-
-#Colores usados:
-#Dorado oscuro:#D4AF37
-#Negro:black
-#Blanco:white
-#Gris pizarra:#2F4F4F
-
 # Cargar imágenes
 imagenes = [
     tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante1.png"),
@@ -228,12 +221,16 @@ ventana2.withdraw()
 
 
 #Frames ventana Usuario
+#Frame que contiene a los demás
 framev1 = tk.Frame(ventana2, bg='#2D2D2D', relief="solid", bd= 4)
 framev1.pack(expand=True, fill="both", padx=10, pady=10)
+#Frame que contiene "Nombre del proceso o consulta"
 framev2 = tk.Frame(framev1, bg='#1C2B2D', relief="solid", bd= 4)
 framev2.place(relx=0.01,rely=0.01,relwidth=0.98,relheight=0.2)
+#Frame que contiene "Descripción del proceso o la consulta"
 framev3 = tk.Frame(framev1, bg='#1C2B2D', relief="solid", bd= 4)
 framev3.place(relx=0.01,rely=0.22,relwidth=0.98,relheight=0.2)
+#Frame que contiene al fieldFrame
 framev4 = tk.Frame(framev1, bg='#1C2B2D', relief="solid", bd= 4)
 framev4.place(relx=0.01,rely=0.43,relwidth=0.98,relheight=0.56)
 
@@ -244,6 +241,19 @@ labelv2 = tk.Label(framev3, text='Descripciones', fg="white", bg="#1C2B2D", font
 labelv2.pack(expand=True, fill="both")
 labelv3 = tk.Label(framev4, text='Información\n\n\nPara acceder a las funcionalidades dirijase a la pestaña Procesos y consultas.\nPosteriormente seleccione la funcionalidad que desea acceder.', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
 labelv3.pack(pady=15)
+
+#Funcionalidad1
+
+def funcionalidad1():
+    limpiar_ventana_usuario(framev2, framev3, framev4)
+
+    labelTitulo = tk.Label(framev2,text="Realizar Reserva",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+    labelTitulo.pack(expand=True, fill="both")
+
+    labelDescripcion = tk.Label(framev3,text="Desde este menú puedes realizar una reserva en nuestro restaurante.",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+    labelDescripcion.pack(expand=True, fill="both")
+
+    #Crear el fieldFrame
 
 # Funcionalidad5
 
@@ -258,14 +268,7 @@ def funcionalidad5():
     tiempoEspera = 0
     comentrario = ''
 
-    for widget in framev4.winfo_children():
-        widget.destroy()
-
-    for widget in framev3.winfo_children():
-        widget.destroy()
-
-    for widget in framev2.winfo_children():
-        widget.destroy()   
+    limpiar_ventana_usuario(framev2, framev3, framev4)
 
 
 
@@ -283,8 +286,16 @@ def funcionalidad5():
     boton1f5.place(x= 500, y = 100)
     boton2f5.place(x=1250, y= 100)
 
+#Funcion que elimina los widgets dentro de los frames ingresados, par poder ingresar nuevos
+def limpiar_ventana_usuario(framev2, framev3, framev4):
+    for widget in framev4.winfo_children():
+        widget.destroy()
 
+    for widget in framev3.winfo_children():
+        widget.destroy()
 
+    for widget in framev2.winfo_children():
+        widget.destroy()
 
 #Menu ventana usuario
 menuUsuario = tk.Menu(ventana2)
@@ -294,7 +305,7 @@ subMenuUsuario1.add_separator()
 subMenuUsuario1.add_cascade(label = 'Salir', command=salirMenuInicio)
 menuUsuario.add_cascade(label='Archivo', menu=subMenuUsuario1)
 subMenuUsuario2 = tk.Menu(menuUsuario, tearoff=0, activebackground='#1C2B2D')
-subMenuUsuario2.add_cascade(label = 'Realizar una reserva')
+subMenuUsuario2.add_cascade(label = 'Realizar una reserva',command = funcionalidad1)
 subMenuUsuario2.add_separator()
 subMenuUsuario2.add_cascade(label = 'Realizar un domicilio')
 subMenuUsuario2.add_separator()
