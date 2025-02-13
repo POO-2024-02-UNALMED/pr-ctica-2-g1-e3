@@ -261,11 +261,19 @@ def funcionalidad5():
     for widget in framev4.winfo_children():
         widget.destroy()
 
-    # Reconfigurar labels
-    labelv1.config(text="Sistema de calificación del servicio")
-    labelv2.config(text="Indique Sí o No dado el caso")
+    for widget in framev3.winfo_children():
+        widget.destroy()
+
+    for widget in framev2.winfo_children():
+        widget.destroy()   
+
+
 
     # Crear nuevos Labels
+    labelv1 = tk.Label(framev2, text='Sistema de calificación de servicio', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+    labelv1.pack(expand=True, fill="both")
+    labelv2 = tk.Label(framev3, text='Indique Sí o No dado el caso', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+    labelv2.pack(expand=True, fill="both")
     labelv3 = tk.Label(framev4, text='¿Desea realizar una calificación?', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
     labelv3.pack(pady=15)
 
