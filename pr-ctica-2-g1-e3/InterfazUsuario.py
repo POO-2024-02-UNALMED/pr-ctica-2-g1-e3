@@ -20,6 +20,8 @@ import tkinter as tk
 from field_frame import FieldFrame
 from tkinter import messagebox
 
+
+
 #Ubica la ventana en el centro de la pantalla
 def centrarVentana(ventana, ancho, alto):
     # Obtiene las dimensiones de la pantalla
@@ -52,42 +54,6 @@ def ventanaUsuario():
     ventana2.deiconify()
     ventana2.state('zoomed')
 
-#Vuelve la ventada de usario a sus valores por default 
-def ventanaUsuadarioDefault():
-    for widget in framev4.winfo_children():
-        if isinstance(widget, (tk.Button, tk.Label)):
-            if widget.winfo_manager() == 'pack':
-                widget.pack_forget()
-            elif widget.winfo_manager() == 'grid':
-                widget.grid_forget()
-            elif widget.winfo_manager() == 'place':
-                widget.place_forget()
-
-    for widget in framev3.winfo_children():
-        if isinstance(widget, (tk.Button, tk.Label)):
-            if widget.winfo_manager() == 'pack':
-                widget.pack_forget()
-            elif widget.winfo_manager() == 'grid':
-                widget.grid_forget()
-            elif widget.winfo_manager() == 'place':
-                widget.place_forget()
-
-    for widget in framev2.winfo_children():
-        if isinstance(widget, (tk.Button, tk.Label)):
-            if widget.winfo_manager() == 'pack':
-                widget.pack_forget()
-            elif widget.winfo_manager() == 'grid':
-                widget.grid_forget()
-            elif widget.winfo_manager() == 'place':
-                widget.place_forget()
-    
-
-    labelv1 = tk.Label(framev2, text='Funcionalidades', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-    labelv1.pack(expand=True, fill="both")
-    labelv2 = tk.Label(framev3, text='Descripciones', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-    labelv2.pack(expand=True, fill="both")
-    labelv3 = tk.Label(framev4, text='Información\n\n\nPara acceder a las funcionalidades dirijase a la pestaña Procesos y consultas.\nPosteriormente seleccione la funcionalidad que desea acceder.', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-    labelv3.pack(pady=15)
 
 #devuelve de la ventana2 a la ventana  
 def salirMenuInicio():
@@ -233,15 +199,27 @@ framev3.place(relx=0.01,rely=0.22,relwidth=0.98,relheight=0.2)
 #Frame que contiene al fieldFrame
 framev4 = tk.Frame(framev1, bg='#1C2B2D', relief="solid", bd= 4)
 framev4.place(relx=0.01,rely=0.43,relwidth=0.98,relheight=0.56)
-
+framev4.grid_propagate(False)
+framev4.grid_rowconfigure(0, weight=1)
+framev4.grid_columnconfigure(0, weight=1)
 #Labels ventana Usuario
 labelv1 = tk.Label(framev2, text='Funcionalidades', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
 labelv1.pack(expand=True, fill="both")
 labelv2 = tk.Label(framev3, text='Descripciones', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
 labelv2.pack(expand=True, fill="both")
-labelv3 = tk.Label(framev4, text='Información\n\n\nPara acceder a las funcionalidades dirijase a la pestaña Procesos y consultas.\nPosteriormente seleccione la funcionalidad que desea acceder.', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-labelv3.pack(pady=15)
+labelv3 = FieldFrame(framev4,tipo = 3, tituloCriterios='Información\n\n\nPara acceder a las funcionalidades dirijase a la pestaña Procesos y consultas.\nPosteriormente seleccione la funcionalidad que desea acceder.')
+labelv3.grid(row= 0, column=0 ,columnspan=2, pady=15, sticky='new')
 
+
+def ventanaUsuarioDefault():
+    global labelv3
+    labelv3.destroy()
+
+    labelv1.config(text='Funcionalidades')
+    labelv2.config(text='Descripciones')
+    labelv3 = FieldFrame(framev4, tipo= 3, tituloCriterios='Información\n\n\nPara acceder a las funcionalidades dirijase a la pestaña Procesos y consultas.\nPosteriormente seleccione la funcionalidad que desea acceder.')
+    labelv3.grid(row= 0, column=0 ,columnspan=2, pady=15, sticky='new')
+    
 #Funcionalidad1
 
 def funcionalidad1():
@@ -257,8 +235,7 @@ def funcionalidad1():
 
 # Funcionalidad5
 
-boton1f5 = tk.Button(framev4, text='Sí',bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 20, "bold"))
-boton2f5 = tk.Button(framev4, text='No',bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 20, "bold"), command= ventanaUsuadarioDefault)
+
 
 def funcionalidad5():
     Mesero.organizar_meseros_por_calificacion()
@@ -268,23 +245,19 @@ def funcionalidad5():
     tiempoEspera = 0
     comentrario = ''
 
-    limpiar_ventana_usuario(framev2, framev3, framev4)
-
-
-
     # Crear nuevos Labels
-    labelv1 = tk.Label(framev2, text='Sistema de calificación de servicio', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-    labelv1.pack(expand=True, fill="both")
-    labelv2 = tk.Label(framev3, text='Indique Sí o No dado el caso', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-    labelv2.pack(expand=True, fill="both")
-    labelv3 = tk.Label(framev4, text='¿Desea realizar una calificación?', fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-    labelv3.pack(pady=15)
+    labelv1.config(text='Sistema de calificación de servicio')
+    labelv2.config(text='Indique Sí o No dado el caso')
+    
+    global labelv3
+    labelv3.destroy()
+    labelv3 = FieldFrame(framev4, tipo=2, tituloCriterios="¿Desea realizar una calificación?", comandoCancelar = ventanaUsuarioDefault)
+    labelv3.grid(sticky='new')
 
-    boton1f5 = tk.Button(framev4, text='Sí', bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 20, "bold"))
-    boton2f5 = tk.Button(framev4, text='No', bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 20, "bold"), command=ventanaUsuadarioDefault)
 
-    boton1f5.place(x= 500, y = 100)
-    boton2f5.place(x=1250, y= 100)
+   
+
+    
 
 #Funcion que elimina los widgets dentro de los frames ingresados, par poder ingresar nuevos
 def limpiar_ventana_usuario(framev2, framev3, framev4):
