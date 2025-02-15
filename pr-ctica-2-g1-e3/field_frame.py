@@ -118,6 +118,7 @@ class FieldFrame(tk.Frame):
         """Guarda los datos en self._valores y los imprime."""
         self._valores = self.obtener_datos()  # Guarda los datos actualizados
         print("Datos guardados:", self._valores)
+        self.comandoContinuar()
         
     
     def get_value(self, criterio):
