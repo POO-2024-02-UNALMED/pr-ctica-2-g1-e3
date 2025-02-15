@@ -1,5 +1,6 @@
 from .cliente import Cliente
 from datetime import datetime, time
+import re
 
 class Restaurante:
     _restaurantes = []
@@ -42,14 +43,21 @@ class Restaurante:
         return mesas_disponibles
 
     def validar_fecha_hora(self, fecha, hora):
-        try:
-            dia, mes, año = map(int, fecha.split("/"))
-            hora_enter, minutos = map(int, hora.split(":"))
-            if 7 <= hora_enter <= 23 and (hora_enter != 23 or minutos == 0):
-                return True
-        except ValueError:
-            pass
-        return False
+        """Valida que la fecha tenga dos '/' y la hora tenga un ':'. Muestra una advertencia si son incorrectas."""
+    
+        # Expresión regular para verificar la fecha en formato dd/mm/yyyy
+        patron_fecha = r"^\d{1,2}/\d{1,2}/\d{4}$"
+    
+        # Expresión regular para verificar la hora en formato hh:mm
+        patron_hora = r"^\d{1,2}:\d{2}$"
+
+        # Verificar si la fecha tiene dos '/' y cumple con el formato esperado
+        fecha_valida = bool(re.match(patron_fecha, fecha))
+
+        # Verificar si la hora tiene un ':' y cumple con el formato esperado
+        hora_valida = bool(re.match(patron_hora, hora))
+
+        return fecha_valida and hora_valida
 
     def convertir_fecha_hora(self, fecha, tiempo):
         dia, mes, año = map(int, fecha.split("/"))

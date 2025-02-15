@@ -11,6 +11,7 @@ from gestorAplicacion.pedidoItem import PedidoItem
 from gestorAplicacion.pedido import Pedido
 from gestorAplicacion.persona import Persona
 from gestorAplicacion.restaurante import Restaurante
+from field_frame import FieldFrame
 from datetime import datetime, time
 from baseDatos.serializador import Serializador
 from baseDatos.deserializador import Deserializador
@@ -222,20 +223,39 @@ def ventanaUsuarioDefault():
     
 #Funcionalidad1
 
-def funcionalidad1():
+def funcionalidad1(restaurante):
     limpiar_ventana_usuario(framev2, framev3, framev4)
 
     labelTitulo = tk.Label(framev2,text="Realizar Reserva",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
     labelTitulo.pack(expand=True, fill="both")
 
-    labelDescripcion = tk.Label(framev3,text="Desde este menú puedes realizar una reserva en nuestro restaurante.",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+    labelDescripcion = tk.Label(framev3,text="Desde este menú puedes realizar una reserva en nuestro restaurante, ingrese los datos que se le solicitan a continuación",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
     labelDescripcion.pack(expand=True, fill="both")
 
-    #Crear el fieldFrame
+    
+
+    def obtenerDatosCliente():
+        informacion = fieldFrame.obtener_datos()
+        nombre = informacion[0]
+        identificacion = informacion[1]
+        personas = informacion[2]
+        tipoMesa = informacion[3]
+        fechaReserva = informacion[4]
+        horaReserva = informacion[5]
+
+        reservaExitosa = False
+
+        print("Hola")
+        while(not reservaExitosa):
+            if restaurante.validar_fecha_hora(fechaReserva,horaReserva)==True:
+                pass
+            else:
+                reservaExitosa = False
+
+    fieldFrame = FieldFrame(framev4,"Datos de la reserva",["Nombre","Numero de identificacion","Numero de Personas","Tipo de Mesa,","Fecha de la reserva","Hora de la reserva"],"Información",comandoContinuar=obtenerDatosCliente)
+    fieldFrame.grid(sticky="new")
 
 # Funcionalidad5
-
-
 
 def funcionalidad5():
     Mesero.organizar_meseros_por_calificacion()
@@ -259,7 +279,7 @@ def funcionalidad5():
 
     
 
-#Funcion que elimina los widgets dentro de los frames ingresados, par poder ingresar nuevos
+#Funcion que elimina los widgets dentro de los frames ingresados, para poder ingresar nuevos
 def limpiar_ventana_usuario(framev2, framev3, framev4):
     for widget in framev4.winfo_children():
         widget.destroy()
@@ -270,6 +290,10 @@ def limpiar_ventana_usuario(framev2, framev3, framev4):
     for widget in framev2.winfo_children():
         widget.destroy()
 
+
+#Creación objetos
+restaurante = Restaurante("Aura Gourmet")
+
 #Menu ventana usuario
 menuUsuario = tk.Menu(ventana2)
 subMenuUsuario1 = tk.Menu(menuUsuario, tearoff=0, activebackground='#1C2B2D')
@@ -278,7 +302,7 @@ subMenuUsuario1.add_separator()
 subMenuUsuario1.add_cascade(label = 'Salir', command=salirMenuInicio)
 menuUsuario.add_cascade(label='Archivo', menu=subMenuUsuario1)
 subMenuUsuario2 = tk.Menu(menuUsuario, tearoff=0, activebackground='#1C2B2D')
-subMenuUsuario2.add_cascade(label = 'Realizar una reserva',command = funcionalidad1)
+subMenuUsuario2.add_cascade(label = 'Realizar una reserva',command = lambda:funcionalidad1(restaurante))
 subMenuUsuario2.add_separator()
 subMenuUsuario2.add_cascade(label = 'Realizar un domicilio')
 subMenuUsuario2.add_separator()
