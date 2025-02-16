@@ -281,22 +281,75 @@ def funcionalidad1(restaurante):
 
 def funcionalidad5():
     Mesero.organizar_meseros_por_calificacion()
-    idCliente = 0
     calidadComida = 0
     calidadMesero = 0
     tiempoEspera = 0
     comentrario = ''
+    restaurante = Restaurante.get_restaurantes()[0]
+    idCliente = ''
 
     # Crear nuevos Labels
     labelv1.config(text='Sistema de calificación de servicio')
     labelv2.config(text='Indique Sí o No dado el caso')
+    
+    def calificar():
+        global restaurante
+        global labelv3
+        global idCliente
+        global calidadComida 
+        global calidadMesero 
+        global tiempoEspera
+
+        cliente = Cliente.indicarCliente(idCliente)
+        
+        if Cliente.indicarCliente(idCliente).tipo_cliente():# Valida si es consumo local
+            #Datos antes de la calificación por consumo local
+            reputacionActualMesero = cliente.get_reserva().get_mesero().get_prom_calificaciones()
+            posicionActualPrioridadMesero = Mesero.posicion_prioridad_mesero(cliente.get_reserva().get_mesero())
+
+            
+        
+    
+    def dejarComentario():
+        global labelv3
+        labelv3.destroy()
+        labelv2.config(text='Le agradecemos que haya elegido dejarnos su comentario.\nPorfavor escribanos su percepción respecto al servicio.')
+        labelv3 = FieldFrame(framev4, tipo= 0, tituloCriterios='Dato solicitado', criterios=['Deje su comentario:'], tituloValores='Ingrese el dato solicitado', comandoContinuar=calificar)
+        labelv3.grid(sticky='new')
+
+    def preguntaDejarComentario():
+        global labelv3
+        global calidadComida 
+        global calidadMesero 
+        global tiempoEspera
+
+        calidadComida = int(labelv3.obtener_datos()[0])
+        calidadMesero = int(labelv3.obtener_datos()[1])
+        tiempoEspera = int(labelv3.obtener_datos()[2])
+
+        print(int(labelv3.obtener_datos()[0]), int(labelv3.obtener_datos()[1]), int(labelv3.obtener_datos()[2]))
+
+        labelv3.destroy()
+        labelv2.config(text='Para finalizar la encuesta responda la ultima pregunta')
+        labelv3 = FieldFrame(framev4, tipo=2, tituloCriterios="Por ultimo, ¿desea dejar un comentario?",comandoCancelar=calificar, comandoContinuar=dejarComentario)
+        labelv3.grid(sticky='new')
 
     def continuarInteraccion1():
         global labelv3
-        if  Cliente.validarCliente(int(labelv3.obtener_datos()[0])):
-            if Cliente.indicarCliente(int(labelv3.obtener_datos()[0])).tipo_cliente():
-                labelv2.config(text='Usted ha entrado en el sistema de calificación para clientes con consumo en el local.\nPara realizar la calificación porfavor conteste la siguiente encuesta')
+        global idCliente
+        idCliente = int(labelv3.obtener_datos()[0])
+
+        if  Cliente.validarCliente(int(labelv3.obtener_datos()[0])):  #Valida que el id sea de un cliente
+            if Cliente.indicarCliente(int(labelv3.obtener_datos()[0])).tipo_cliente():# Valida si es consumo local
+                labelv2.config(text='Usted ha entrado en el sistema de calificación para clientes con consumo en el local.\nPara realizar la calificación porfavor conteste la siguiente encuesta.')
                 labelv3.destroy()
+                labelv3 = FieldFrame(framev4, tipo = 1, tituloCriterios='Apartado de la encuesta', criterios=['Para puntuar la calidad de la comida:', 'Para puntuar la calidad del mesero:', 'Para puntuar el tiempo de espera:'], tituloValores='Seleccione su calificación', valores=[[1,2,3,4,5], [1,2,3,4,5], [1,2,3,4,5]], comandoContinuar=preguntaDejarComentario)
+                labelv3.grid(sticky='new')
+            else: #Entra en consumo a domicilio
+                labelv2.config(text='Usted ha entrado en el sistema de calificación para clientes con consumo a domicilio.\nPara realizar la calificación porfavor conteste la siguiente encuesta.')
+                labelv3.destroy()
+                labelv3 = FieldFrame(framev4, tipo = 1, tituloCriterios='Apartado de la encuesta', criterios=['Para puntuar la calidad de la comida:', 'Para puntuar la calidad del mesero:'], tituloValores='Seleccione su calificación', valores=[[1,2,3,4,5], [1,2,3,4,5]], comandoContinuar=preguntaDejarComentario)
+                labelv3.grid(sticky='new')
 
     def continuarInteraccion():
         global labelv3

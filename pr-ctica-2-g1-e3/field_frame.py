@@ -65,14 +65,14 @@ class FieldFrame(tk.Frame):
         if tipo == 1:
             for i in range(len(self._criterios)):
                 #Criterio
-                labelCriterio = tk.Label(self,text=self._criterios[i])
+                labelCriterio = tk.Label(self,text=self._criterios[i], fg="white", bg="#1C2B2D", font=("Segoe UI", 15))
                 labelCriterio.grid(row=i+1,column=0,padx=15,pady=15)
     
                 #Valor
-                entryValor = ttk.Combobox(self, values= self._valores[i],  state="readonly", font=("Segoe UI", 15))
+                entryValor = ttk.Combobox(self, values= self._valores[i],  state="readonly", font=("Segoe UI", 10), width=30)
                 entryValor.set('Seleccione una opción')
                 entryValor.bind("<<ComboboxSelected>>", self.on_select)
-                entryValor.grid(row=i+1,column=1,padx=15,pady=15)
+                entryValor.grid(row=i+1,column=1,padx=15,pady=15, ipady=3)
     
                 #Se ejecuta para establecer los valores predefinidos en el campo correspondiente
                 if self._valores is not None:
