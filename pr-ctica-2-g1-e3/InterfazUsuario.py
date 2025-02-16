@@ -22,7 +22,6 @@ from field_frame import FieldFrame
 from tkinter import messagebox
 
 
-
 Deserializador.deserializarListas()
 
 
@@ -232,7 +231,7 @@ def ventanaUsuarioDefault():
 #Funcionalidad1
 
 def funcionalidad1(restaurante):
-    limpiar_ventana_usuario(framev2, framev3, framev4)
+    limpiar_ventana_usuario(framev2,framev3,framev4)
 
     labelTitulo = tk.Label(framev2,text="Realizar Reserva",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
     labelTitulo.pack(expand=True, fill="both")
@@ -242,26 +241,41 @@ def funcionalidad1(restaurante):
 
     
 
-    def obtenerDatosCliente():
-        informacion = fieldFrame.obtener_datos()
-        nombre = informacion[0]
-        identificacion = informacion[1]
-        personas = informacion[2]
-        tipoMesa = informacion[3]
-        fechaReserva = informacion[4]
-        horaReserva = informacion[5]
+    def obtenerDatosCliente(informacion1,fieldFrame2):
+        informacion2 = fieldFrame2.obtener_datos()
+        nombre = informacion1[0]
+        identificacion = int(informacion1[1])
+        personas = int(informacion2[0])
+        tipoMesa = informacion2[1]
+        fecha = informacion2[2]
+        horaReserva = informacion2[3]
 
-        reservaExitosa = False
+        fechaCorrecta = False
+        mesasDisponibles = []
 
         print("Hola")
-        while(not reservaExitosa):
-            if restaurante.validar_fecha_hora(fechaReserva,horaReserva)==True:
-                pass
+        while(not fechaCorrecta):
+            if restaurante.validar_fecha_hora(fecha,horaReserva)==True:
+                print("Fecha correcta")
+                fechaReserva = restaurante.convertir_fecha_hora(fecha,horaReserva)
+                mesasDisponibles = restaurante.hacer_reserva(fechaReserva,personas,tipoMesa)
+                fechaCorrecta = True
             else:
                 reservaExitosa = False
 
-    fieldFrame = FieldFrame(framev4,"Datos de la reserva",["Nombre","Numero de identificacion","Numero de Personas","Tipo de Mesa,","Fecha de la reserva","Hora de la reserva"],"Información",comandoContinuar=obtenerDatosCliente)
-    fieldFrame.grid(sticky="new")
+        mesaCorrecta = False
+        print(mesasDisponibles)
+        print("Vamos bien")
+
+    def segundo_fieldFrame(fieldFrame1):
+        informacion1 = fieldFrame1.obtener_datos()
+        limpiar_ventana_usuario(framev2,framev3,framev4)
+        fieldFrame2 = FieldFrame(framev4,"Datos de la Reserva",["Personas","Tipo de Mesa","Fecha","Hora"],"Informacion",comandoContinuar=lambda: obtenerDatosCliente(informacion1,fieldFrame2))
+        fieldFrame2.grid(sticky="new")
+
+    fieldFrame1 = FieldFrame(framev4,"Datos del Cliente",["Nombre","Numero de identificacion"],"Información",comandoContinuar=lambda:segundo_fieldFrame(fieldFrame1))
+    fieldFrame1.grid(sticky="new")
+    
 
 # Funcionalidad5
 
