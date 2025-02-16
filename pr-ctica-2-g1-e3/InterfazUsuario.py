@@ -23,6 +23,12 @@ from tkinter import messagebox
 
 
 
+Deserializador.deserializarListas()
+
+
+
+
+ 
 #Ubica la ventana en el centro de la pantalla
 def centrarVentana(ventana, ancho, alto):
     # Obtiene las dimensiones de la pantalla
@@ -46,7 +52,7 @@ def mensajeAplicacion():
 
 #Cierra la ventana principal y serializa
 def salir():
-    #Serializar
+    #Serializador.serializarListas()
     ventana.quit()
 
 #Oculta ventana y muestra ventana2
@@ -58,6 +64,8 @@ def ventanaUsuario():
 
 #devuelve de la ventana2 a la ventana  
 def salirMenuInicio():
+    ventanaUsuarioDefault()
+    labelP3.config(text="Bienvenidos(as) al sistema de gestión \n para usuarios de Aura Gourmet.")
     ventana2.withdraw()
     ventana.deiconify()
     ventana.state('zoomed')
@@ -66,7 +74,7 @@ def salirMenuInicio():
 def descripcionSistema():
     labelP3.config(text="Bienvenidos(as) al sistema de gestión\npara usuarios de Aura Gourmet."
                    + "\n\nEste sistema se encarga de proporcionar al cliente\nuna herramienta para realizar:"
-                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left", font=("Segoe UI", 10, "bold"))
+                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left", font=("Segoe UI", 20, "bold"))
     
 #Ventana inicio
 ventana = tk.Tk()
@@ -141,9 +149,9 @@ frameP5 = tk.Frame(frameP2,bg="#1C2B2D", relief="solid", bd= 4)
 frameP6 = tk.Frame(frameP2,bg="#1C2B2D", relief="solid", bd= 4)
 
 #Creacion de los labels
-labelP3 = tk.Label(frameP3,bg="#1C2B2D",fg="white",text="Bienvenidos(as) al sistema de gestión \n para usuarios de Aura Gourmet.", font=("Segoe UI", 10, "bold"))
+labelP3 = tk.Label(frameP3,bg="#1C2B2D",fg="white",text="Bienvenidos(as) al sistema de gestión \n para usuarios de Aura Gourmet.", font=("Segoe UI", 15, "bold"))
 labelP4 = tk.Label(frameP4, bg="#1C2B2D", fg="white", text="hola", image=imagenes[0])
-labelP5 = tk.Label(frameP5,bg="#1C2B2D",fg="white",text="Hojas de vida (Click para cambiar)", justify="left", font=("Segoe UI", 10, "bold"))
+labelP5 = tk.Label(frameP5,bg="#1C2B2D",fg="white",text="Hojas de vida (Click para cambiar)", justify="left", font=("Segoe UI", 15, "bold"))
 
 #PROVISIONAL PARA P6
 labelP6 = tk.Frame(frameP6, bg="#1C2B2D")  # Contenedor de las secciones
@@ -268,11 +276,29 @@ def funcionalidad5():
     # Crear nuevos Labels
     labelv1.config(text='Sistema de calificación de servicio')
     labelv2.config(text='Indique Sí o No dado el caso')
+
+    def continuarInteraccion1():
+        global labelv3
+        if  Cliente.validarCliente(int(labelv3.obtener_datos()[0])):
+            if Cliente.indicarCliente(int(labelv3.obtener_datos()[0])).tipo_cliente():
+                labelv2.config(text='Usted ha entrado en el sistema de calificación para clientes con consumo en el local.\nPara realizar la calificación porfavor conteste la siguiente encuesta')
+                labelv3.destroy()
+
+    def continuarInteraccion():
+        global labelv3
+        labelv3.destroy()
+        labelv2.config(text='Para acceder al sistema de califaciones porfavor siga las intruciones y llene los datos')
+        labelv3 = FieldFrame(framev4, tipo= 0, tituloCriterios='Dato solicitado', criterios=['Número de identificación (CC/CE):'], tituloValores='Ingrese el dato solicitado', comandoContinuar=continuarInteraccion1)
+        labelv3.grid(sticky='new')
+        
+       
     
     global labelv3
     labelv3.destroy()
-    labelv3 = FieldFrame(framev4, tipo=2, tituloCriterios="¿Desea realizar una calificación?", comandoCancelar = ventanaUsuarioDefault)
+    labelv3 = FieldFrame(framev4, tipo=2, tituloCriterios="¿Desea realizar una calificación?", comandoCancelar = ventanaUsuarioDefault, comandoContinuar=continuarInteraccion)
     labelv3.grid(sticky='new')
+
+    
 
 
    

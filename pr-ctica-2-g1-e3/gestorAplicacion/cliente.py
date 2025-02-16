@@ -1,6 +1,7 @@
 from .persona import Persona
 from .calificacion import Calificacion
 
+
 class Cliente(Persona):
     _clientes = []
     
@@ -11,10 +12,11 @@ class Cliente(Persona):
         self._visitas = 0
         self._visitas_para_descuentos = 0
         self._descuento_por_visitas = 0
-        
-        restaurante.agregar_cliente(self)
+        restaurante._lista_clientes.append(self)
         Cliente._clientes.append(self)
     
+
+
     def set_reserva(self, reserva):
         self._reserva = reserva
     
@@ -67,6 +69,19 @@ class Cliente(Persona):
         domicilio.get_domiciliario().actualizar_desempeno_domiciliario(nueva_calificacion)
         return nueva_calificacion
     
+    @staticmethod
+    def validarCliente(ident):
+        for cliente in Cliente.get_clientes():
+            if cliente.get_identificacion() == ident:
+                return True
+        return False
+    
+    @staticmethod
+    def indicarCliente(id):
+        for cliente in Cliente.get_clientes():
+                if cliente.get_identificacion() == id:
+                    return cliente
+        return None
 
     def get_nombre(self):
         return self._nombre

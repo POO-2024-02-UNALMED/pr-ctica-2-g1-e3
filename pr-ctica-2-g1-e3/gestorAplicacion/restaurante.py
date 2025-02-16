@@ -1,6 +1,6 @@
 from .cliente import Cliente
 from datetime import datetime, time
-import re
+
 
 class Restaurante:
     _restaurantes = []
@@ -81,6 +81,12 @@ class Restaurante:
         if id_reserva in Restaurante._id_con_reservas:
             Restaurante._id_con_reservas.remove(id_reserva)
 
+    def validar_cliente(self,id, restaurante):
+        for cliente in restaurante.get_lista_clientes():
+            if cliente.get_identificacion() == id:
+                return True
+        return False
+
     @staticmethod
     def buscar_id(id_reserva):
         return any(cliente.get_identificacion() == id_reserva for cliente in Cliente.get_clientes())
@@ -124,8 +130,6 @@ class Restaurante:
     def agregar_cliente(self, cliente):
         Restaurante._lista_clientes.append(cliente)
 
-    def validar_cliente(self, id_cliente):
-        return any(cliente.get_identificacion() == id_cliente for cliente in Restaurante._lista_clientes)
 
     @staticmethod
     def retornar_cliente(id_cliente):
