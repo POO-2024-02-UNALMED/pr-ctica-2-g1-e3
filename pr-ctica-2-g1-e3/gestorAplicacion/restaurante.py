@@ -1,7 +1,7 @@
 from .cliente import Cliente
 from datetime import datetime, time
 import re
-
+from .mesa import Mesa
 
 class Restaurante:
     _restaurantes = []
@@ -38,7 +38,7 @@ class Restaurante:
 
     def hacer_reserva(self, horario, personas, tipo_mesa):
         mesas_disponibles = [
-            mesa for mesa in self._mesas
+            mesa for mesa in Mesa._mesas
             if mesa.esta_disponible(horario) and mesa.get_tipo() == tipo_mesa and (mesa.get_capacidad() == personas or mesa.get_capacidad() == personas + 1)
         ]
         return mesas_disponibles

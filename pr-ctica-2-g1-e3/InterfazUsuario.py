@@ -231,15 +231,9 @@ def ventanaUsuarioDefault():
 #Funcionalidad1
 
 def funcionalidad1(restaurante):
-    limpiar_ventana_usuario(framev2,framev3,framev4)
-
-    labelTitulo = tk.Label(framev2,text="Realizar Reserva",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-    labelTitulo.pack(expand=True, fill="both")
-
-    labelDescripcion = tk.Label(framev3,text="Desde este menú puedes realizar una reserva en nuestro restaurante, ingrese los datos que se le solicitan a continuación",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-    labelDescripcion.pack(expand=True, fill="both")
-
     
+    labelv1.config(text="Realizar Reserva")
+    labelv2.config(text="Desde este menú puedes realizar una reserva en nuestro restaurante, ingrese los datos que se le solicitan a continuación")    
 
     def obtenerDatosCliente(informacion1,fieldFrame2):
         informacion2 = fieldFrame2.obtener_datos()
@@ -261,18 +255,32 @@ def funcionalidad1(restaurante):
                 mesasDisponibles = restaurante.hacer_reserva(fechaReserva,personas,tipoMesa)
                 fechaCorrecta = True
             else:
-                reservaExitosa = False
+                funcionalidad1(restaurante)
 
         mesaCorrecta = False
         print(mesasDisponibles)
+        mesas=[]
+        for i in mesasDisponibles:
+            print(type(i))
+            numeroMesa = i.get_numero()
+            mesas.append(numeroMesa)
+
+        def eleccion_mesa(frame):
+            numeroMesaEscogida = frame.obtener_datos()[0]
+            print(numeroMesaEscogida)
+        
+        fieldFrame2.destroy()
+        frameMesas = FieldFrame(framev4,"Mesas disponibles",["Mesa"],"Numero de mesa",valores=mesas,tipo=1,comandoContinuar=lambda: eleccion_mesa(frameMesas))
+        frameMesas.grid(sticky="new")
         print("Vamos bien")
 
     def segundo_fieldFrame(fieldFrame1):
         informacion1 = fieldFrame1.obtener_datos()
-        limpiar_ventana_usuario(framev2,framev3,framev4)
+        fieldFrame1.destroy()
         fieldFrame2 = FieldFrame(framev4,"Datos de la Reserva",["Personas","Tipo de Mesa","Fecha","Hora"],"Informacion",comandoContinuar=lambda: obtenerDatosCliente(informacion1,fieldFrame2))
         fieldFrame2.grid(sticky="new")
 
+    labelv3.destroy()
     fieldFrame1 = FieldFrame(framev4,"Datos del Cliente",["Nombre","Numero de identificacion"],"Información",comandoContinuar=lambda:segundo_fieldFrame(fieldFrame1))
     fieldFrame1.grid(sticky="new")
     
