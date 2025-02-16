@@ -258,19 +258,28 @@ def funcionalidad1(restaurante):
                 funcionalidad1(restaurante)
 
         mesaCorrecta = False
-        print(mesasDisponibles)
         mesas=[]
         for i in mesasDisponibles:
-            print(type(i))
+            print(i.get_numero())
             numeroMesa = i.get_numero()
             mesas.append(numeroMesa)
 
         def eleccion_mesa(frame):
             numeroMesaEscogida = frame.obtener_datos()[0]
-            print(numeroMesaEscogida)
+            mesaEscogida = None
+            for i in Mesa._mesas:
+                if i.get_numero() == numeroMesaEscogida:
+                    mesaEscogida = i
+                    break
+            fechaActual = datetime.today().date()
+            reserva = Reserva(mesaEscogida,fechaReserva,personas,fechaActual)
+            meseroAsignado = mesaEscogida.reservar(reserva)
+            cliente = restaurante.obtener_o_crear_cliente(nombre,identificacion)
+            reserva.setCliente(cliente)
+            reserva.get_factura.set_cliente(Cliente)
         
         fieldFrame2.destroy()
-        frameMesas = FieldFrame(framev4,"Mesas disponibles",["Mesa"],"Numero de mesa",valores=mesas,tipo=1,comandoContinuar=lambda: eleccion_mesa(frameMesas))
+        frameMesas = FieldFrame(framev4,"Mesas disponibles",["Mesa"],"Numero de mesa",valores=[mesas],tipo=1,comandoContinuar=lambda: eleccion_mesa(frameMesas))
         frameMesas.grid(sticky="new")
         print("Vamos bien")
 
