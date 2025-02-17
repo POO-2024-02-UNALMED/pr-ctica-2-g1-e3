@@ -15,6 +15,7 @@ from field_frame import FieldFrame
 from datetime import datetime, time
 from baseDatos.serializador import Serializador
 from baseDatos.deserializador import Deserializador
+from uiMain.Utilidad import Utilidad
 
 
 import tkinter as tk
@@ -73,7 +74,7 @@ def salirMenuInicio():
 def descripcionSistema():
     labelP3.config(text="Bienvenidos(as) al sistema de gestión\npara usuarios de Aura Gourmet."
                    + "\n\nEste sistema se encarga de proporcionar al cliente\nuna herramienta para realizar:"
-                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left", font=("Segoe UI", 20, "bold"))
+                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left", font=("Segoe UI", 15, "bold"))
     
 #Ventana inicio
 ventana = tk.Tk()
@@ -301,7 +302,7 @@ def funcionalidad5():
     calidadComida = 0
     calidadMesero = 0
     tiempoEspera = 0
-    comentrario = ''
+    comentario = ''
     restaurante = Restaurante.get_restaurantes()[0]
     idCliente = ''
 
@@ -310,6 +311,7 @@ def funcionalidad5():
     labelv2.config(text='Indique Sí o No dado el caso')
     
     def calificar():
+        global comentario
         global restaurante
         global labelv3
         global idCliente
@@ -317,15 +319,70 @@ def funcionalidad5():
         global calidadMesero 
         global tiempoEspera
 
+        
+
+
+        if labelv3.obtener_datos() == []:
+            comentario = ''
+        else:
+            comentario = labelv3.obtener_datos()[0]
+
         cliente = Cliente.indicarCliente(idCliente)
+
+        reputacionActualRestaurante = restaurante.get_reputacion()
         
         if Cliente.indicarCliente(idCliente).tipo_cliente():# Valida si es consumo local
+            labelv3.destroy()
             #Datos antes de la calificación por consumo local
             reputacionActualMesero = cliente.get_reserva().get_mesero().get_prom_calificaciones()
             posicionActualPrioridadMesero = Mesero.posicion_prioridad_mesero(cliente.get_reserva().get_mesero())
 
+            #Se hace la calificacion
+            calificacion = cliente.calificar(pedido = cliente.get_reserva().get_mesa().get_pedido(), calidad_comida= calidadComida,  calidad_mesero = calidadMesero, comentario = comentario, tiempo_espera = tiempoEspera)
+
+            #Se encarga de actualizar la reputacion del restaurante por el tiempo de espera
+            cliente.get_reserva().get_mesa().get_pedido().tiempo_espera_restaurante(calificacion)
             
-        
+            #Se aplica determinado descuento si el promCalificacion es mejor que 3 
+            cliente.get_reserva().get_mesa().get_pedido().get_factura().aplicar_descuento(calificacion)
+
+            #Se actualiza la reputacion del restaurante
+            restaurante.actualizar_reputacion(calificacion=calificacion)
+
+            labelv2.config(text='A continuación se le proporciona un resumen de la factura de su consumo.\nMuchas gracias por escogernos,\nesperamos verlo pronto.')
+
+            labelv3= FieldFrame(framev4, tipo=3, tituloCriterios=cliente.get_reserva().get_mesa().get_pedido().get_factura())
+            labelv3.grid(sticky='new')
+        else:#Entra para domicilio
+
+
+            #dato antes de la calificacion
+            calificacionActualDomiciliario = Domicilio.indicar_domicilio(idCliente).get_domiciliario().get_prom_calificaciones()
+
+            #se hace la calificacion
+            calificacion = cliente.calificar_domicilio(domicilio = Domicilio.indicar_domicilio(idCliente), calidad_comida= calidadComida, tiempo_espera = tiempoEspera, comentario = comentario)
+
+            #Se encarga de actualizar la reputación del restaurante por el tiempo de espera
+            if tiempoEspera < 3: 
+                restaurante.set_reputacion(restaurante.get_reputacion()-0.1)
+
+            #Se actualiza la reputación del restaurante
+            restaurante.actualizar_reputacion(calificacion)
+
+            labelv2.config(text='A continuación se le proporciona un resumen de la factura de su consumo.\nMuchas gracias por escogernos,\nesperamos verlo pronto.')
+            labelv3.destroy()
+            labelv3= FieldFrame(framev4, tipo=3, tituloCriterios="\n=====================================" + "\n" +
+                    "         FACTURA DE CONSUMO AURA GOURMET         " + "\n" +
+                    "Restaurante: " + restaurante.get_nombre() + "\n" +
+                    "Cliente: " + cliente.get_nombre() + "\n" +
+                    "Domiciliario encargado: " + Domicilio.indicar_domicilio(idCliente).get_domiciliario().get_nombre() + "\n" +
+                    "-------------------------------------" + "\n" +
+                    str(Utilidad.aplicar_descuento(calificacion, Domicilio.indicar_domicilio(idCliente).get_costo())) + "\n" +
+                    "Calificación del servicio: " + str(calificacion.get_promedio_calificacion()) + "\n" +
+                    "\n=====================================" + "\n" +
+                    "Gracias por visitarnos. ¡Esperamos verlo pronto!" + "\n" +
+                    "=====================================")
+            labelv3.grid(sticky='new')
     
     def dejarComentario():
         global labelv3
@@ -339,12 +396,18 @@ def funcionalidad5():
         global calidadComida 
         global calidadMesero 
         global tiempoEspera
+        global idCliente
 
-        calidadComida = int(labelv3.obtener_datos()[0])
-        calidadMesero = int(labelv3.obtener_datos()[1])
-        tiempoEspera = int(labelv3.obtener_datos()[2])
+        if Cliente.indicarCliente(idCliente).tipo_cliente():
+            calidadComida = int(labelv3.obtener_datos()[0])
+            calidadMesero = int(labelv3.obtener_datos()[1])
+            tiempoEspera = int(labelv3.obtener_datos()[2])
+        else:
+            calidadComida = int(labelv3.obtener_datos()[0])
+            tiempoEspera = int(labelv3.obtener_datos()[1])
 
-        print(int(labelv3.obtener_datos()[0]), int(labelv3.obtener_datos()[1]), int(labelv3.obtener_datos()[2]))
+
+        
 
         labelv3.destroy()
         labelv2.config(text='Para finalizar la encuesta responda la ultima pregunta')

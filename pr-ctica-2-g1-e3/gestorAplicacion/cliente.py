@@ -51,7 +51,7 @@ class Cliente(Persona):
         return f"Cliente [reserva={self._reserva}, restaurante={self._restaurante}, visitas={self._visitas}, nombre={self._nombre}, id={self._identificacion}]"
     
     def calificar(self, pedido, calidad_comida, calidad_mesero, tiempo_espera, comentario):
-        nueva_calificacion = Calificacion(self, pedido, calidad_comida, calidad_mesero, tiempo_espera, comentario)
+        nueva_calificacion = Calificacion(self, pedido= pedido, calidad_comida= calidad_comida, calidad_mesero= calidad_mesero, tiempo_espera= tiempo_espera, comentario= comentario)
         pedido.set_calificacion(nueva_calificacion)
         pedido.promediar_calificacion(nueva_calificacion)
         self._restaurante.get_calificaciones_restaurante().append(nueva_calificacion.get_promedio_calificacion())
@@ -61,7 +61,7 @@ class Cliente(Persona):
         return nueva_calificacion
     
     def calificar_domicilio(self, domicilio, calidad_comida, tiempo_espera, comentario):
-        nueva_calificacion = Calificacion(self, domicilio, calidad_comida, tiempo_espera, comentario)
+        nueva_calificacion = Calificacion(self, domicilio,calidad_comida= calidad_comida, tiempo_espera= tiempo_espera, comentario= comentario)
         domicilio.set_calificacion(nueva_calificacion)
         domicilio.promediar_calificacion(nueva_calificacion)
         self._restaurante.get_calificaciones_restaurante().append(nueva_calificacion.get_promedio_calificacion())

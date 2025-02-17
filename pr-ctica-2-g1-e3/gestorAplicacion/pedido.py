@@ -74,7 +74,7 @@ class Pedido:
         self._factura = factura
 
     def promediar_calificacion(self, calificacion):
-        self._prom_calificacion = calificacion.calcular_prom_calificacion_domicilio()
+        self._prom_calificacion = calificacion._calcular_prom_calificacion()
 
     def get_pedido_lista_tuplas(self):
         return self._pedido_lista_tuplas
