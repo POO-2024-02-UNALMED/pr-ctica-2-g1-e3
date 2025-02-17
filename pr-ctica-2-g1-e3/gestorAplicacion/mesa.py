@@ -20,7 +20,7 @@ class Mesa:
         for reserva in self._reservas:
             inicio_reserva = reserva.get_fecha_hora()
             fin_reserva = inicio_reserva + timedelta(hours=1)
-            if inicio_reserva <= horario <= fin_reserva:
+            if inicio_reserva <= horario < fin_reserva:
                 return False
         return True
 

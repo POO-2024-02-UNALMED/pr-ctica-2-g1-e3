@@ -11,8 +11,9 @@ from gestorAplicacion.pedidoItem import PedidoItem
 from gestorAplicacion.pedido import Pedido
 from gestorAplicacion.persona import Persona
 from gestorAplicacion.restaurante import Restaurante
+from gestorAplicacion.menu import Menu
 from field_frame import FieldFrame
-from datetime import datetime, time
+from datetime import datetime, time,timedelta
 from baseDatos.serializador import Serializador
 from baseDatos.deserializador import Deserializador
 from uiMain.Utilidad import Utilidad
@@ -266,19 +267,67 @@ def funcionalidad1(restaurante):
             mesas.append(numeroMesa)
 
         def eleccion_mesa(frame):
-            numeroMesaEscogida = frame.obtener_datos()[0]
+            numeroMesaEscogida = int(frame.obtener_datos()[0])
+            print("Numero mesa escogida:")
+            print(numeroMesaEscogida)
             mesaEscogida = None
+
             for i in Mesa._mesas:
                 if i.get_numero() == numeroMesaEscogida:
                     mesaEscogida = i
+                    print(mesaEscogida.get_numero())
                     break
+
             fechaActual = datetime.today().date()
             reserva = Reserva(mesaEscogida,fechaReserva,personas,fechaActual)
             meseroAsignado = mesaEscogida.reservar(reserva)
             cliente = restaurante.obtener_o_crear_cliente(nombre,identificacion)
-            reserva.setCliente(cliente)
-            reserva.get_factura.set_cliente(Cliente)
-        
+            reserva.set_cliente(cliente)
+            reserva.get_factura().set_cliente(Cliente)
+
+            if tipoMesa == "deluxe":
+                def info_deluxe(frame):
+                    infoDeluxe = frame.obtener_datos()
+                    frame.destroy()
+
+                    #Actualización datos Deluxe
+                    mesaEscogida.set_decoracion(infoDeluxe[0])
+                    horaAdicional = infoDeluxe[1]
+                    if horaAdicional == "Sí":
+                        print(type(fechaReserva))
+                        sumarHora = fechaReserva + timedelta(hours=1)
+                        print(fechaReserva)
+                        print(sumarHora)
+                        validacion = mesaEscogida.esta_disponible(sumarHora)
+                        if validacion == True:
+                            print("Hora añadida con éxito")
+                            recargoReserva = 30000
+                            reserva.sumar_precio(recargoReserva)
+                        if validacion == False:
+                            print("No se pudo agregar la hora adicional")
+
+                    ingredientes = Menu.obtener_todos_los_ingredientes()
+                    ingredientesAlergias = []
+                    
+
+                    for i in ingredientes:
+                        if(not Menu.ingrediente_esta_duplicado(i,ingredientes)):
+                            ingredientesAlergias.append(i)
+                    labelv2.destroy()
+                    
+                    listbox = tk.Listbox(framev3, height=5)
+                    listbox.pack(pady=10, fill="both", expand=True)
+
+                    for ingrediente in ingredientesAlergias:
+                        listbox.insert(tk.END, ingrediente)
+
+                    frameAlergias = FieldFrame(framev4,"Alergias",["Ingrese los nombres de las alergias que posse, si no tiene, deje la casilla vacía"])
+                    frameAlergias.grid(sticky = "new")
+
+                frameMesas.destroy()
+                fieldFrameDeluxe = FieldFrame(framev4,"Personalizacion de la reserva",["Decoración de la mesa","¿Desea agregar 1 hora de permanencia en el restaurante?"],valores=[["Elegante","Rústico","Moderno"],["Sí","No"]],tipo=1,comandoContinuar=lambda: info_deluxe(fieldFrameDeluxe))
+                fieldFrameDeluxe.grid(sticky="new")
+
         fieldFrame2.destroy()
         frameMesas = FieldFrame(framev4,"Mesas disponibles",["Mesa"],"Numero de mesa",valores=[mesas],tipo=1,comandoContinuar=lambda: eleccion_mesa(frameMesas))
         frameMesas.grid(sticky="new")
