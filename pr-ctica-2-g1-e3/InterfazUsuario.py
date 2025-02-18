@@ -237,6 +237,32 @@ def funcionalidad1(restaurante):
     labelv1.config(text="Realizar Reserva")
     labelv2.config(text="Desde este menú puedes realizar una reserva en nuestro restaurante, ingrese los datos que se le solicitan a continuación")    
 
+    def resumenReserva(framev4,nombre,identificacion,personas,tipoMesa,fechaReserva,decoracion="Normal",horaAdicional="No",alergias="No"):
+        # Crear el resumen como un texto
+        for widget in framev4.winfo_children():
+            widget.destroy()
+
+        for widget in framev3.winfo_children():
+            widget.destroy()
+
+        labelResumen = tk.Label(framev3,text="A continuación podrá ver el resumen de su reserva",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+        labelResumen.pack(expand=True, fill="both")
+
+        resumen = (
+            f"Nombre: {nombre}\n"
+            f"Identificación: {identificacion}\n"
+            f"Número de personas: {personas}\n"
+            f"Tipo de Mesa: {tipoMesa}\n"
+            f"Fecha de Reserva: {fechaReserva}\n"
+            f"Decoración: {decoracion}\n"
+            f"Hora Adicional: {horaAdicional}\n"
+            f"Alergias: {alergias}"
+        )
+        
+        # Crear un label en el framev4 para mostrar el resumen
+        label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+        label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
+
     def obtenerDatosCliente(informacion1,fieldFrame2):
         informacion2 = fieldFrame2.obtener_datos()
         nombre = informacion1[0]
@@ -315,13 +341,45 @@ def funcionalidad1(restaurante):
                             ingredientesAlergias.append(i)
                     labelv2.destroy()
                     
-                    listbox = tk.Listbox(framev3, height=5)
-                    listbox.pack(pady=10, fill="both", expand=True)
+                    scrollbar = tk.Scrollbar(framev3, orient="vertical")
+                    listbox = tk.Listbox(framev3,bg="black",fg="white",font=("Segoe UI", 15, "bold"),justify="center",yscrollcommand=scrollbar.set)
+                    scrollbar.config(command=listbox.yview)
+
+                    scrollbar.pack(side="right", fill="y")  
+                    listbox.pack(pady=10, fill="y", expand=True)
 
                     for ingrediente in ingredientesAlergias:
                         listbox.insert(tk.END, ingrediente)
+                    listbox.config(state="disabled")
 
-                    frameAlergias = FieldFrame(framev4,"Alergias",["Ingrese los nombres de las alergias que posse, si no tiene, deje la casilla vacía"])
+                    def final(frame):
+                        alergias = frame.obtener_datos()
+                        frame.destroy()
+                        listbox.destroy()
+                        scrollbar.destroy()
+
+                        if alergias is not None:
+                            labelAlergias = tk.Label(framev3,text="A continuacion podrá ver los platos que no contienen los alimentos restringidos",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+                            labelAlergias.pack(expand=True, fill="both")
+
+                            formatoAlergias = [ingrediente.strip() for ingrediente in alergias[0].split(",")]
+                            for i in formatoAlergias:
+                                print(i)
+
+                            platosSinAlergias = []
+                            listaPlatos = tk.Listbox(framev4,bg="black",fg="white",font=("Segoe UI", 15, "bold"),justify="center")
+
+                            for plato in Menu:
+                                if not Menu.plato_contiene_alergia(plato,formatoAlergias):
+                                    platosSinAlergias.append(plato)
+                                    listaPlatos.insert(tk.END, plato.get_nombre())
+
+                            botonFinal = tk.Button(framev4,text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: resumenReserva(framev4,nombre,identificacion,personas,tipoMesa,fechaReserva,infoDeluxe[0],horaAdicional,alergias))
+                            botonFinal.pack(side="right",anchor="n",padx=20,pady=125)
+                            listaPlatos.config(state="disabled")
+                            listaPlatos.pack(pady=10, fill="y", expand=True)
+                            
+                    frameAlergias = FieldFrame(framev4,"Alergias",["Ingrese los nombres de las alergias que posse, si no tiene, deje la casilla vacía"],comandoContinuar=lambda: final(frameAlergias))
                     frameAlergias.grid(sticky = "new")
 
                 frameMesas.destroy()

@@ -1,13 +1,13 @@
 from enum import Enum
 
 class Menu(Enum):
-    LANGOSTA = ("Langosta", 120000, ["langosta", "mantequilla", "limón"])
-    SALMON_AHUMADO = ("Salmón Ahumado", 85000, ["salmón", "hierbas finas", "aceite de oliva"])
+    LANGOSTA = ("Langosta", 120000, ["langosta", "mantequilla", "limon"])
+    SALMON_AHUMADO = ("Salmón Ahumado", 85000, ["salmon", "hierbas finas", "aceite de oliva"])
     CORDERO = ("Cordero", 95000, ["cordero", "hierbas finas", "ajo"])
-    PULPO_A_LA_GALLEGA = ("Pulpo a la Gallega", 110000, ["pulpo", "pimentón", "aceite de oliva"])
+    PULPO_A_LA_GALLEGA = ("Pulpo a la Gallega", 110000, ["pulpo", "pimenton", "aceite de oliva"])
     PASTA_FRESCA = ("Pasta Fresca", 60000, ["pasta", "tomate", "albahaca"])
     LOMO_DE_BUEY = ("Lomo de Buey", 135000, ["lomo de buey", "sal", "pimienta"])
-    TARTAR_DE_ATUN = ("Tartar de Atún", 98000, ["atún", "aguacate", "salsa de soya"])
+    TARTAR_DE_ATUN = ("Tartar de Atún", 98000, ["atun", "aguacate", "salsa de soya"])
     RAVIOLI_DE_TRUFA = ("Ravioli de Trufa", 115000, ["ravioli", "trufa", "queso parmesano"])
 
     def __init__(self, nombre, precio, ingredientes):

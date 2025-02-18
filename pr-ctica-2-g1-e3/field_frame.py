@@ -12,7 +12,7 @@ class FieldFrame(tk.Frame):
         self._valores = valores
         self._criteriosNoEditables = criteriosNoEditables
         self.tipo = tipo #0 para ingresar texto por el usuario, 1 para combobox, 2 para Si y No, 3 mostrar texto
-        self.comandoContinuar= comandoContinuar
+        self.comandoContinuar= comandoContinuar #Función que se ejecutará al dar click en el boón "Continuar"
         self.comandoCancelar= comandoCancelar
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
