@@ -29,6 +29,8 @@ Deserializador.deserializarListas()
 
 
 
+
+
  
 #Ubica la ventana en el centro de la pantalla
 def centrarVentana(ventana, ancho, alto):
@@ -416,7 +418,117 @@ def funcionalidad5():
     # Crear nuevos Labels
     labelv1.config(text='Sistema de calificación de servicio')
     labelv2.config(text='Indique Sí o No dado el caso')
-    
+
+    def apartadoEx():
+        global comentario
+        global restaurante
+        global labelv3
+        global idCliente
+        global calidadComida 
+        global calidadMesero 
+        global tiempoEspera
+        global reputacionActualMesero
+        global posicionActualPrioridadMesero
+        global posicionNuevaPrioridadMesero
+        global calificacionActualDomiciliario
+        global reputacionActualRestaurante
+
+
+        
+        cliente = Cliente.indicarCliente(idCliente)
+        if cliente.tipo_cliente(): #Valida si es consumo local
+            def estadoMesero(cliente):
+                if Mesero.posicion_prioridad_mesero(cliente.get_reserva().get_mesero()) == -1:
+                    return f'El mesero {cliente.get_reserva().get_mesero().get_nombre()}, ha sido despedido'
+                else:
+                    return f'El mesero {cliente.get_reserva().get_mesero().get_nombre()}, sigue activo'
+
+
+            labelv3.destroy()
+            labelv3 = FieldFrame(framev4, tipo=3, tituloCriterios=(" ANTES DE SU CALIFICACIÓN       DESPUÉS DE SU CALIFICACIÓN\n"
+            "Restaurante:          {:.1f}                             {:.1f}\n"
+            "Mesero:               {:.1f}                             {:.1f}\n"
+            "Prioridad Mesero:     {}                               {}\n\n"
+            "{}"
+            ).format(
+                reputacionActualRestaurante, restaurante.get_reputacion(),
+                reputacionActualMesero, cliente.get_reserva().get_mesero().get_prom_calificaciones(),
+                posicionActualPrioridadMesero, posicionNuevaPrioridadMesero,
+                estadoMesero(cliente)
+            )
+
+            )
+
+            btnf6 = tk.Button(labelv3, text="Finalizar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=ventanaUsuarioDefault)
+            btnf6.grid(row=16, column=0, pady=15, columnspan=2)
+
+            labelv3.grid(sticky='new')
+        else:
+            labelv3.destroy()
+            labelv3 = FieldFrame(framev4, tipo=3, tituloCriterios=(" ANTES DE SU CALIFICACIÓN       DESPUÉS DE SU CALIFICACIÓN\n"
+            "Restaurante:          {:.1f}                             {:.1f}\n"
+            "Domiciliario:               {:.1f}                             {:.1f}\n"
+            
+            ).format(
+                reputacionActualRestaurante, restaurante.get_reputacion(),
+                calificacionActualDomiciliario, Domicilio.indicar_domicilio(idCliente).get_domiciliario().get_prom_calificaciones()
+                
+               
+            )
+
+            )
+            btnf6 = tk.Button(labelv3, text="Finalizar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=ventanaUsuarioDefault)
+            btnf6.grid(row=16, column=0, pady=15, columnspan=2)
+
+            labelv3.grid(sticky='new')
+
+
+    def preguntaApartadoEx():
+        global comentario
+        global restaurante
+        global labelv3
+        global idCliente
+        global calidadComida 
+        global calidadMesero 
+        global tiempoEspera
+        global reputacionActualMesero
+        global posicionActualPrioridadMesero
+        global posicionNuevaPrioridadMesero
+        global calificacionActualDomiciliario
+        global reputacionActualRestaurante
+
+        cliente = Cliente.indicarCliente(idCliente)
+       
+
+        
+
+        if cliente.tipo_cliente(): #Valida si es consumo local
+            if (cliente.get_reserva().get_mesa().tipo_mesa()): #valida si es mesa deluxe
+                labelv2.config(text=f'¡Hola {cliente.get_nombre()}, Bienvenido al apartado exclusvo para clientes premium,\npor los beneficios de haber estado en una de nuestras mesas deluxe.')
+                labelv3.destroy()
+                labelv3 = FieldFrame(framev4, tipo = 2, tituloCriterios="Se le proporciona la posibilidad de visualizar el impacto de su calificación.\n¿Desea verlo?", comandoCancelar = ventanaUsuarioDefault, comandoContinuar= apartadoEx)
+                labelv3.grid(sticky='new')
+            else:
+                labelv2.config(text='Oprime Finalizar para concluir el proceso.')
+                labelv3.destroy()
+                labelv3 = FieldFrame(framev4, tipo = 3, tituloCriterios='Consulta con nuestro equipo sobre como acceder a una mesa deluxe,\nen tu próxima visita y obtener un apartado exclusivo')
+                btnf7 = tk.Button(labelv3, text="Finalizar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=ventanaUsuarioDefault)
+                btnf7.grid(row=16, column=0, pady=15, columnspan=2)
+                labelv3.grid(sticky='new')
+        else:
+            if Domicilio.indicar_domicilio(idCliente)._domicilio_prioritario == True: #Valida si el domicilio es prioritario
+                labelv2.config(text=f'¡Hola {cliente.get_nombre()}, Bienvenido al apartado exclusvo para clientes premium,\npor el beneficio de que su pedido es prioritario.')
+                labelv3.destroy()
+                labelv3 = FieldFrame(framev4, tipo = 2, tituloCriterios="Se le proporciona la posibilidad de visualizar el impacto de su calificación.\n¿Desea verlo?", comandoCancelar = ventanaUsuarioDefault, comandoContinuar= apartadoEx)
+                labelv3.grid(sticky='new')
+            else:
+                labelv2.config(text='Oprime Finalizar para concluir el proceso.')
+                labelv3.destroy()
+                labelv3 = FieldFrame(framev4, tipo = 3, tituloCriterios='Consulta con nuestro equipo sobre como acceder a un apartado exclusivo si tu proximo pedido es prioritario.')
+                btnf7 = tk.Button(labelv3, text="Finalizar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=ventanaUsuarioDefault)
+                btnf7.grid(row=16, column=0, pady=15, columnspan=2)
+                labelv3.grid(sticky='new')
+
     def calificar():
         global comentario
         global restaurante
@@ -425,8 +537,10 @@ def funcionalidad5():
         global calidadComida 
         global calidadMesero 
         global tiempoEspera
-
-        
+        global reputacionActualMesero
+        global posicionActualPrioridadMesero
+        global posicionNuevaPrioridadMesero
+        global reputacionActualRestaurante
 
 
         if labelv3.obtener_datos() == []:
@@ -460,7 +574,18 @@ def funcionalidad5():
 
             labelv3= FieldFrame(framev4, tipo=3, tituloCriterios=cliente.get_reserva().get_mesa().get_pedido().get_factura())
             labelv3.grid(sticky='new')
+            btnf5 = tk.Button(labelv3, text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=preguntaApartadoEx)
+            btnf5.grid(row=16, column=0, pady=15, columnspan=2)
+
+            #Se encarga de revisar las 3 ultimas calificaciones de cada mesero, y si alguno tieien las 3 ultimas calificaciones por debajo o igual a 2, será despedido(eliminado de la lista de los meseros del restaurante)
+            Mesero.revision_meseros()
+
+            posicionNuevaPrioridadMesero = Mesero.posicion_prioridad_mesero(cliente.get_reserva().get_mesero())
+
+            Mesero.organizar_meseros_por_calificacion()
         else:#Entra para domicilio
+
+            global calificacionActualDomiciliario
 
 
             #dato antes de la calificacion
@@ -490,6 +615,8 @@ def funcionalidad5():
                     "Gracias por visitarnos. ¡Esperamos verlo pronto!" + "\n" +
                     "=====================================")
             labelv3.grid(sticky='new')
+            btnf5 = tk.Button(labelv3, text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=preguntaApartadoEx)
+            btnf5.grid(row=16, column=0, pady=15, columnspan=2)
     
     def dejarComentario():
         global labelv3
@@ -528,12 +655,12 @@ def funcionalidad5():
 
         if  Cliente.validarCliente(int(labelv3.obtener_datos()[0])):  #Valida que el id sea de un cliente
             if Cliente.indicarCliente(int(labelv3.obtener_datos()[0])).tipo_cliente():# Valida si es consumo local
-                labelv2.config(text='Usted ha entrado en el sistema de calificación para clientes con consumo en el local.\nPara realizar la calificación porfavor conteste la siguiente encuesta.')
+                labelv2.config(text=f'Bienvendo {Cliente.indicarCliente(idCliente).get_nombre()}, has entrado en el sistema de calificación para clientes con consumo en el local.\nPara realizar la calificación porfavor conteste la siguiente encuesta.')
                 labelv3.destroy()
                 labelv3 = FieldFrame(framev4, tipo = 1, tituloCriterios='Apartado de la encuesta', criterios=['Para puntuar la calidad de la comida:', 'Para puntuar la calidad del mesero:', 'Para puntuar el tiempo de espera:'], tituloValores='Seleccione su calificación', valores=[[1,2,3,4,5], [1,2,3,4,5], [1,2,3,4,5]], comandoContinuar=preguntaDejarComentario)
                 labelv3.grid(sticky='new')
             else: #Entra en consumo a domicilio
-                labelv2.config(text='Usted ha entrado en el sistema de calificación para clientes con consumo a domicilio.\nPara realizar la calificación porfavor conteste la siguiente encuesta.')
+                labelv2.config(text=f'Bienvenido {Cliente.indicarCliente(idCliente).get_nombre()}, has entrado en el sistema de calificación para clientes con consumo a domicilio.\nPara realizar la calificación porfavor conteste la siguiente encuesta.')
                 labelv3.destroy()
                 labelv3 = FieldFrame(framev4, tipo = 1, tituloCriterios='Apartado de la encuesta', criterios=['Para puntuar la calidad de la comida:', 'Para puntuar la calidad del mesero:'], tituloValores='Seleccione su calificación', valores=[[1,2,3,4,5], [1,2,3,4,5]], comandoContinuar=preguntaDejarComentario)
                 labelv3.grid(sticky='new')

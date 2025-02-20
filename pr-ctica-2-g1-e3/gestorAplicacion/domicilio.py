@@ -1,7 +1,7 @@
 class Domicilio:
     _domicilios = []
 
-    def __init__(self, cliente = None, pedido_domicilio= None, direccion= None, domicilio_prioritario= None, costo_envio= None, domiciliario= None):
+    def __init__(self, cliente = None, pedido_domicilio= None, direccion= None, domicilio_prioritario = False, costo_envio= None, domiciliario= None):
         self._cliente = cliente
         self._pedido_domicilio = pedido_domicilio
         self._direccion = direccion
