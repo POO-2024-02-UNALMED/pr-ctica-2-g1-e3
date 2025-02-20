@@ -227,6 +227,9 @@ def ventanaUsuarioDefault():
     global labelv3
     labelv3.destroy()
 
+    for widget in framev4.winfo_children():
+        widget.destroy()
+
     labelv1.config(text='Funcionalidades')
     labelv2.config(text='Descripciones')
     labelv3 = FieldFrame(framev4, tipo= 3, tituloCriterios='Información\n\n\nPara acceder a las funcionalidades dirijase a la pestaña Procesos y consultas.\nPosteriormente seleccione la funcionalidad que desea acceder.')
@@ -245,10 +248,13 @@ def funcionalidad1(restaurante):
             widget.destroy()
 
         for widget in framev3.winfo_children():
-            widget.destroy()
-
-        labelResumen = tk.Label(framev3,text="A continuación podrá ver el resumen de su reserva",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-        labelResumen.pack(expand=True, fill="both")
+            if isinstance(widget, tk.Label):  # Verifica si el widget es de tipo Label
+                widget.config(text="A continuación podrá ver el resumen de su reserva")  # Cambia el texto del Label
+            else:
+                widget.destroy()
+                labelv2 = tk.Label(framev3,text="A continuación podrá ver el resumen de su reserva",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+                labelv2.pack(expand=True, fill="both")
+        
 
         resumen = (
             f"Nombre: {nombre}\n"
@@ -387,6 +393,8 @@ def funcionalidad1(restaurante):
                 frameMesas.destroy()
                 fieldFrameDeluxe = FieldFrame(framev4,"Personalizacion de la reserva",["Decoración de la mesa","¿Desea agregar 1 hora de permanencia en el restaurante?"],valores=[["Elegante","Rústico","Moderno"],["Sí","No"]],tipo=1,comandoContinuar=lambda: info_deluxe(fieldFrameDeluxe))
                 fieldFrameDeluxe.grid(sticky="new")
+            else:
+                resumenReserva(framev4, nombre, identificacion,personas,tipoMesa,fechaReserva)
 
         fieldFrame2.destroy()
         frameMesas = FieldFrame(framev4,"Mesas disponibles",["Mesa"],"Numero de mesa",valores=[mesas],tipo=1,comandoContinuar=lambda: eleccion_mesa(frameMesas))
@@ -396,7 +404,7 @@ def funcionalidad1(restaurante):
     def segundo_fieldFrame(fieldFrame1):
         informacion1 = fieldFrame1.obtener_datos()
         fieldFrame1.destroy()
-        fieldFrame2 = FieldFrame(framev4,"Datos de la Reserva",["Personas","Tipo de Mesa","Fecha","Hora"],"Informacion",comandoContinuar=lambda: obtenerDatosCliente(informacion1,fieldFrame2))
+        fieldFrame2 = FieldFrame(framev4,"Datos de la Reserva",["Personas","Tipo de Mesa(basic o deluxe)","Fecha","Hora"],"Informacion",comandoContinuar=lambda: obtenerDatosCliente(informacion1,fieldFrame2))
         fieldFrame2.grid(sticky="new")
 
     labelv3.destroy()
