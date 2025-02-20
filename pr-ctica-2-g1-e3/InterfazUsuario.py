@@ -410,6 +410,78 @@ def funcionalidad1(restaurante):
     labelv3.destroy()
     fieldFrame1 = FieldFrame(framev4,"Datos del Cliente",["Nombre","Numero de identificacion"],"Información",comandoContinuar=lambda:segundo_fieldFrame(fieldFrame1))
     fieldFrame1.grid(sticky="new")
+
+#Funcionalidad4
+def funcionalidad4(restaurante):
+    labelv1.config(text="Gestión de Recompensas")
+    labelv2.config(text="Desde este menú puedes gestionar las recompensas acumuladas por el cliente. Ingrese los datos que se le solicitan a continuación.")
+
+    def mostrar_recompensas(framev4, cliente):
+        for widget in framev4.winfo_children():
+            widget.destroy()
+
+        for widget in framev3.winfo_children():
+            if isinstance(widget, tk.Label):
+                widget.config(text="A continuación podrá ver las recompensas del cliente")
+            else:
+                widget.destroy()
+                labelv2 = tk.Label(framev3, text="A continuación podrá ver las recompensas del cliente", fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+                labelv2.pack(expand=True, fill="both")
+
+        # Obtener las recompensas del cliente
+        puntos = cliente.get_puntos()
+        historial = cliente.get_historial_recompensas()
+
+        resumen = (
+            f"Nombre: {cliente.get_nombre()}\n"
+            f"Identificación: {cliente.get_identificacion()}\n"
+            f"Puntos acumulados: {puntos}\n"
+            f"Historial de recompensas:\n"
+        )
+
+        for recompensa in historial:
+            resumen += f"- {recompensa}\n"
+
+        # Crear un label en el framev4 para mostrar el resumen
+        label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+        label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
+
+        # Botón para canjear puntos
+        boton_canjear = tk.Button(framev4, text="Canjear Puntos", bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: canjear_puntos(cliente))
+        boton_canjear.pack(side="right", anchor="n", padx=20, pady=125)
+
+    def canjear_puntos(cliente):
+        for widget in framev4.winfo_children():
+            widget.destroy()
+
+        labelv2.config(text="Canjear Puntos")
+
+        frame_canje = FieldFrame(framev4, "Canjear Puntos", ["Puntos a canjear"], "Información", comandoContinuar=lambda: realizar_canje(cliente, frame_canje))
+        frame_canje.grid(sticky="new")
+
+    def realizar_canje(cliente, frame_canje):
+        puntos_a_canjear = int(frame_canje.obtener_datos()[0])
+        if cliente.canjar_puntos(puntos_a_canjear):
+            messagebox.showinfo("Éxito", f"Se han canjeado {puntos_a_canjear} puntos correctamente.")
+        else:
+            messagebox.showerror("Error", "No tiene suficientes puntos para canjear.")
+
+        mostrar_recompensas(framev4, cliente)
+
+    def obtener_cliente(fieldFrame1):
+        informacion1 = fieldFrame1.obtener_datos()
+        nombre = informacion1[0]
+        identificacion = int(informacion1[1])
+
+        cliente = restaurante.obtener_cliente_por_identificacion(identificacion)
+        if cliente:
+            mostrar_recompensas(framev4, cliente)
+        else:
+            messagebox.showerror("Error", "Cliente no encontrado.")
+
+    labelv3.destroy()
+    fieldFrame1 = FieldFrame(framev4, "Datos del Cliente", ["Nombre", "Número de identificación"], "Información", comandoContinuar=lambda: obtener_cliente(fieldFrame1))
+    fieldFrame1.grid(sticky="new")
     
 
 # Funcionalidad5
@@ -723,7 +795,7 @@ subMenuUsuario2.add_cascade(label = 'Realizar un domicilio')
 subMenuUsuario2.add_separator()
 subMenuUsuario2.add_cascade(label = 'Realizar el pedido de mi reserva')
 subMenuUsuario2.add_separator()
-subMenuUsuario2.add_cascade(label = 'Gestionar recompensas')
+subMenuUsuario2.add_cascade(label = 'Gestionar recompensas',command = lambda:funcionalidad4(restaurante))
 subMenuUsuario2.add_separator()
 subMenuUsuario2.add_cascade(label = 'Calificar el servicio', command= funcionalidad5)
 menuUsuario.add_cascade(label = 'Procesos y Consultas', menu=subMenuUsuario2)
