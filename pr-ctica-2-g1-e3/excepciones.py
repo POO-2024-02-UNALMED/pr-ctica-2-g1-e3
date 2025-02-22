@@ -29,7 +29,7 @@ class HoraInvalida(ValidacionDatos):
         messagebox.showerror("Error: Formato incorrecto", self.mensaje_error_valor)
         super().__init__(self.mensaje_error_valor)
 
-class Fechainvalida(ValidacionDatos):
+class FechaInvalida(ValidacionDatos):
     def __init__(self, fecha):
         self.mensaje_error_valor = f"La fecha ({fecha}) ingresada no tiene el formato correcto.\nej: 22/02/2025"
         messagebox.showerror("Error: Formato incorrecto", self.mensaje_error_valor)

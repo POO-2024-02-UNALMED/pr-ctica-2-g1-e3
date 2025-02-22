@@ -244,7 +244,10 @@ def funcionalidad1(restaurante):
     labelv1.config(text="Realizar Reserva")
     labelv2.config(text="Desde este menú puedes realizar una reserva en nuestro restaurante, ingrese los datos que se le solicitan a continuación")    
 
-    def resumenReserva(framev4,nombre,identificacion,personas,tipoMesa,fechaReserva,decoracion="Normal",horaAdicional="No",alergias="No"):
+    def salirFuncionalidad():
+        salir()
+
+    def resumenReserva(framev4,nombre,identificacion,personas,tipoMesa,fechaReserva,reserva,decoracion="Normal",horaAdicional="No",alergias="No"):
         # Crear el resumen como un texto
         for widget in framev4.winfo_children():
             widget.destroy()
@@ -264,14 +267,15 @@ def funcionalidad1(restaurante):
             f"Número de personas: {personas}\n"
             f"Tipo de Mesa: {tipoMesa}\n"
             f"Fecha de Reserva: {fechaReserva}\n"
+            f"Número de reserva: {reserva.get_id}"
             f"Decoración: {decoracion}\n"
             f"Hora Adicional: {horaAdicional}\n"
             f"Alergias: {alergias}"
         )
         
         # Crear un label en el framev4 para mostrar el resumen
-        label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-        label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
+        frameResumen = FieldFrame(framev4, tituloCriterios=resumen, comandoContinuar=salirFuncionalidad)
+        frameResumen.grid(sticky = "new")
 
     def obtenerDatosCliente(informacion1,fieldFrame2):
         informacion2 = fieldFrame2.obtener_datos()
@@ -285,7 +289,6 @@ def funcionalidad1(restaurante):
         fechaCorrecta = False
         mesasDisponibles = []
 
-        print("Hola")
         while(not fechaCorrecta):
             if restaurante.validar_fecha_hora(fecha,horaReserva)==True:
                 print("Fecha correcta")
@@ -293,7 +296,8 @@ def funcionalidad1(restaurante):
                 mesasDisponibles = restaurante.hacer_reserva(fechaReserva,personas,tipoMesa)
                 fechaCorrecta = True
             else:
-                funcionalidad1(restaurante)
+                HoraInvalida(horaReserva)
+                FechaInvalida(fecha)
 
         mesaCorrecta = False
         mesas=[]
@@ -384,7 +388,7 @@ def funcionalidad1(restaurante):
                                     platosSinAlergias.append(plato)
                                     listaPlatos.insert(tk.END, plato.get_nombre())
 
-                            botonFinal = tk.Button(framev4,text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: resumenReserva(framev4,nombre,identificacion,personas,tipoMesa,fechaReserva,infoDeluxe[0],horaAdicional,alergias))
+                            botonFinal = tk.Button(framev4,text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: resumenReserva(framev4,nombre,identificacion,personas,tipoMesa,fechaReserva,reserva,infoDeluxe[0],horaAdicional,alergias))
                             botonFinal.pack(side="right",anchor="n",padx=20,pady=125)
                             listaPlatos.config(state="disabled")
                             listaPlatos.pack(pady=10, fill="y", expand=True)
@@ -396,7 +400,7 @@ def funcionalidad1(restaurante):
                 fieldFrameDeluxe = FieldFrame(framev4,"Personalizacion de la reserva",["Decoración de la mesa","¿Desea agregar 1 hora de permanencia en el restaurante?"],valores=[["Elegante","Rústico","Moderno"],["Sí","No"]],tipo=1,comandoContinuar=lambda: info_deluxe(fieldFrameDeluxe))
                 fieldFrameDeluxe.grid(sticky="new")
             else:
-                resumenReserva(framev4, nombre, identificacion,personas,tipoMesa,fechaReserva)
+                resumenReserva(framev4, nombre, identificacion,personas,tipoMesa,fechaReserva,reserva)
 
         fieldFrame2.destroy()
         frameMesas = FieldFrame(framev4,"Mesas disponibles",["Mesa"],"Numero de mesa",valores=[mesas],tipo=1,comandoContinuar=lambda: eleccion_mesa(frameMesas))
