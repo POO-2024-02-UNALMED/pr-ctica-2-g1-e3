@@ -630,7 +630,10 @@ def funcionalidad5():
 
         
         
-        
+        if comentario != 'No':
+            if labelv3.obtener_datos()[0] == '':
+                raise EntryVacio('Comentario')
+
 
         
         
@@ -761,10 +764,17 @@ def funcionalidad5():
 
     def continuarInteraccion1():
         global labelv3
+        if labelv3.obtener_datos()[0] == '':
+            raise EntryVacio('Identificación')
+        
+        
+
         try:
             int(labelv3.obtener_datos()[0])
             global idCliente
             idCliente = int(labelv3.obtener_datos()[0])
+            if Cliente.validarCliente(int(labelv3.obtener_datos()[0])) == False:
+                raise IdNoEncontrado(labelv3.obtener_datos()[0])
 
 
             if  Cliente.validarCliente(int(labelv3.obtener_datos()[0])):  #Valida que el id sea de un cliente
