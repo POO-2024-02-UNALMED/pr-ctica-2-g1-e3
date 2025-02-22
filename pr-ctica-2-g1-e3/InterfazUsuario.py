@@ -19,6 +19,7 @@ from baseDatos.deserializador import Deserializador
 from uiMain.Utilidad import Utilidad
 
 
+from tkinter import ttk
 import tkinter as tk
 from field_frame import FieldFrame
 from tkinter import messagebox
@@ -759,7 +760,138 @@ def funcionalidad5():
     labelv3 = FieldFrame(framev4, tipo=2, tituloCriterios="¿Desea realizar una calificación?", comandoCancelar = ventanaUsuarioDefault, comandoContinuar=continuarInteraccion)
     labelv3.grid(sticky='new')
 
+def funcionalidad2(restaurante):
+    labelv1.config(text="Realizar Domicilio")
+    labelv2.config(text="Desde este menú puedes realizar un domicilio en nuestro restaurante, ingrese los datos que se le solicitan a continuación") 
+
+    alimentos_seleccionados = []  # Lista de alimentos seleccionados
+
+    def limpiar_frame():
+        """ Elimina todos los widgets en framev4 """
+        for widget in framev4.winfo_children():
+            widget.destroy()
+
+    def mostrarResumen(nombre, identificacion, domicilio_prioritario):
+        """ Muestra el resumen final en framev4 """
+        limpiar_frame()
+
+        resumen = (
+            f"Resumen del Domicilio\n"
+            f"Nombre: {nombre}\n"
+            f"Identificación: {identificacion}\n"
+            f"Domicilio Prioritario: {domicilio_prioritario}\n\n"
+            "Platos pedidos:\n"
+        )
+
+        if alimentos_seleccionados:
+            for alimento, cantidad in alimentos_seleccionados:
+                resumen += f"  - {alimento}: {cantidad} unidades\n"
+        else:
+            resumen += "No se seleccionaron platos.\n"
+
+        label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", font=("Segoe UI", 14), justify="left", anchor="w")
+        label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
+
+    def obtenerDatosCliente(informacion1):
+        """ Obtiene los datos del cliente y muestra el resumen """
+        nombre = informacion1[0] if len(informacion1) > 0 else "No ingresado"
+        try:
+            identificacion = int(informacion1[1]) if len(informacion1) > 1 else "No ingresado"
+        except ValueError:
+            identificacion = "Valor inválido"
+        domicilio_prioritario = informacion1[2] if len(informacion1) > 2 else "No ingresado"
+
+        mostrarResumen(nombre, identificacion, domicilio_prioritario)
+
     
+    
+    def segundo_fieldFrame(fieldFrame1):
+        """ Frame para la selección de alimentos """
+        informacion1 = fieldFrame1.obtener_datos()
+        limpiar_frame()  # Limpia el frame antes de mostrar el nuevo contenido
+    
+        # Configurar framev4 para centrar el contenido
+        framev4.grid_columnconfigure(0, weight=1)
+        framev4.grid_rowconfigure(0, weight=1)
+    
+        frame_alimentos = tk.Frame(framev4, bg="#1C2B2D")
+        frame_alimentos.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+    
+        tk.Label(frame_alimentos, text="Seleccione su pedido", fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold")).grid(row=0, column=0, columnspan=3, pady=10)
+    
+        # Listbox para mostrar los alimentos
+        listbox_alimentos = tk.Listbox(frame_alimentos, height=len(Menu))
+        for plato in Menu:
+            listbox_alimentos.insert(tk.END, plato.get_nombre())
+    
+        listbox_alimentos.grid(row=1, column=0, padx=10, pady=10)
+    
+        # Entrada para la cantidad
+        tk.Label(frame_alimentos, text="Cantidad:", fg="white", bg="#1C2B2D").grid(row=1, column=1, padx=10)
+        cantidad_var = tk.StringVar(value="1")
+        entrada_cantidad = tk.Entry(frame_alimentos, textvariable=cantidad_var, width=5)
+        entrada_cantidad.grid(row=1, column=2, padx=10)
+    
+        # Frame para mostrar la lista de alimentos agregados
+        frame_lista = tk.Frame(frame_alimentos, bg="#1C2B2D")
+        frame_lista.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
+    
+        # Función para agregar alimento
+        def agregarAlimento():
+            try:
+                seleccion = listbox_alimentos.curselection()[0]  # Obtener el índice seleccionado
+                alimento = listbox_alimentos.get(seleccion).strip()
+            except IndexError:
+                print("Ningún alimento seleccionado")  # Debugging
+                return  # No hacer nada si no se seleccionó nada
+    
+            cantidad = cantidad_var.get().strip()
+    
+            print(f"Intentando agregar: {alimento} - {cantidad}")  # Debugging print
+    
+            if not cantidad.isdigit() or int(cantidad) <= 0:
+                print("Selección inválida")  # Debugging print
+                return  # No hacer nada si la cantidad no es válida
+    
+            # Agregar a la lista global
+            alimentos_seleccionados.append((alimento, cantidad))
+            print(f"Lista actualizada: {alimentos_seleccionados}")  # Debugging print
+    
+            # Limpiar y actualizar la lista visualmente
+            for widget in frame_lista.winfo_children():
+                widget.destroy()
+    
+            for item, qty in alimentos_seleccionados:
+                tk.Label(frame_lista, text=f"{item} - {qty} unidades", fg="white", bg="#1C2B2D", font=("Segoe UI", 12)).pack()
+    
+        # Botón para agregar otro alimento
+        btn_agregar = tk.Button(frame_alimentos, text="Agregar otro alimento", command=agregarAlimento)
+        btn_agregar.grid(row=2, column=0, padx=10, pady=10)
+    
+        # Botón para continuar
+        btn_continuar = tk.Button(frame_alimentos, text="Continuar", command=lambda: [frame_alimentos.destroy(), obtenerDatosCliente(informacion1)])
+        btn_continuar.grid(row=2, column=1, padx=10, pady=10)
+
+    
+        
+
+
+    fieldFrame1 = FieldFrame(
+        framev4,
+        "Datos del Cliente",
+        ["Nombre", "Número de identificación", "¿Domicilio prioritario? (si/no)"],
+        "Información",
+        comandoContinuar=lambda: segundo_fieldFrame(fieldFrame1)
+    )
+
+    fieldFrame1.grid(sticky="new")
+
+
+
+
+
+
+
 
 
    
@@ -791,7 +923,7 @@ menuUsuario.add_cascade(label='Archivo', menu=subMenuUsuario1)
 subMenuUsuario2 = tk.Menu(menuUsuario, tearoff=0, activebackground='#1C2B2D')
 subMenuUsuario2.add_cascade(label = 'Realizar una reserva',command = lambda:funcionalidad1(restaurante))
 subMenuUsuario2.add_separator()
-subMenuUsuario2.add_cascade(label = 'Realizar un domicilio')
+subMenuUsuario2.add_cascade(label = 'Realizar un domicilio', command = lambda:funcionalidad2(restaurante))
 subMenuUsuario2.add_separator()
 subMenuUsuario2.add_cascade(label = 'Realizar el pedido de mi reserva')
 subMenuUsuario2.add_separator()
