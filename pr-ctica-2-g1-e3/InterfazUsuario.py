@@ -17,6 +17,7 @@ from datetime import datetime, time,timedelta
 from baseDatos.serializador import Serializador
 from baseDatos.deserializador import Deserializador
 from uiMain.Utilidad import Utilidad
+from excepciones import *
 
 
 from tkinter import ttk
@@ -610,8 +611,8 @@ def funcionalidad5():
                 btnf7.grid(row=16, column=0, pady=15, columnspan=2)
                 labelv3.grid(sticky='new')
 
-    def calificar():
-        global comentario
+    def calificar(comentario):
+        #global comentario
         global restaurante
         global labelv3
         global idCliente
@@ -623,6 +624,12 @@ def funcionalidad5():
         global posicionNuevaPrioridadMesero
         global reputacionActualRestaurante
 
+        
+        
+        
+
+        
+        
 
         if labelv3.obtener_datos() == []:
             comentario = ''
@@ -701,9 +708,12 @@ def funcionalidad5():
     
     def dejarComentario():
         global labelv3
+        global idCliente
+
+        nombreCliente = Cliente.indicarCliente(idCliente).get_nombre()
         labelv3.destroy()
         labelv2.config(text='Le agradecemos que haya elegido dejarnos su comentario.\nPorfavor escribanos su percepción respecto al servicio.')
-        labelv3 = FieldFrame(framev4, tipo= 0, tituloCriterios='Dato solicitado', criterios=['Deje su comentario:'], tituloValores='Ingrese el dato solicitado', comandoContinuar=calificar)
+        labelv3 = FieldFrame(framev4, tipo= 0, tituloCriterios='Dato solicitado', criterios=['Deje su comentario:', 'Nombre:\n(Nombre de la persona\ncomo se registrará en el sistema)'], valores = [None, nombreCliente], tituloValores='Ingrese el dato solicitado', comandoContinuar = lambda: calificar(comentario= None))
         labelv3.grid(sticky='new')
 
     def preguntaDejarComentario():
@@ -712,6 +722,22 @@ def funcionalidad5():
         global calidadMesero 
         global tiempoEspera
         global idCliente
+
+        try:
+            calidadComida = int(labelv3.obtener_datos()[0])
+        except:
+            raise BoxVacio('calidad comida')
+        
+        try:
+            calidadComida = int(labelv3.obtener_datos()[1])
+        except:
+            raise BoxVacio('calidad mesero')
+        
+        if len(labelv3.obtener_datos()) == 3:
+            try:
+                calidadComida = int(labelv3.obtener_datos()[2])
+            except:
+                raise BoxVacio('tiempo espera')
 
         if Cliente.indicarCliente(idCliente).tipo_cliente():
             calidadComida = int(labelv3.obtener_datos()[0])
@@ -726,31 +752,41 @@ def funcionalidad5():
 
         labelv3.destroy()
         labelv2.config(text='Para finalizar la encuesta responda la ultima pregunta')
-        labelv3 = FieldFrame(framev4, tipo=2, tituloCriterios="Por ultimo, ¿desea dejar un comentario?",comandoCancelar=calificar, comandoContinuar=dejarComentario)
+        labelv3 = FieldFrame(framev4, tipo=2, tituloCriterios="Por ultimo, ¿desea dejar un comentario?",comandoCancelar= lambda: calificar(comentario='No'), comandoContinuar= dejarComentario)
         labelv3.grid(sticky='new')
 
     def continuarInteraccion1():
         global labelv3
-        global idCliente
-        idCliente = int(labelv3.obtener_datos()[0])
+        try:
+            int(labelv3.obtener_datos()[0])
+            global idCliente
+            idCliente = int(labelv3.obtener_datos()[0])
 
-        if  Cliente.validarCliente(int(labelv3.obtener_datos()[0])):  #Valida que el id sea de un cliente
-            if Cliente.indicarCliente(int(labelv3.obtener_datos()[0])).tipo_cliente():# Valida si es consumo local
-                labelv2.config(text=f'Bienvendo {Cliente.indicarCliente(idCliente).get_nombre()}, has entrado en el sistema de calificación para clientes con consumo en el local.\nPara realizar la calificación porfavor conteste la siguiente encuesta.')
-                labelv3.destroy()
-                labelv3 = FieldFrame(framev4, tipo = 1, tituloCriterios='Apartado de la encuesta', criterios=['Para puntuar la calidad de la comida:', 'Para puntuar la calidad del mesero:', 'Para puntuar el tiempo de espera:'], tituloValores='Seleccione su calificación', valores=[[1,2,3,4,5], [1,2,3,4,5], [1,2,3,4,5]], comandoContinuar=preguntaDejarComentario)
-                labelv3.grid(sticky='new')
-            else: #Entra en consumo a domicilio
-                labelv2.config(text=f'Bienvenido {Cliente.indicarCliente(idCliente).get_nombre()}, has entrado en el sistema de calificación para clientes con consumo a domicilio.\nPara realizar la calificación porfavor conteste la siguiente encuesta.')
-                labelv3.destroy()
-                labelv3 = FieldFrame(framev4, tipo = 1, tituloCriterios='Apartado de la encuesta', criterios=['Para puntuar la calidad de la comida:', 'Para puntuar la calidad del mesero:'], tituloValores='Seleccione su calificación', valores=[[1,2,3,4,5], [1,2,3,4,5]], comandoContinuar=preguntaDejarComentario)
-                labelv3.grid(sticky='new')
+
+            if  Cliente.validarCliente(int(labelv3.obtener_datos()[0])):  #Valida que el id sea de un cliente
+                if Cliente.indicarCliente(int(labelv3.obtener_datos()[0])).tipo_cliente():# Valida si es consumo local
+                    labelv2.config(text=f'Bienvendo {Cliente.indicarCliente(idCliente).get_nombre()}, has entrado en el sistema de calificación para clientes con consumo en el local.\nPara realizar la calificación porfavor conteste la siguiente encuesta.')
+                    labelv3.destroy()
+                    labelv3 = FieldFrame(framev4, tipo = 1, tituloCriterios='Apartado de la encuesta', criterios=['Para puntuar la calidad de la comida:', 'Para puntuar la calidad del mesero:', 'Para puntuar el tiempo de espera:'], tituloValores='Seleccione su calificación', valores=[[1,2,3,4,5], [1,2,3,4,5], [1,2,3,4,5]], comandoContinuar=preguntaDejarComentario)
+                    labelv3.grid(sticky='new')
+                else: #Entra en consumo a domicilio
+                    labelv2.config(text=f'Bienvenido {Cliente.indicarCliente(idCliente).get_nombre()}, has entrado en el sistema de calificación para clientes con consumo a domicilio.\nPara realizar la calificación porfavor conteste la siguiente encuesta.')
+                    labelv3.destroy()
+                    labelv3 = FieldFrame(framev4, tipo = 1, tituloCriterios='Apartado de la encuesta', criterios=['Para puntuar la calidad de la comida:', 'Para puntuar la calidad del mesero:'], tituloValores='Seleccione su calificación', valores=[[1,2,3,4,5], [1,2,3,4,5]], comandoContinuar=preguntaDejarComentario)
+                    labelv3.grid(sticky='new')
+
+        except:
+            raise IdEntryNoNumerico(labelv3.obtener_datos()[0])
+
+
+        
+        
 
     def continuarInteraccion():
         global labelv3
         labelv3.destroy()
         labelv2.config(text='Para acceder al sistema de califaciones porfavor siga las intruciones y llene los datos')
-        labelv3 = FieldFrame(framev4, tipo= 0, tituloCriterios='Dato solicitado', criterios=['Número de identificación (CC/CE):'], tituloValores='Ingrese el dato solicitado', comandoContinuar=continuarInteraccion1)
+        labelv3 = FieldFrame(framev4, tipo= 0, tituloCriterios='Dato solicitado', criterios=['Número de identificación (CC/CE):'],tituloValores='Ingrese el dato solicitado', comandoContinuar=continuarInteraccion1)
         labelv3.grid(sticky='new')
         
        
@@ -759,6 +795,12 @@ def funcionalidad5():
     labelv3.destroy()
     labelv3 = FieldFrame(framev4, tipo=2, tituloCriterios="¿Desea realizar una calificación?", comandoCancelar = ventanaUsuarioDefault, comandoContinuar=continuarInteraccion)
     labelv3.grid(sticky='new')
+
+
+
+
+
+
 
 def funcionalidad2(restaurante):
     labelv1.config(text="Realizar Domicilio")
