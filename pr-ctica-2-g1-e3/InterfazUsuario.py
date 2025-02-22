@@ -773,8 +773,9 @@ def funcionalidad2(restaurante):
 
     def mostrarResumen(nombre, identificacion, domicilio_prioritario):
         """ Muestra el resumen final en framev4 """
+        global alimentos_seleccionados  # Asegurar acceso a la lista global
         limpiar_frame()
-
+    
         resumen = (
             f"Resumen del Domicilio\n"
             f"Nombre: {nombre}\n"
@@ -782,15 +783,26 @@ def funcionalidad2(restaurante):
             f"Domicilio Prioritario: {domicilio_prioritario}\n\n"
             "Platos pedidos:\n"
         )
-
+    
+        total_precio = 0
+    
         if alimentos_seleccionados:
             for alimento, cantidad in alimentos_seleccionados:
-                resumen += f"  - {alimento}: {cantidad} unidades\n"
+                # Buscar el plato en Menu
+                for plato in Menu:
+                    if plato.get_nombre() == alimento:
+                        precio_plato = plato.get_precio() * int(cantidad)
+                        total_precio += precio_plato
+                        resumen += f"  - {alimento}: {cantidad} unidades ({precio_plato} COP)\n"
+                        break
         else:
             resumen += "No se seleccionaron platos.\n"
-
+    
+        resumen += f"\n**Precio Total: {total_precio} COP**"
+    
         label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", font=("Segoe UI", 14), justify="left", anchor="w")
         label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
+    
 
     def obtenerDatosCliente(informacion1):
         """ Obtiene los datos del cliente y muestra el resumen """
@@ -810,31 +822,43 @@ def funcionalidad2(restaurante):
         informacion1 = fieldFrame1.obtener_datos()
         limpiar_frame()  # Limpia el frame antes de mostrar el nuevo contenido
     
+        global alimentos_seleccionados
+        alimentos_seleccionados = []  
+    
         # Configurar framev4 para centrar el contenido
         framev4.grid_columnconfigure(0, weight=1)
         framev4.grid_rowconfigure(0, weight=1)
     
+        # Crear el frame principal dentro de framev4
         frame_alimentos = tk.Frame(framev4, bg="#1C2B2D")
         frame_alimentos.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+    
+        # Centramos el contenido dentro de frame_alimentos
+        frame_alimentos.grid_columnconfigure(0, weight=1)
+        frame_alimentos.grid_columnconfigure(1, weight=1)
+        frame_alimentos.grid_columnconfigure(2, weight=1)
     
         tk.Label(frame_alimentos, text="Seleccione su pedido", fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold")).grid(row=0, column=0, columnspan=3, pady=10)
     
         # Listbox para mostrar los alimentos
-        listbox_alimentos = tk.Listbox(frame_alimentos, height=len(Menu))
+        listbox_alimentos = tk.Listbox(frame_alimentos, height=len(Menu), font=("Segoe UI", 12))
         for plato in Menu:
             listbox_alimentos.insert(tk.END, plato.get_nombre())
     
-        listbox_alimentos.grid(row=1, column=0, padx=10, pady=10)
+        listbox_alimentos.grid(row=1, column=0, padx=10, pady=10, sticky="n")
     
         # Entrada para la cantidad
-        tk.Label(frame_alimentos, text="Cantidad:", fg="white", bg="#1C2B2D").grid(row=1, column=1, padx=10)
+        tk.Label(frame_alimentos, text="Cantidad:", fg="white", bg="#1C2B2D").grid(row=1, column=1, padx=10, sticky="e")
         cantidad_var = tk.StringVar(value="1")
         entrada_cantidad = tk.Entry(frame_alimentos, textvariable=cantidad_var, width=5)
-        entrada_cantidad.grid(row=1, column=2, padx=10)
+        entrada_cantidad.grid(row=1, column=2, padx=10, sticky="w")
     
         # Frame para mostrar la lista de alimentos agregados
         frame_lista = tk.Frame(frame_alimentos, bg="#1C2B2D")
-        frame_lista.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
+        frame_lista.grid(row=3, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
+    
+        # Centramos la lista de alimentos agregados
+        frame_lista.grid_columnconfigure(0, weight=1)
     
         # Función para agregar alimento
         def agregarAlimento():
@@ -846,8 +870,6 @@ def funcionalidad2(restaurante):
                 return  # No hacer nada si no se seleccionó nada
     
             cantidad = cantidad_var.get().strip()
-    
-            print(f"Intentando agregar: {alimento} - {cantidad}")  # Debugging print
     
             if not cantidad.isdigit() or int(cantidad) <= 0:
                 print("Selección inválida")  # Debugging print
@@ -862,16 +884,16 @@ def funcionalidad2(restaurante):
                 widget.destroy()
     
             for item, qty in alimentos_seleccionados:
-                tk.Label(frame_lista, text=f"{item} - {qty} unidades", fg="white", bg="#1C2B2D", font=("Segoe UI", 12)).pack()
+                tk.Label(frame_lista, text=f"{item} - {qty} unidades", fg="white", bg="#1C2B2D", font=("Segoe UI", 12)).pack(anchor="center")
     
         # Botón para agregar otro alimento
-        btn_agregar = tk.Button(frame_alimentos, text="Agregar otro alimento", command=agregarAlimento)
-        btn_agregar.grid(row=2, column=0, padx=10, pady=10)
-    
-        # Botón para continuar
-        btn_continuar = tk.Button(frame_alimentos, text="Continuar", command=lambda: [frame_alimentos.destroy(), obtenerDatosCliente(informacion1)])
-        btn_continuar.grid(row=2, column=1, padx=10, pady=10)
+        btn_agregar = tk.Button(frame_alimentos, text="Agregar alimento", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=agregarAlimento)
+        btn_agregar.grid(row=2, column=0, padx=10, pady=10, columnspan=3)
 
+        # Botón para continuar
+        btn_continuar = tk.Button(frame_alimentos, text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: [frame_alimentos.destroy(), obtenerDatosCliente(informacion1)])
+        btn_continuar.grid(row=2, column=2, padx=10, pady=10, columnspan=3)
+    
     
         
 
