@@ -75,12 +75,6 @@ def salirMenuInicio():
     ventana2.withdraw()
     ventana.deiconify()
     ventana.state('zoomed')
-
-#Cambia el texto del labelP3 para describir el programa
-def descripcionSistema():
-    labelP3.config(text="Bienvenidos(as) al sistema de gestión\npara usuarios de Aura Gourmet."
-                   + "\n\nEste sistema se encarga de proporcionar al cliente\nuna herramienta para realizar:"
-                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left", font=("Segoe UI", 15, "bold"))
     
 #Ventana inicio
 ventana = tk.Tk()
@@ -120,12 +114,11 @@ colores_p6 = [
 ]
 indice_color = 0  # Índice para alternar entre colores
 
-# Evento que modifica las 4 imagenes en el rectangulo inferior izquierdo
 def EventoP4(evento):
     global indice_imagen
     nueva_imagen = imagenes[indice_imagen]
-    labelP4.config(image=nueva_imagen)
-    indice_imagen = (indice_imagen + 1) % len(imagenes)  # Alternar entre las 
+    imagen_label.config(image=nueva_imagen)
+    indice_imagen = (indice_imagen + 1) % len(imagenes)
 
 # Evento para cambiar la descripción en labelP5 Y PROVISIONAL PARA P6
 def EventoP5(evento):
@@ -155,9 +148,41 @@ frameP5 = tk.Frame(frameP2,bg="#1C2B2D", relief="solid", bd= 4)
 frameP6 = tk.Frame(frameP2,bg="#1C2B2D", relief="solid", bd= 4)
 
 #Creacion de los labels
-labelP3 = tk.Label(frameP3,bg="#1C2B2D",fg="white",text="Bienvenidos(as) al sistema de gestión \n para usuarios de Aura Gourmet.", font=("Segoe UI", 15, "bold"))
-labelP4 = tk.Label(frameP4, bg="#1C2B2D", fg="white", text="hola", image=imagenes[0])
+labelP3 = tk.Label(frameP3,bg="#1C2B2D",fg="white",text="Bienvenidos(as) al sistema de gestión\npara usuarios de Aura Gourmet."
+                   + "\n\nEste sistema se encarga de proporcionar al cliente\nuna herramienta para realizar:"
+                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left", font=("Segoe UI", 15, "bold"))
+
+# Contenedor principal
+labelP4 = tk.Frame(frameP4, bg="#1C2B2D")
+labelP4.pack(fill="both", expand=True)
+
+# Sección superior para la imagen
+P4Superior = tk.Frame(labelP4, bg="#1C2B2D")
+P4Superior.grid(row=0, column=0, sticky="nsew")
+
+# Label para mostrar la imagen
+imagen_label = tk.Label(P4Superior, image=imagenes[0], bg="#1C2B2D")
+imagen_label.pack(expand=True, fill="both")
+
+# Asignar evento para cambiar imagen cuando el cursor entre
+P4Superior.bind("<Enter>", EventoP4)
+
+# Sección inferior con botón
+P4Boton = tk.Frame(labelP4, bg="white")
+P4Boton.grid(row=1, column=0, sticky="nsew")
+
+boton = tk.Button(P4Boton, text="Ingresar", bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command= ventanaUsuario)
+boton.pack(expand=True, fill="both", padx=5, pady=5)
+
+# Configurar distribución de filas y columnas
+labelP4.grid_rowconfigure(0, weight=3)
+labelP4.grid_rowconfigure(1, weight=1)
+labelP4.grid_columnconfigure(0, weight=1)
+
+
 labelP5 = tk.Label(frameP5,bg="#1C2B2D",fg="white",text="Hojas de vida (Click para cambiar)", justify="left", font=("Segoe UI", 15, "bold"))
+
+
 
 #PROVISIONAL PARA P6
 labelP6 = tk.Frame(frameP6, bg="#1C2B2D")  # Contenedor de las secciones
@@ -167,10 +192,6 @@ secciones_p6 = [
     tk.Label(labelP6, bg="#1C2B2D", width=20, height=5),
     tk.Label(labelP6, bg="#1C2B2D", width=20, height=5),
 ]
-
-# Creación de los botones
-buttonP4 = tk.Button(frameP4,text="Acceder al sistema",width=20,height=3,bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 20, "bold"), command=ventanaUsuario)
-buttonP4.pack(expand=True, fill="both", padx=10, pady=100)
 
 # Distribuir las 4 secciones en una cuadrícula 2x2
 secciones_p6[0].grid(row=0, column=0, sticky="nsew")
@@ -183,10 +204,11 @@ for i in range(2):
     labelP6.grid_rowconfigure(i, weight=1)
     labelP6.grid_columnconfigure(i, weight=1)
 
+
 #Menu inicio
 menuInicio = tk.Menu(ventana)
 subMenuInicio = tk.Menu(menuInicio, tearoff=0, activebackground='#1C2B2D')
-subMenuInicio.add_cascade(label = 'Descripción del sistema', command= descripcionSistema)
+subMenuInicio.add_cascade(label = 'Inicio', command= ventanaUsuario)
 subMenuInicio.add_separator()
 subMenuInicio.add_cascade(label = 'Salir', command=salir)
 menuInicio.add_cascade(label='Inicio', menu= subMenuInicio)
@@ -1125,10 +1147,8 @@ labelP4.pack(side='top', fill='x')
 labelP5.pack(expand=True, fill='both')
 labelP6.pack(expand=True, fill='both')
 
-buttonP4.pack(side='bottom',expand = True)
-
 # Asignar los eventos evento
-labelP4.bind("<Enter>", EventoP4)
+P4Superior.bind("<Enter>", EventoP4)
 labelP5.bind("<Button-1>", EventoP5)
 
 
