@@ -36,22 +36,27 @@ class Restaurante:
         ]
         return mesas_disponibles
 
-    def validar_fecha_hora(self, fecha, hora):
-        """Valida que la fecha tenga dos '/' y la hora tenga un ':'. Muestra una advertencia si son incorrectas."""
+    def validar_fecha(self, fecha):
+        """Valida que la fecha tenga dos '/'"""
     
         # Expresión regular para verificar la fecha en formato dd/mm/yyyy
         patron_fecha = r"^\d{1,2}/\d{1,2}/\d{4}$"
-    
-        # Expresión regular para verificar la hora en formato hh:mm
-        patron_hora = r"^\d{1,2}:\d{2}$"
 
         # Verificar si la fecha tiene dos '/' y cumple con el formato esperado
         fecha_valida = bool(re.match(patron_fecha, fecha))
 
-        # Verificar si la hora tiene un ':' y cumple con el formato esperado
+        return fecha_valida
+
+    def validar_hora(self,hora):
+        """Valida que la hora tenga un ':' """
+
+        # Expresión regular para verificar la hora en formato hh:mm
+        patron_hora = r"^\d{1,2}:\d{2}$"
+
+         # Verificar si la hora tiene un ':' y cumple con el formato esperado
         hora_valida = bool(re.match(patron_hora, hora))
 
-        return fecha_valida and hora_valida
+        return hora_valida
 
     def convertir_fecha_hora(self, fecha, tiempo):
         dia, mes, año = map(int, fecha.split("/"))
@@ -95,7 +100,6 @@ class Restaurante:
                 return True 
         return False
     
-    @staticmethod
     def obtener_o_crear_cliente(self, nombre, id_cliente): #Al momento de confirmar una reserva crea clientes nuevos y evita repetir clientes ya existentes
         cliente_existente = self.indicar_cliente(id_cliente)
         if cliente_existente != None:

@@ -287,6 +287,15 @@ def ventanaUsuarioDefault():
 
 def funcionalidad1(restaurante):
     
+    nombre = ""
+    identificacion = None
+    personas = 0
+    tipoMesa = "basic"
+    fecha = None
+    horaReserva = None
+    fechaReserva = None
+    cliente = None
+
     labelv1.config(text="Realizar Reserva")
     labelv2.config(text="Desde este menú puedes realizar una reserva en nuestro restaurante, ingrese los datos que se le solicitan a continuación")    
 
@@ -313,7 +322,7 @@ def funcionalidad1(restaurante):
             f"Número de personas: {personas}\n"
             f"Tipo de Mesa: {tipoMesa}\n"
             f"Fecha de Reserva: {fechaReserva}\n"
-            f"Número de reserva: {reserva.get_id}"
+            f"Número de reserva: {reserva.get_id()}\n"
             f"Decoración: {decoracion}\n"
             f"Hora Adicional: {horaAdicional}\n"
             f"Alergias: {alergias}"
@@ -323,7 +332,104 @@ def funcionalidad1(restaurante):
         frameResumen = FieldFrame(framev4, tituloCriterios=resumen, comandoContinuar=salirFuncionalidad)
         frameResumen.grid(sticky = "new")
 
+    def eleccion_mesa(frame):
+        global fechaReserva
+        global personas
+        global identificacion
+        global nombre
+        global tipoMesa
+
+        numeroMesaEscogida = int(frame.obtener_datos()[0])
+        print("Numero mesa escogida:")
+        print(numeroMesaEscogida)
+        mesaEscogida = None
+
+        for i in Mesa._mesas:
+            if i.get_numero() == numeroMesaEscogida:
+                mesaEscogida = i
+                print(mesaEscogida.get_numero())
+                break
+
+        fechaActual = datetime.today().date()
+        reserva = Reserva(mesaEscogida,fechaReserva,personas,fechaActual)
+        meseroAsignado = mesaEscogida.reservar(reserva)
+        cliente = restaurante.obtener_o_crear_cliente(nombre,identificacion)
+        reserva.set_cliente(cliente)
+        reserva.get_factura().set_cliente(Cliente)
+        if tipoMesa == "deluxe":
+            def info_deluxe(frame):
+                infoDeluxe = frame.obtener_datos()
+                frame.destroy()
+                #Actualización datos Deluxe
+                mesaEscogida.set_decoracion(infoDeluxe[0])
+                horaAdicional = infoDeluxe[1]
+                if horaAdicional == "Sí":
+                    print(type(fechaReserva))
+                    sumarHora = fechaReserva + timedelta(hours=1)
+                    print(fechaReserva)
+                    print(sumarHora)
+                    validacion = mesaEscogida.esta_disponible(sumarHora)
+                    if validacion == True:
+                        print("Hora añadida con éxito")
+                        recargoReserva = 30000
+                        reserva.sumar_precio(recargoReserva)
+                    if validacion == False:
+                        print("No se pudo agregar la hora adicional")
+                ingredientes = Menu.obtener_todos_los_ingredientes()
+                ingredientesAlergias = []
+                
+                for i in ingredientes:
+                    if(not Menu.ingrediente_esta_duplicado(i,ingredientes)):
+                        ingredientesAlergias.append(i)
+                labelv2.destroy()
+                
+                scrollbar = tk.Scrollbar(framev3, orient="vertical")
+                listbox = tk.Listbox(framev3,bg="black",fg="white",font=("Segoe UI", 15, "bold"),justify="center",yscrollcommand=scrollbar.set)
+                scrollbar.config(command=listbox.yview)
+                scrollbar.pack(side="right", fill="y")  
+                listbox.pack(pady=10, fill="y", expand=True)
+                for ingrediente in ingredientesAlergias:
+                    listbox.insert(tk.END, ingrediente)
+                listbox.config(state="disabled")
+                def final(frame):
+                    alergias = frame.obtener_datos()
+                    frame.destroy()
+                    listbox.destroy()
+                    scrollbar.destroy()
+                    if alergias is not None:
+                        labelAlergias = tk.Label(framev3,text="A continuacion podrá ver los platos que no contienen los alimentos restringidos",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
+                        labelAlergias.pack(expand=True, fill="both")
+                        formatoAlergias = [ingrediente.strip() for ingrediente in alergias[0].split(",")]
+                        for i in formatoAlergias:
+                            print(i)
+                        platosSinAlergias = []
+                        listaPlatos = tk.Listbox(framev4,bg="black",fg="white",font=("Segoe UI", 15, "bold"),justify="center")
+                        for plato in Menu:
+                            if not Menu.plato_contiene_alergia(plato,formatoAlergias):
+                                platosSinAlergias.append(plato)
+                                listaPlatos.insert(tk.END, plato.get_nombre())
+                        botonFinal = tk.Button(framev4,text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: resumenReserva(framev4,nombre,identificacion,personas,tipoMesa,fechaReserva,reserva,infoDeluxe[0],horaAdicional,alergias))
+                        botonFinal.pack(side="right",anchor="n",padx=20,pady=125)
+                        listaPlatos.config(state="disabled")
+                        listaPlatos.pack(pady=10, fill="y", expand=True)
+                        
+                frameAlergias = FieldFrame(framev4,"Alergias",["Ingrese los nombres de las alergias que posse, si no tiene, deje la casilla vacía"],comandoContinuar=lambda: final(frameAlergias))
+                frameAlergias.grid(sticky = "new")
+            frame.destroy()
+            fieldFrameDeluxe = FieldFrame(framev4,"Personalizacion de la reserva",["Decoración de la mesa","¿Desea agregar 1 hora de permanencia en el restaurante?"],valores=[["Elegante","Rústico","Moderno"],["Sí","No"]],tipo=1,comandoContinuar=lambda: info_deluxe(fieldFrameDeluxe))
+            fieldFrameDeluxe.grid(sticky="new")
+        else:
+            resumenReserva(framev4, nombre, identificacion,personas,tipoMesa,fechaReserva,reserva)
+
     def obtenerDatosCliente(informacion1,fieldFrame2):
+        global nombre
+        global identificacion 
+        global personas
+        global tipoMesa
+        global fecha
+        global horaReserva
+        global fechaReserva
+
         informacion2 = fieldFrame2.obtener_datos()
         nombre = informacion1[0]
         identificacion = int(informacion1[1])
@@ -346,15 +452,20 @@ def funcionalidad1(restaurante):
         fechaCorrecta = False
         mesasDisponibles = []
 
-        while(not fechaCorrecta):
-            if restaurante.validar_fecha_hora(fecha,horaReserva)==True:
-                print("Fecha correcta")
-                fechaReserva = restaurante.convertir_fecha_hora(fecha,horaReserva)
-                mesasDisponibles = restaurante.hacer_reserva(fechaReserva,personas,tipoMesa)
-                fechaCorrecta = True
-            else:
-                HoraInvalida(horaReserva)
-                FechaInvalida(fecha)
+        try:
+            print("Fecha correcta")
+            if not restaurante.validar_fecha(fecha):
+                raise FechaInvalida(fecha)
+            if not restaurante.validar_hora(horaReserva):
+                raise HoraInvalida(horaReserva)
+            fechaReserva = restaurante.convertir_fecha_hora(fecha,horaReserva)
+            mesasDisponibles = restaurante.hacer_reserva(fechaReserva,personas,tipoMesa)
+            fechaCorrecta = True
+        except (FechaInvalida,HoraInvalida):
+            fieldFrame2.destroy()
+            fieldFrame2 = FieldFrame(framev4,"Datos de la Reserva",["Personas","Tipo de Mesa(basic o deluxe)","Fecha","Hora"],"Informacion",comandoContinuar=lambda: obtenerDatosCliente(informacion1,fieldFrame2))
+            fieldFrame2.grid(sticky="new")
+
 
         mesaCorrecta = False
         mesas=[]
@@ -362,102 +473,6 @@ def funcionalidad1(restaurante):
             print(i.get_numero())
             numeroMesa = i.get_numero()
             mesas.append(numeroMesa)
-
-        def eleccion_mesa(frame):
-            numeroMesaEscogida = int(frame.obtener_datos()[0])
-            print("Numero mesa escogida:")
-            print(numeroMesaEscogida)
-            mesaEscogida = None
-
-            for i in Mesa._mesas:
-                if i.get_numero() == numeroMesaEscogida:
-                    mesaEscogida = i
-                    print(mesaEscogida.get_numero())
-                    break
-
-            fechaActual = datetime.today().date()
-            reserva = Reserva(mesaEscogida,fechaReserva,personas,fechaActual)
-            meseroAsignado = mesaEscogida.reservar(reserva)
-            #cliente = restaurante.obtener_o_crear_cliente(nombre,identificacion)
-            reserva.set_cliente(cliente)
-            reserva.get_factura().set_cliente(Cliente)
-
-            if tipoMesa == "deluxe":
-                def info_deluxe(frame):
-                    infoDeluxe = frame.obtener_datos()
-                    frame.destroy()
-
-                    #Actualización datos Deluxe
-                    mesaEscogida.set_decoracion(infoDeluxe[0])
-                    horaAdicional = infoDeluxe[1]
-                    if horaAdicional == "Sí":
-                        print(type(fechaReserva))
-                        sumarHora = fechaReserva + timedelta(hours=1)
-                        print(fechaReserva)
-                        print(sumarHora)
-                        validacion = mesaEscogida.esta_disponible(sumarHora)
-                        if validacion == True:
-                            print("Hora añadida con éxito")
-                            recargoReserva = 30000
-                            reserva.sumar_precio(recargoReserva)
-                        if validacion == False:
-                            print("No se pudo agregar la hora adicional")
-
-                    ingredientes = Menu.obtener_todos_los_ingredientes()
-                    ingredientesAlergias = []
-                    
-
-                    for i in ingredientes:
-                        if(not Menu.ingrediente_esta_duplicado(i,ingredientes)):
-                            ingredientesAlergias.append(i)
-                    labelv2.destroy()
-                    
-                    scrollbar = tk.Scrollbar(framev3, orient="vertical")
-                    listbox = tk.Listbox(framev3,bg="black",fg="white",font=("Segoe UI", 15, "bold"),justify="center",yscrollcommand=scrollbar.set)
-                    scrollbar.config(command=listbox.yview)
-
-                    scrollbar.pack(side="right", fill="y")  
-                    listbox.pack(pady=10, fill="y", expand=True)
-
-                    for ingrediente in ingredientesAlergias:
-                        listbox.insert(tk.END, ingrediente)
-                    listbox.config(state="disabled")
-
-                    def final(frame):
-                        alergias = frame.obtener_datos()
-                        frame.destroy()
-                        listbox.destroy()
-                        scrollbar.destroy()
-
-                        if alergias is not None:
-                            labelAlergias = tk.Label(framev3,text="A continuacion podrá ver los platos que no contienen los alimentos restringidos",fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-                            labelAlergias.pack(expand=True, fill="both")
-
-                            formatoAlergias = [ingrediente.strip() for ingrediente in alergias[0].split(",")]
-                            for i in formatoAlergias:
-                                print(i)
-
-                            platosSinAlergias = []
-                            listaPlatos = tk.Listbox(framev4,bg="black",fg="white",font=("Segoe UI", 15, "bold"),justify="center")
-
-                            for plato in Menu:
-                                if not Menu.plato_contiene_alergia(plato,formatoAlergias):
-                                    platosSinAlergias.append(plato)
-                                    listaPlatos.insert(tk.END, plato.get_nombre())
-
-                            botonFinal = tk.Button(framev4,text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: resumenReserva(framev4,nombre,identificacion,personas,tipoMesa,fechaReserva,reserva,infoDeluxe[0],horaAdicional,alergias))
-                            botonFinal.pack(side="right",anchor="n",padx=20,pady=125)
-                            listaPlatos.config(state="disabled")
-                            listaPlatos.pack(pady=10, fill="y", expand=True)
-                            
-                    frameAlergias = FieldFrame(framev4,"Alergias",["Ingrese los nombres de las alergias que posse, si no tiene, deje la casilla vacía"],comandoContinuar=lambda: final(frameAlergias))
-                    frameAlergias.grid(sticky = "new")
-
-                frameMesas.destroy()
-                fieldFrameDeluxe = FieldFrame(framev4,"Personalizacion de la reserva",["Decoración de la mesa","¿Desea agregar 1 hora de permanencia en el restaurante?"],valores=[["Elegante","Rústico","Moderno"],["Sí","No"]],tipo=1,comandoContinuar=lambda: info_deluxe(fieldFrameDeluxe))
-                fieldFrameDeluxe.grid(sticky="new")
-            else:
-                resumenReserva(framev4, nombre, identificacion,personas,tipoMesa,fechaReserva,reserva)
 
         fieldFrame2.destroy()
         frameMesas = FieldFrame(framev4,"Mesas disponibles",["Mesa"],"Numero de mesa",valores=[mesas],tipo=1,comandoContinuar=lambda: eleccion_mesa(frameMesas))
@@ -1126,329 +1141,7 @@ def funcionalidad2(restaurante):
     
     fieldFrame1.grid(sticky="new")
 
-
-
-
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-                 
+               
 #Funcionalidad3
 def funcionalidad3():
     

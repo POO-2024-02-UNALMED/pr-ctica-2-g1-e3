@@ -1,5 +1,7 @@
 from .factura import Factura
 from datetime import datetime
+import random
+import string
 
 class Reserva:
     _reservas = []
@@ -16,8 +18,7 @@ class Reserva:
         self._precio_total = self._PRECIO
         self._recargo_por_fecha = False
         self._factura = Factura()
-        Reserva._contador += 1
-        self._id = Reserva._contador
+        self._id = self.generar_id()
         if fecha_hora and fecha_de_generacion:
             self.calcular_recargo()
         Reserva._reservas.append(self)
@@ -36,6 +37,11 @@ class Reserva:
 
     def sumar_precio(self, precio):
         self._precio_total += precio
+
+    def generar_id(self):
+        letras = ''.join(random.choices(string.ascii_uppercase, k=3))  # 3 letras mayúsculas
+        numeros = ''.join(random.choices(string.digits, k=2))  # 2 números
+        return letras + numeros
 
     # Getters y Setters
     def get_mesa(self):
