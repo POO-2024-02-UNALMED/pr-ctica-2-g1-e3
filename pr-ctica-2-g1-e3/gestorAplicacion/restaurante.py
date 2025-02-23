@@ -5,7 +5,7 @@ from .mesa import Mesa
 
 class Restaurante:
     _restaurantes = []
-    _id_con_reservas = []
+    _id_con_reservas = [1990, 1985, 2004] #para probar
     _lista_clientes = []
 
     def __init__(self, nombre, horario_servicio=None):
@@ -22,21 +22,14 @@ class Restaurante:
     def registrar_visita(self, cliente):
         cliente.incrementar_visitas()
 
-    def determinar_descuentos(self, cliente):
-        cliente.incrementar_visitas()
-        visitas = cliente.get_visitas_para_descuentos()
-        if visitas == 5:
-            return 10  # 10% de descuento
-        elif visitas == 10:
-            return 15  # 15% de descuento
-        return 0
-
     def actualizar_reputacion(self, calificacion):
         suma_acumulada = self._reputacion * self._total_calificaciones
         self._total_calificaciones += 1
         self._reputacion = round((suma_acumulada + calificacion.get_promedio_calificacion()) / self._total_calificaciones, 1)
 
     def hacer_reserva(self, horario, personas, tipo_mesa):
+        for mesa in Mesa._mesas:
+            print("lista de mesas: ", mesa)
         mesas_disponibles = [
             mesa for mesa in Mesa._mesas
             if mesa.esta_disponible(horario) and mesa.get_tipo() == tipo_mesa and (mesa.get_capacidad() == personas or mesa.get_capacidad() == personas + 1)
@@ -91,6 +84,58 @@ class Restaurante:
     @staticmethod
     def buscar_id(id_reserva):
         return any(cliente.get_identificacion() == id_reserva for cliente in Cliente.get_clientes())
+    
+    #M
+    @staticmethod
+    def buscar_en_lista_reservas(id):
+        print("ingresado: ",id)
+        for identificacion in Restaurante._id_con_reservas:
+            print("elemento de la lista: ",identificacion) #temporal solo para verificar
+            if identificacion == id:
+                return True 
+        return False
+    
+    @staticmethod
+    def obtener_o_crear_cliente(self, nombre, id_cliente): #Al momento de confirmar una reserva crea clientes nuevos y evita repetir clientes ya existentes
+        cliente_existente = self.indicar_cliente(id_cliente)
+        if cliente_existente != None:
+            print(f"Cliente encontrado: {cliente_existente.get_nombre()}")
+            return cliente_existente
+        else:
+            nuevo_cliente = Cliente(nombre, id_cliente, self)
+            print(f"Cliente creado: {nuevo_cliente.get_nombre()}")
+            return nuevo_cliente
+        
+    def indicar_cliente(self, id_cliente):
+        for cliente in Restaurante._lista_clientes:
+            if cliente.get_identificacion() == id_cliente:
+                return cliente
+        return None
+    
+    def retornar_cliente(id_cliente):
+        for cliente in Restaurante.get_lista_clientes():
+            print("desde el metodo retornar cliente: ", cliente.get_identificacion())
+            if cliente.get_identificacion() == id_cliente:
+                return cliente
+        return None
+    
+    def determinar_descuentos(cliente):
+        print("antes: ", cliente.get_visitas_para_descuentos())
+        cliente.incrementar_visitas() #incrementa en 1 el numero de visitas
+        visitas = cliente.get_visitas_para_descuentos()
+        print("despues ", visitas)
+        if visitas == 5:
+            return 10  # se asigna 10% de descuento
+        elif visitas == 10:
+            return 15  # se asigna 15% de descuento
+        return 0
+    
+
+
+
+
+
+    #M
 
     @staticmethod
     def get_id_con_reservas():
@@ -130,30 +175,6 @@ class Restaurante:
 
     def agregar_cliente(self, cliente):
         Restaurante._lista_clientes.append(cliente)
-
-
-    @staticmethod
-    def retornar_cliente(id_cliente):
-        for cliente in Restaurante._lista_clientes:
-            if cliente.get_identificacion() == id_cliente:
-                return cliente
-        return None
-
-    def obtener_o_crear_cliente(self, nombre, id_cliente):
-        cliente_existente = self.indicar_cliente(id_cliente)
-        if cliente_existente:
-            print(f"Cliente encontrado: {cliente_existente.get_nombre()}")
-            return cliente_existente
-        else:
-            nuevo_cliente = Cliente(nombre, id_cliente, self)
-            print(f"Cliente creado: {nuevo_cliente.get_nombre()}")
-            return nuevo_cliente
-
-    def indicar_cliente(self, id_cliente):
-        for cliente in Restaurante._lista_clientes:
-            if cliente.get_identificacion() == id_cliente:
-                return cliente
-        return None
 
     def obtener_tipo_mesa(self, reserva):
         return reserva.get_mesa().get_tipo() == "deluxe"

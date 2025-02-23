@@ -42,7 +42,7 @@ class Almacen:
             self._cantidades.append(cantidad)
 
     def verificar_disponibilidad(self, menu):
-        for ingrediente in menu.ingredientes:
+        for ingrediente in menu.get_ingredientes():
             if ingrediente not in self._nombres or self._cantidades[self._nombres.index(ingrediente)] <= 0:
                 return False
         return True

@@ -21,3 +21,6 @@ class Persona:
     @staticmethod
     def get_personas():
         return Persona._personas
+
+    def saludo(self):
+        print(f"hola {self.get_nombre}! :)")

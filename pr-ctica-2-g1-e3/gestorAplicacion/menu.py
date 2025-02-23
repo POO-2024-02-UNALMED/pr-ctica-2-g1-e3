@@ -15,12 +15,14 @@ class Menu(Enum):
         self._precio = precio
         self._ingredientes = ingredientes
 
+
     @staticmethod
     def obtener_todos_los_ingredientes():
         ingredientes = []
         for plato in Menu:
-            ingredientes.extend(plato.get_ingredientes())
+            ingredientes.extend(plato.value[2])
         return ingredientes
+
 
     @staticmethod
     def ingrediente_esta_duplicado(ingrediente, todos_ingredientes):
@@ -30,14 +32,23 @@ class Menu(Enum):
     def plato_contiene_alergia(plato, alergias):
         return any(ingrediente.lower() in map(str.lower, alergias) for ingrediente in plato.get_ingredientes())
 
+   # def get_ingredientes(self):
+   #     return self._ingredientes
+
+   # def get_precio(self):
+   #     return self._precio
+
+   # def get_nombre(self):
+    #    return self._nombre
+    
     def get_ingredientes(self):
-        return self._ingredientes
+        return self.value[2]  # Accede a los ingredientes 
 
     def get_precio(self):
-        return self._precio
+        return self.value[1]  # Accede al precio 
 
     def get_nombre(self):
-        return self._nombre
+        return self.value[0]
 
 
 class MenuCortesias(Enum):

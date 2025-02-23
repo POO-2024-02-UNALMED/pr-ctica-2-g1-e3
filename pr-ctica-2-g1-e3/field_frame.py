@@ -4,7 +4,7 @@ from tkinter import END
 
 class FieldFrame(tk.Frame):
     
-    def __init__(self,ventana,tituloCriterios="",criterios=[],tituloValores="",valores=None,criteriosNoEditables=None, tipo = 0, comandoContinuar = None, comandoCancelar = None):
+    def __init__(self,ventana,tituloCriterios="",criterios=[],tituloValores="",valores=None,criteriosNoEditables=None, tipo = 0, comandoContinuar = None, comandoCancelar = None, textoBoton='Continuar'):
         super().__init__(ventana, width=400, height=300, bg='#1C2B2D')
         self._ventana = ventana
         self._tituloCriterios = tituloCriterios
@@ -20,6 +20,7 @@ class FieldFrame(tk.Frame):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=1)
+        self.textoBoton = textoBoton #Lo agregué para tener la posibilidad de cambiar el nombre del botón, por defecto sigue teniendo 'Continuar'
 
         
 
@@ -59,7 +60,7 @@ class FieldFrame(tk.Frame):
 
             
             # Creación del botón para guardar los datos
-            btnGuardar = tk.Button(self, text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=self.guardar_datos)
+            btnGuardar = tk.Button(self, text=self.textoBoton, bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=self.guardar_datos)
             btnGuardar.grid(row=len(criterios)+15, column=0, pady=15, columnspan=2)
 
             #Creación del botón para limpiar los campos
@@ -91,7 +92,7 @@ class FieldFrame(tk.Frame):
                 self._datos.append(entryValor)
 
             # Creación del botón para guardar los datos
-            btnGuardar = tk.Button(self, text="Continuar",bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=self.guardar_datos)
+            btnGuardar = tk.Button(self, text=self.textoBoton,bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=self.guardar_datos)
             btnGuardar.grid(row=len(criterios)+15, column=0, pady=15, columnspan=2)
 
         #Para Si y No. El texto que se requiere mostrar se pone modificando _tituloCriterios
@@ -107,6 +108,14 @@ class FieldFrame(tk.Frame):
             texto = tk.Label(self, text= self._tituloCriterios, fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
             texto.grid(row= 0, column=0 ,columnspan=2, pady=15, sticky='new')
 
+        #Para pregunta con botones (agregado)
+        if tipo == 4:
+            etiquetaPregunta = tk.Label(self, text=self._tituloCriterios, fg="white", bg="#1C2B2D", font=("Segoe UI", 15, 'bold'))
+            etiquetaPregunta.grid(row=0, column=0, columnspan=2, pady=20)
+            
+            for i, (textoBoton, comando) in enumerate(zip(self._criterios, self._valores)):
+                boton = tk.Button(self, text=textoBoton, bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=comando)
+                boton.grid(row=1, column=i, padx=10, pady=10)
 
             
     

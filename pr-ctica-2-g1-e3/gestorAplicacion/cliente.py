@@ -7,6 +7,8 @@ class Cliente(Persona):
     
     def __init__(self, nombre=None, identificacion=None, restaurante=None, reserva=None):
         super().__init__(nombre, identificacion)
+        if restaurante is None:
+            restaurante = self.crear_o_asignar_restaurante("Aura Gourmet")
         self._reserva = reserva
         self._restaurante = restaurante
         self._visitas = 0
@@ -14,9 +16,18 @@ class Cliente(Persona):
         self._descuento_por_visitas = 0
         restaurante._lista_clientes.append(self)
         Cliente._clientes.append(self)
+
+    def get_nombre(self):
+        return self._nombre
     
-
-
+    def set_nombre(self, nombre):
+        self._nombre = nombre
+    
+    def get_identificacion(self):
+        return self._identificacion
+    
+    def set_identificacion(self, identificacion):
+        self._identificacion = identificacion
     def set_reserva(self, reserva):
         self._reserva = reserva
     
@@ -41,14 +52,30 @@ class Cliente(Persona):
     def set_descuento_por_visitas(self, descuento_por_visitas):
         self._descuento_por_visitas = descuento_por_visitas
     
+    #MARIA
     def incrementar_visitas(self):
-        self._visitas += 1
-        self._visitas_para_descuentos += 1
-        if self._visitas_para_descuentos == 11:
-            self._visitas_para_descuentos = 1
+        self._visitas += 1 #visitas generales
+        self._visitas_para_descuentos += 1  #visitas necesarias para obtener descuentos adicionales
+        if self.get_visitas_para_descuentos() == 11:
+            self.set_visitas_para_descuentos(1) #reiniciar el conteo al sobrepasar 10 visitas
+
+    def saludar(self):
+        mensaje = ""
+        if self.get_descuento_por_visitas() == 0:
+            mensaje = (f"¡Reserva encontrada!\nBienvenid@ {self.get_nombre()},"
+                       f" esta es su visita #{self.get_visitas()} "
+                       f"a Aura Gourmet\n"
+                       f"(recuerde que tenemos descuentos por fidelidad cada 5 visitas)")
+        else:
+            mensaje = (f"¡Reserva encontrada!\nBienvenid@ {self.get_nombre()},"
+                       f"por ser su visita #{self.get_visitas()} a Aura Gourmet, "
+                       f"obtendrá un descuento del {self.get_descuento_por_visitas()}%"
+                       f" sobre el total de su pedido")
+        return mensaje
     
+
     def __str__(self):
-        return f"Cliente [reserva={self._reserva}, restaurante={self._restaurante}, visitas={self._visitas}, nombre={self._nombre}, id={self._identificacion}]"
+       return f"Cliente [reserva={self._reserva}, restaurante={self._restaurante}, visitas={self._visitas}, nombre={self._nombre}, id={self._identificacion}]"
     
     def calificar(self, pedido, calidad_comida, calidad_mesero, tiempo_espera, comentario):
         nueva_calificacion = Calificacion(self, pedido= pedido, calidad_comida= calidad_comida, calidad_mesero= calidad_mesero, tiempo_espera= tiempo_espera, comentario= comentario)
@@ -83,17 +110,6 @@ class Cliente(Persona):
                     return cliente
         return None
 
-    def get_nombre(self):
-        return self._nombre
-    
-    def set_nombre(self, nombre):
-        self._nombre = nombre
-    
-    def get_identificacion(self):
-        return self._identificacion
-    
-    def set_identificacion(self, identificacion):
-        self._identificacion = identificacion
     
     def mostrar_informacion(self):
         print(f"Nombre: {self._nombre}")
@@ -118,3 +134,19 @@ class Cliente(Persona):
     
     def get_restaurante(self):
         return self._restaurante
+    
+    def crear_o_asignar_restaurante(self, nombre_restaurante):
+        from .restaurante import Restaurante
+        restaurante = Restaurante(nombre_restaurante)
+        return restaurante
+
+#creación de instancias
+clienteParaPrueba1=Cliente(nombre="mariano herrera", identificacion=2004)
+clienteParaPrueba2=Cliente(nombre="maria perez", identificacion=1985)
+clienteParaPrueba3=Cliente(nombre="julian vasquez", identificacion=1990)
+
+# Verificar que el cliente se ha añadido a la lista de clientes del restaurante
+print("Clientes lista de clientes del restaurante:", [c.get_nombre() for c in clienteParaPrueba1._restaurante._lista_clientes])
+
+# Verificar que el cliente se ha añadido a la lista estática de clientes
+print("Todos los clientes desde clientes:", [c.get_nombre() for c in Cliente._clientes])

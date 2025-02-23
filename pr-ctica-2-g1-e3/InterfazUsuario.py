@@ -1,3 +1,4 @@
+import os
 from gestorAplicacion.almacen import Almacen
 from gestorAplicacion.reserva import Reserva
 from gestorAplicacion.calificacion import Calificacion
@@ -79,32 +80,41 @@ def salirMenuInicio():
 def descripcionSistema():
     labelP3.config(text="Bienvenidos(as) al sistema de gestión\npara usuarios de Aura Gourmet."
                    + "\n\nEste sistema se encarga de proporcionar al cliente\nuna herramienta para realizar:"
-                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left", font=("Segoe UI", 15, "bold"))
-    
+                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left", font=("Segoe UI", 13, "bold"))
+
+#Para Obtener la ruta actual de donde están las imagenes #agregado
+current_dir = os.path.dirname(os.path.abspath(__file__)) #agregado
+image_dir = os.path.join(current_dir, os.path.join(current_dir, "imagenes")) #agregado
+
 #Ventana inicio
 ventana = tk.Tk()
 ventana.title("Aura Gourmet System")
 centrarVentana(ventana, 650, 650)
-ventana.iconbitmap('pr-ctica-2-g1-e3/imagenes/logoRes.ico')
+ventana.iconbitmap(os.path.join(image_dir, "logoRes.ico")) #modificado
+#ventana.iconbitmap('pr-ctica-2-g1-e3/imagenes/logoRes.ico') #original
 ventana.config(bg='#1E1E1E')
 ventana.state('zoomed')
 
-
 # Cargar imágenes
 imagenes = [
-    tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante1.png"),
-    tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante2.png"),
-    tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante3.png"),
-    tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante4.png"),
+    # Creación de objetos PhotoImage con las rutas completas
+    tk.PhotoImage(file=os.path.join(image_dir, "restaurante1.png")), #modificado
+    tk.PhotoImage(file=os.path.join(image_dir, "restaurante2.png")), #modificado
+    tk.PhotoImage(file=os.path.join(image_dir, "restaurante3.png")), #modificado
+    tk.PhotoImage(file=os.path.join(image_dir, "restaurante4.png")), #modificado
+   # tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante1.png"), 
+   # tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante2.png"),
+   # tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante3.png"),
+    #tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante4.png"),
 ]
 indice_imagen = 0  # Índice para alternar entre las imágenes
 
 #Descripciones de los desarrolladores
 descripciones = [
-    "Nombre: Mateo Pérez\nCédula: 1000761827\nCarrera: Ingeniería de Sistemas\nNacimiento: 18/06/2003",
+    "Nombre: Mateo Pérez\nCédula: 1000761827\nCarrera: Ingeniería de Sistemas e informática\nNacimiento: 18/06/2003",
     "Nombre: Kevin Rubiano\nCédula: 1035417435\nCarrera: Ciencias de la computación\nNacimiento: 19/07/2005",
     "Nombre: Andrés Chica\nCédula: 1041351362\nCarrera: Ingeniería de sistemas e informática\nNacimiento: 24/04/2007",
-    "Nombre: NOMBRE3\nCédula: CEDULA3\nCarrera: CARRERA3\nNacimiento: FECHANACIMIENTO3",
+    "Nombre: María de los ángeles\nCédula: 1104936416\nCarrera: Ciencia de la computación\nNacimiento: 24/11/2004",
     "Nombre: NOMBRE4\nCédula: CEDULA4\nCarrera: CARRERA4\nNacimiento: FECHANACIMIENTO4",
 ]
 indice_descripcion = 0  # Índice para alternar entre las descripciones
@@ -194,7 +204,8 @@ ventana.config(menu= menuInicio)
 #Ventana Usuario
 ventana2 = tk.Tk()
 ventana2.title("Aura Gourmet System")
-ventana2.iconbitmap('pr-ctica-2-g1-e3/imagenes/logoRes.ico')
+ventana.iconbitmap(os.path.join(image_dir, "logoRes.ico")) #modificado
+#ventana.iconbitmap('pr-ctica-2-g1-e3/imagenes/logoRes.ico') #original
 centrarVentana(ventana2, 650, 650)
 ventana2.config(bg='#1E1E1E')
 ventana2.withdraw()
@@ -416,6 +427,8 @@ def funcionalidad1(restaurante):
     labelv3.destroy()
     fieldFrame1 = FieldFrame(framev4,"Datos del Cliente",["Nombre","Numero de identificacion"],"Información",comandoContinuar=lambda:segundo_fieldFrame(fieldFrame1))
     fieldFrame1.grid(sticky="new")
+#FinFuncionalidad1
+
 
 #Funcionalidad4
 def funcionalidad4(restaurante):
@@ -590,7 +603,7 @@ def funcionalidad5():
 
         if cliente.tipo_cliente(): #Valida si es consumo local
             if (cliente.get_reserva().get_mesa().tipo_mesa()): #valida si es mesa deluxe
-                labelv2.config(text=f'¡Hola {cliente.get_nombre()}, Bienvenido al apartado exclusvo para clientes premium,\npor los beneficios de haber estado en una de nuestras mesas deluxe.')
+                labelv2.config(text=f'¡Hola {cliente.get_nombre()}, Bienvenido al apartado exclusivo para clientes premium,\npor los beneficios de haber estado en una de nuestras mesas deluxe.')
                 labelv3.destroy()
                 labelv3 = FieldFrame(framev4, tipo = 2, tituloCriterios="Se le proporciona la posibilidad de visualizar el impacto de su calificación.\n¿Desea verlo?", comandoCancelar = ventanaUsuarioDefault, comandoContinuar= apartadoEx)
                 labelv3.grid(sticky='new')
@@ -809,13 +822,10 @@ def funcionalidad5():
     labelv3.destroy()
     labelv3 = FieldFrame(framev4, tipo=2, tituloCriterios="¿Desea realizar una calificación?", comandoCancelar = ventanaUsuarioDefault, comandoContinuar=continuarInteraccion)
     labelv3.grid(sticky='new')
+#FinFuncionalidad5
 
 
-
-
-
-
-
+#Funcionalidad2
 def funcionalidad2(restaurante):
     labelv1.config(text="Realizar Domicilio")
     labelv2.config(text="Desde este menú puedes realizar un domicilio en nuestro restaurante, ingrese los datos que se le solicitan a continuación") 
@@ -965,7 +975,141 @@ def funcionalidad2(restaurante):
     fieldFrame1.grid(sticky="new")
 
 
+#Funcionalidad3
+def funcionalidad3():
+    
+    labelv1.config(text= "Realizar el pedido de mi reserva")
+    labelv2.config(text= "Desde esta ventana podrá seleccionar los platos y las"
+                    " cantidades que desee ordenar para su\nmesa, por favor ingrese todos los"
+                    " datos que se le solicitan a continuación")
+    print("Esta es la lista de reservas: ", Restaurante.get_id_con_reservas())
+    print("Esta es la lista de clientes: ", Restaurante.get_lista_clientes())
+    print("Todos los clientes:", [c.get_nombre() for c in Cliente._clientes])
 
+    def limpiar_frame():
+        for widget in framev4.winfo_children():
+            widget.destroy()
+
+    def buscarReserva(frame):
+            id=int(frame.obtener_datos()[0])
+            reservaEncontrada = Restaurante.buscar_en_lista_reservas(id)
+            print(reservaEncontrada)
+            if reservaEncontrada:
+               clienteConReserva = Restaurante.retornar_cliente(id) #retorna el objeto cliente asociado al id ingresado
+               print(clienteConReserva, "aaaaaa")
+               descuento=Restaurante.determinar_descuentos(clienteConReserva)
+               clienteConReserva.set_descuento_por_visitas(descuento)
+               limpiar_frame()
+               labelv2.config(text= clienteConReserva.saludar(), fg='red')
+               
+               #Para mostrar botón "Continuar con la creación de mi pedido"
+               global botonContinuarConPedido
+
+               def alDarClick(): #Para destruir el botón después de oprimirlo
+                   botonContinuarConPedido.destroy()  
+                   FieldFrameParaCrearPedido()  #Llamar a FieldFrameParaCrearPedido
+
+               #creacion del boton
+               botonContinuarConPedido = tk.Button(framev4, text="Continuar con la creación de mi pedido", bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 13, "bold"), command=alDarClick, padx=20, pady=20, cursor='hand2')
+               botonContinuarConPedido.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+            # else:
+            #  print("Reserva no encontrada") excepción 
+
+    global pedidosResumen 
+    pedidosResumen = [] 
+    def FieldFrameParaCrearPedido():
+        limpiar_frame()
+        global labelv3, pedidosResumen 
+        almacen = Almacen()
+        
+    # Definición de la función que se utilizara para mostrar el resumen del pedido cuando se seleccione "finalizar pedido"
+        def mostrarResumenPedido():
+            global pedidosResumen
+            resumen = "\n".join(pedidosResumen)
+            print("Resumen del Pedido:")
+            print(resumen) #falta añadir formato
+
+        listaDePlatos = []
+        unidadesDisponibles = []
+        almacen = Almacen._almacen[0]  # Obtiene el almacen de la lista de la clase Almacen
+        almacen.mostrar_inventario()
+        for plato in Menu:
+           hayIngredientes = almacen.verificar_disponibilidad(plato)
+           if hayIngredientes:
+            listaDePlatos.append(plato.get_nombre().upper())
+
+            # Calcular unidades disponibles para el plato
+            ingredients = plato.get_ingredientes()
+            cantidades_disponibles = []
+            for ingrediente in ingredients:
+                cantidad = almacen._cantidades[almacen._nombres.index(ingrediente)]
+                cantidades_disponibles.append(cantidad)
+            unidades_plato = min(cantidades_disponibles)  # El mínimo de los ingredientes disponibles determina cuántas veces se puede preparar el plato
+            unidadesDisponibles.append(unidades_plato)
+            
+        
+        print("platosDisponibles:", listaDePlatos) #solo para verificar
+        mostrar = [f"{plato} (Unidades: {unidades})" for plato, unidades in zip(listaDePlatos, unidadesDisponibles)]
+        print(mostrar) #solo para verificar
+
+
+        def actualizar_unidades_disponibles(field_frame, plato_seleccionado, listaDePlatos, unidadesDisponibles):
+            if plato_seleccionado in listaDePlatos:
+               indice_plato = listaDePlatos.index(plato_seleccionado)
+               unidades_disponibles = list(range(1, unidadesDisponibles[indice_plato] + 1))
+               field_frame._datos[1]['values'] = unidades_disponibles
+               field_frame._datos[1].set('Seleccione unidades')
+               field_frame._datos[1]['state'] = 'readonly'  #Para habilitar el combobox de unidades
+
+               
+        def agregarPlatoAlResumen():
+            global labelv3
+            plato = labelv3._datos[0].get()
+            unidades = labelv3._datos[1].get()
+            if plato and unidades:
+               resumen = f"{unidades} unidades de {plato} añadidas con éxito!"
+               pedidosResumen.append(resumen)
+        
+               limpiar_frame()
+
+               # Mostrar la pregunta "¿Qué desea hacer ahora? y los botones "Continuar Pidiendo" y "Finalizar Pedido"
+               labelv3 = FieldFrame(
+               framev4, 
+               tipo=4, 
+               tituloCriterios="¿Qué desea hacer ahora?", 
+               criterios=["Continuar Pidiendo", "Finalizar Pedido"], 
+               valores=[FieldFrameParaCrearPedido, mostrarResumenPedido]
+               )
+               labelv3.grid(sticky='new')
+
+
+        labelv3 = FieldFrame(framev4, tipo=1, tituloCriterios="A continuación seleccione el nombre\n del plato y la cantidad de unidades que desea pedir", 
+                 criterios=["plato", "unidades a pedir"], tituloValores='Platos y unidades disponibles', 
+                 valores=[listaDePlatos, []], comandoContinuar=agregarPlatoAlResumen, textoBoton="Agregar plato")
+        labelv3.grid(sticky='new')
+ 
+       # Deshabilitar el combobox de unidades para que no se pueda usar hasta que se seleccione un plato
+        labelv3._datos[1]['state'] = 'disabled'
+
+        # Bind evento de selección para actualizar unidades
+        labelv3._datos[0].bind("<<ComboboxSelected>>", lambda event:  actualizar_unidades_disponibles(labelv3, event.widget.get(), listaDePlatos, unidadesDisponibles))
+
+
+                 
+
+#flujo de ejecución
+    global labelv3
+    if labelv3:  # Verifica si labelv3 ya existe
+        labelv3.destroy()  # Destruye el FieldFrame anterior
+    
+    limpiar_frame() 
+
+    fieldFrameParaIdentificacion = FieldFrame(framev4, tipo = 0, tituloCriterios="Confirmación de existencia de reserva", tituloValores='CC/CE', criterios=["Ingrese el número de Identificación asociado a su reserva"], comandoContinuar=lambda: buscarReserva(fieldFrameParaIdentificacion), textoBoton="Verificar")
+    fieldFrameParaIdentificacion.grid(sticky="new")
+    
+    
+
+#FinFuncionalidad3
 
 
 
@@ -1003,7 +1147,7 @@ subMenuUsuario2.add_cascade(label = 'Realizar una reserva',command = lambda:func
 subMenuUsuario2.add_separator()
 subMenuUsuario2.add_cascade(label = 'Realizar un domicilio', command = lambda:funcionalidad2(restaurante))
 subMenuUsuario2.add_separator()
-subMenuUsuario2.add_cascade(label = 'Realizar el pedido de mi reserva')
+subMenuUsuario2.add_cascade(label = 'Realizar el pedido de mi reserva', command=funcionalidad3)
 subMenuUsuario2.add_separator()
 subMenuUsuario2.add_cascade(label = 'Gestionar recompensas',command = lambda:funcionalidad4(restaurante))
 subMenuUsuario2.add_separator()
