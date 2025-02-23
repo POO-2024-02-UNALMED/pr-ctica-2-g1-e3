@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter import END
 
 class FieldFrame(tk.Frame):
     
@@ -60,6 +61,10 @@ class FieldFrame(tk.Frame):
             # Creación del botón para guardar los datos
             btnGuardar = tk.Button(self, text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=self.guardar_datos)
             btnGuardar.grid(row=len(criterios)+15, column=0, pady=15, columnspan=2)
+
+            #Creación del botón para limpiar los campos
+            btnLimpiar = tk.Button(self, text="Limpiar campos", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 14, "bold"), command=self.limpiar_entradas)
+            btnLimpiar.grid(row=len(criterios)+15, column=1, pady=15, columnspan=2)
 
         #Para combobox
         if tipo == 1:
@@ -126,6 +131,10 @@ class FieldFrame(tk.Frame):
         if criterio in self._datos:
             return self._datos[criterio].get()
         return None  # Si el criterio no existe, devuelve None
+    
+    def limpiar_entradas(self):
+        for dato in self._datos:
+            dato.delete(0, END)
         
 
 
