@@ -21,12 +21,15 @@ from uiMain.Utilidad import Utilidad
 from excepciones import *
 
 
+import re
 from tkinter import ttk
 import tkinter as tk
 from field_frame import FieldFrame
 from tkinter import messagebox
 
-
+ultimo_cliente_reserva = None 
+# Lista global para almacenar los datos de los clientes
+clientes_globales = []
 Deserializador.deserializarListas()
 
 
@@ -50,11 +53,15 @@ def centrarVentana(ventana, ancho, alto):
 
 #Muestra la ventana de dialogo acerca de
 def acercaDe():
-    messagebox.showinfo('Acerca de', 'Matías es un niño rata')
+    messagebox.showinfo('Acerca de', 'Restaurante que prepara comida para comer <3')
 
 #Muestra la ventana de dialogo que explica de forma básica el sistema
 def mensajeAplicacion():
     messagebox.showinfo('Acerca de Aura Gourmet System','Puedes navegar por las distintas funciones que te ofrece nuestro sistema para brindarte la posibilidad de realizar: Reservas, pedidos, domicilios, calificaciones y gestionar recompesas.')
+    
+def descripcionDelSistema():
+    labelP3.config(text="Este es un sistema que te ayudara a gestionar \n" 
+                   + "Reservas, pedidos, domicilios, calificaciones y recompesas.")
 
 #Cierra la ventana principal y serializa
 def salir():
@@ -129,12 +136,11 @@ colores_p6 = [
 ]
 indice_color = 0  # Índice para alternar entre colores
 
-# Evento que modifica las 4 imagenes en el rectangulo inferior izquierdo
 def EventoP4(evento):
     global indice_imagen
     nueva_imagen = imagenes[indice_imagen]
-    labelP4.config(image=nueva_imagen)
-    indice_imagen = (indice_imagen + 1) % len(imagenes)  # Alternar entre las 
+    imagen_label.config(image=nueva_imagen)
+    indice_imagen = (indice_imagen + 1) % len(imagenes)
 
 # Evento para cambiar la descripción en labelP5 Y PROVISIONAL PARA P6
 def EventoP5(evento):
@@ -164,9 +170,41 @@ frameP5 = tk.Frame(frameP2,bg="#1C2B2D", relief="solid", bd= 4)
 frameP6 = tk.Frame(frameP2,bg="#1C2B2D", relief="solid", bd= 4)
 
 #Creacion de los labels
-labelP3 = tk.Label(frameP3,bg="#1C2B2D",fg="white",text="Bienvenidos(as) al sistema de gestión \n para usuarios de Aura Gourmet.", font=("Segoe UI", 15, "bold"))
-labelP4 = tk.Label(frameP4, bg="#1C2B2D", fg="white", text="hola", image=imagenes[0])
+labelP3 = tk.Label(frameP3,bg="#1C2B2D",fg="white",text="Bienvenidos(as) al sistema de gestión\npara usuarios de Aura Gourmet."
+                   + "\n\nEste sistema se encarga de proporcionar al cliente\nuna herramienta para realizar:"
+                   + "\nReservas, domicilios, gestionar pedidos,\nrecompensas y calificaciones.", justify="left", font=("Segoe UI", 15, "bold"))
+
+# Contenedor principal
+labelP4 = tk.Frame(frameP4, bg="#1C2B2D")
+labelP4.pack(fill="both", expand=True)
+
+# Sección superior para la imagen
+P4Superior = tk.Frame(labelP4, bg="#1C2B2D")
+P4Superior.grid(row=0, column=0, sticky="nsew")
+
+# Label para mostrar la imagen
+imagen_label = tk.Label(P4Superior, image=imagenes[0], bg="#1C2B2D")
+imagen_label.pack(expand=True, fill="both")
+
+# Asignar evento para cambiar imagen cuando el cursor entre
+P4Superior.bind("<Enter>", EventoP4)
+
+# Sección inferior con botón
+P4Boton = tk.Frame(labelP4, bg="white")
+P4Boton.grid(row=1, column=0, sticky="nsew")
+
+boton = tk.Button(P4Boton, text="Ingresar", bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command= ventanaUsuario)
+boton.pack(expand=True, fill="both", padx=5, pady=5)
+
+# Configurar distribución de filas y columnas
+labelP4.grid_rowconfigure(0, weight=3)
+labelP4.grid_rowconfigure(1, weight=1)
+labelP4.grid_columnconfigure(0, weight=1)
+
+
 labelP5 = tk.Label(frameP5,bg="#1C2B2D",fg="white",text="Hojas de vida (Click para cambiar)", justify="left", font=("Segoe UI", 15, "bold"))
+
+
 
 #PROVISIONAL PARA P6
 labelP6 = tk.Frame(frameP6, bg="#1C2B2D")  # Contenedor de las secciones
@@ -176,10 +214,6 @@ secciones_p6 = [
     tk.Label(labelP6, bg="#1C2B2D", width=20, height=5),
     tk.Label(labelP6, bg="#1C2B2D", width=20, height=5),
 ]
-
-# Creación de los botones
-buttonP4 = tk.Button(frameP4,text="Acceder al sistema",width=20,height=3,bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 20, "bold"), command=ventanaUsuario)
-buttonP4.pack(expand=True, fill="both", padx=10, pady=100)
 
 # Distribuir las 4 secciones en una cuadrícula 2x2
 secciones_p6[0].grid(row=0, column=0, sticky="nsew")
@@ -192,10 +226,11 @@ for i in range(2):
     labelP6.grid_rowconfigure(i, weight=1)
     labelP6.grid_columnconfigure(i, weight=1)
 
+
 #Menu inicio
 menuInicio = tk.Menu(ventana)
 subMenuInicio = tk.Menu(menuInicio, tearoff=0, activebackground='#1C2B2D')
-subMenuInicio.add_cascade(label = 'Descripción del sistema', command= descripcionSistema)
+subMenuInicio.add_cascade(label = 'Descripcion del sistema', command= descripcionDelSistema)
 subMenuInicio.add_separator()
 subMenuInicio.add_cascade(label = 'Salir', command=salir)
 menuInicio.add_cascade(label='Inicio', menu= subMenuInicio)
@@ -296,6 +331,17 @@ def funcionalidad1(restaurante):
         tipoMesa = informacion2[1]
         fecha = informacion2[2]
         horaReserva = informacion2[3]
+        global clientes_globales
+        cliente = {
+            "nombre": nombre,
+            "identificacion": identificacion,
+            "personas": personas,
+            "tipoMesa": tipoMesa,
+            "fecha": fecha,
+            "horaReserva": horaReserva
+        }
+        clientes_globales.append(cliente)
+        
 
         fechaCorrecta = False
         mesasDisponibles = []
@@ -432,75 +478,99 @@ def funcionalidad1(restaurante):
 
 #Funcionalidad4
 def funcionalidad4(restaurante):
-    labelv1.config(text="Gestión de Recompensas")
-    labelv2.config(text="Desde este menú puedes gestionar las recompensas acumuladas por el cliente. Ingrese los datos que se le solicitan a continuación.")
+    # Configuración inicial de los labels
+    labelv1.config(text="Gestion de Recompensas")
+    labelv2.config(text="Ingrese el número de identificación del cliente para usar sus puntos")
 
-    def mostrar_recompensas(framev4, cliente):
+    # Función para mostrar la información del cliente
+    def mostrar_informacion_cliente(cliente):
+        """Muestra la información del cliente en framev4."""
+        # Limpiar framev4 antes de mostrar el resumen
         for widget in framev4.winfo_children():
             widget.destroy()
 
-        for widget in framev3.winfo_children():
-            if isinstance(widget, tk.Label):
-                widget.config(text="A continuación podrá ver las recompensas del cliente")
-            else:
-                widget.destroy()
-                labelv2 = tk.Label(framev3, text="A continuación podrá ver las recompensas del cliente", fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-                labelv2.pack(expand=True, fill="both")
-
-        # Obtener las recompensas del cliente
-        puntos = cliente.get_puntos()
-        historial = cliente.get_historial_recompensas()
-
+        # Crear el resumen del cliente
         resumen = (
             f"Nombre: {cliente.get_nombre()}\n"
             f"Identificación: {cliente.get_identificacion()}\n"
-            f"Puntos acumulados: {puntos}\n"
-            f"Historial de recompensas:\n"
         )
 
-        for recompensa in historial:
-            resumen += f"- {recompensa}\n"
+        # Verificar si el cliente tiene una reserva
+        if cliente.get_reserva():
+            reserva = cliente.get_reserva()
+            resumen += (
+                f"Tipo: Reserva\n"
+                f"Personas: {reserva.get_personas()}\n"
+                f"Tipo de Mesa: {reserva.get_mesa().get_tipo()}\n"
+                f"Fecha: {reserva.get_fecha_reserva().strftime('%Y-%m-%d %H:%M')}\n"
+            )
+        # Verificar si el cliente tiene un domicilio
+        else:
+            domicilio_encontrado = None
+            for domicilio in Domicilio.get_domicilios():
+                if domicilio.get_cliente().get_identificacion() == cliente.get_identificacion():
+                    domicilio_encontrado = domicilio
+                    break
+
+            if domicilio_encontrado:
+                resumen += (
+                    f"Tipo: Domicilio\n"
+                    f"Domicilio Prioritario: {'Sí' if domicilio_encontrado.is_domicilio_prioritario() else 'No'}\n"
+                    f"Dirección: {domicilio_encontrado.get_direccion()}\n"
+                    f"Costo de Envío: {domicilio_encontrado.get_costo()}\n"
+                    f"Domiciliario: {domicilio_encontrado.get_domiciliario().get_nombre()}\n"
+                )
+            else:
+                resumen += "El cliente no tiene reservas ni domicilios registrados.\n"
 
         # Crear un label en el framev4 para mostrar el resumen
         label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
         label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
 
-        # Botón para canjear puntos
-        boton_canjear = tk.Button(framev4, text="Canjear Puntos", bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: canjear_puntos(cliente))
-        boton_canjear.pack(side="right", anchor="n", padx=20, pady=125)
+    # Función para buscar el cliente por identificación
+    def buscar_cliente_por_identificacion(identificacion):
+        """Busca al cliente en la lista global."""
+        print(f"Buscando cliente con identificación: {identificacion}")  # Depuración
 
-    def canjear_puntos(cliente):
-        for widget in framev4.winfo_children():
-            widget.destroy()
+        try:
+            identificacion = int(identificacion)  # Convertir la identificación a número
+        except ValueError:
+            messagebox.showerror("Error", "La identificación debe ser un número.")
+            return
 
-        labelv2.config(text="Canjear Puntos")
+        # Buscar el cliente en la lista de clientes del restaurante
+        cliente_encontrado = None
+        for cliente in Restaurante._lista_clientes:
+            if cliente.get_identificacion() == identificacion:
+                cliente_encontrado = cliente
+                break
 
-        frame_canje = FieldFrame(framev4, "Canjear Puntos", ["Puntos a canjear"], "Información", comandoContinuar=lambda: realizar_canje(cliente, frame_canje))
-        frame_canje.grid(sticky="new")
+        # Si no se encuentra en la lista del restaurante, buscar en la lista global
+        if not cliente_encontrado:
+            print("Buscando en la lista global...")  # Depuración
+            for cliente in clientes_globales:
+                if cliente["identificacion"] == identificacion:
+                    # Crear un objeto Cliente con los datos de la lista global
+                    cliente_encontrado = Cliente(cliente["nombre"], cliente["identificacion"])
+                    break
 
-    def realizar_canje(cliente, frame_canje):
-        puntos_a_canjear = int(frame_canje.obtener_datos()[0])
-        if cliente.canjar_puntos(puntos_a_canjear):
-            messagebox.showinfo("Éxito", f"Se han canjeado {puntos_a_canjear} puntos correctamente.")
+        if cliente_encontrado:
+            print(f"Cliente encontrado: {cliente_encontrado.get_nombre()}")  # Depuración
+            mostrar_informacion_cliente(cliente_encontrado)
         else:
-            messagebox.showerror("Error", "No tiene suficientes puntos para canjear.")
-
-        mostrar_recompensas(framev4, cliente)
-
-    def obtener_cliente(fieldFrame1):
-        informacion1 = fieldFrame1.obtener_datos()
-        nombre = informacion1[0]
-        identificacion = int(informacion1[1])
-
-        cliente = restaurante.obtener_cliente_por_identificacion(identificacion)
-        if cliente:
-            mostrar_recompensas(framev4, cliente)
-        else:
+            print("Cliente no encontrado.")  # Depuración
             messagebox.showerror("Error", "Cliente no encontrado.")
 
-    labelv3.destroy()
-    fieldFrame1 = FieldFrame(framev4, "Datos del Cliente", ["Nombre", "Número de identificación"], "Información", comandoContinuar=lambda: obtener_cliente(fieldFrame1))
+    # Crear el FieldFrame para solicitar la identificación
+    fieldFrame1 = FieldFrame(
+        framev4,
+        "Datos del Cliente",
+        ["Número de identificación"],
+        "Información",
+        comandoContinuar=lambda: buscar_cliente_por_identificacion(fieldFrame1.obtener_datos()[0])
+    )
     fieldFrame1.grid(sticky="new")
+
     
 
 # Funcionalidad5
@@ -838,10 +908,10 @@ def funcionalidad2(restaurante):
             widget.destroy()
 
     def mostrarResumen(nombre, identificacion, domicilio_prioritario):
-        """ Muestra el resumen final en framev4 """
         global alimentos_seleccionados  # Asegurar acceso a la lista global
         limpiar_frame()
     
+        total_precio = 0
         resumen = (
             f"Resumen del Domicilio\n"
             f"Nombre: {nombre}\n"
@@ -850,11 +920,8 @@ def funcionalidad2(restaurante):
             "Platos pedidos:\n"
         )
     
-        total_precio = 0
-    
         if alimentos_seleccionados:
             for alimento, cantidad in alimentos_seleccionados:
-                # Buscar el plato en Menu
                 for plato in Menu:
                     if plato.get_nombre() == alimento:
                         precio_plato = plato.get_precio() * int(cantidad)
@@ -866,9 +933,98 @@ def funcionalidad2(restaurante):
     
         resumen += f"\n**Precio Total: {total_precio} COP**"
     
-        label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", font=("Segoe UI", 14), justify="left", anchor="w")
+        # Mostrar resumen en framev4
+        label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", 
+                                 font=("Segoe UI", 14), justify="left", anchor="w")
         label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
     
+        btn_ir_pago = tk.Button(framev4, text="Proceder al Pago", bg='#2C2F33', fg='white', 
+                        relief="solid", bd=3, font=("Segoe UI", 15, "bold"),
+                        command=lambda: mostrarPantallaPago(nombre, identificacion, domicilio_prioritario, total_precio))  # ✅ PASAMOS los datos
+        btn_ir_pago.pack(pady=10)
+
+    def mostrarPantallaPago(nombre, identificacion, domicilio_prioritario, total_precio):
+        """ Muestra la pantalla de pago en framev4 """
+        global framev4
+        limpiar_frame()
+    
+        tk.Label(framev4, text="Ingrese la cantidad con la que va a pagar:", 
+                 fg="white", bg="#1C2B2D", font=("Segoe UI", 14)).pack(pady=10)
+    
+        field_frame = ttk.Frame(framev4)
+        field_frame.pack(pady=10)
+    
+        entrada_pago = ttk.Entry(field_frame, width=10, font=("Segoe UI", 14))
+        entrada_pago.pack(side="left", padx=5)
+        entrada_pago.focus_set()
+    
+        def mostrarPantallaFinal(monto, cambio):
+            """ Muestra el resumen final con los datos del pago y pedido """
+            limpiar_frame()
+    
+            resumen = (
+                f"Resumen de su pedido\n"
+                f"Nombre: {nombre}\n"
+                f"Identificación: {identificacion}\n"
+                f"Domicilio Prioritario: {domicilio_prioritario}\n\n"
+                "Platos pedidos:\n"
+            )
+    
+            if alimentos_seleccionados:
+                for alimento, cantidad in alimentos_seleccionados:
+                    for plato in Menu:
+                        if plato.get_nombre() == alimento:
+                            precio_plato = plato.get_precio() * int(cantidad)
+                            resumen += f"  - {alimento}: {cantidad} unidades ({precio_plato} COP)\n"
+                            break
+            else:
+                resumen += "No se seleccionaron platos.\n"
+    
+            resumen += f"\nTotal a pagar: {total_precio} COP"
+            resumen += f"\nMonto ingresado: {monto} COP"
+            resumen += f"\nCambio devuelto: {cambio} COP"
+    
+            # Mostrar resumen en pantalla
+            label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", 
+                                     font=("Segoe UI", 14), justify="left", anchor="w")
+            label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
+    
+            # Botón para finalizar
+            btn_finalizar = tk.Button(framev4, text="Finalizar", bg='#2C2F33', fg='white', 
+                                      relief="solid", bd=3, font=("Segoe UI", 15, "bold"),
+                                      command=lambda: limpiar_frame())
+            btn_finalizar.pack(pady=10)
+    
+        def procesarPago():
+            valor_ingresado = entrada_pago.get().strip()
+            print(f"DEBUG - Contenido de entrada_pago: '{valor_ingresado}'")  # Para depuración
+    
+            if not valor_ingresado:
+                print("ERROR - No se ingresó ningún valor.")
+                tk.Label(framev4, text="Ingrese un monto válido.", fg="red", bg="#1C2B2D", font=("Segoe UI", 12)).pack(pady=5)
+                return
+    
+            try:
+                monto = int(valor_ingresado)
+                print(f"DEBUG - Monto ingresado: {monto}, Total a pagar: {total_precio}")
+    
+                if monto < total_precio:
+                    tk.Label(framev4, text="Monto insuficiente, intente de nuevo.", 
+                             fg="red", bg="#1C2B2D", font=("Segoe UI", 12)).pack(pady=5)
+                else:
+                    cambio = monto - total_precio
+                    mostrarPantallaFinal(monto, cambio)
+            except ValueError:
+                print(f"ERROR - Entrada inválida: '{valor_ingresado}'")  # Depuración
+                tk.Label(framev4, text="Ingrese un monto válido.", fg="red", bg="#1C2B2D", font=("Segoe UI", 12)).pack(pady=5)
+    
+        btn_pagar = tk.Button(framev4, text="Pagar", bg='#2C2F33', fg='white', font=("Segoe UI", 14), command=procesarPago)
+        btn_pagar.pack(pady=10)
+    
+        btn_regresar = tk.Button(framev4, text="Volver al Resumen", bg='#1C2B2D', fg='white', 
+                                 relief="solid", bd=3, font=("Segoe UI", 12), 
+                                 command=lambda: mostrarResumen(nombre, identificacion, domicilio_prioritario))
+        btn_regresar.pack(pady=10)
 
     def obtenerDatosCliente(informacion1):
         """ Obtiene los datos del cliente y muestra el resumen """
@@ -959,22 +1115,340 @@ def funcionalidad2(restaurante):
         # Botón para continuar
         btn_continuar = tk.Button(frame_alimentos, text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: [frame_alimentos.destroy(), obtenerDatosCliente(informacion1)])
         btn_continuar.grid(row=2, column=2, padx=10, pady=10, columnspan=3)
-    
-    
-        
-
 
     fieldFrame1 = FieldFrame(
         framev4,
         "Datos del Cliente",
         ["Nombre", "Número de identificación", "¿Domicilio prioritario? (si/no)"],
         "Información",
-        comandoContinuar=lambda: segundo_fieldFrame(fieldFrame1)
+        comandoContinuar=lambda: validar_datos_cliente(fieldFrame1)
     )
-
+    
     fieldFrame1.grid(sticky="new")
 
 
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+                 
 #Funcionalidad3
 def funcionalidad3():
     
@@ -1093,10 +1567,6 @@ def funcionalidad3():
 
         # Bind evento de selección para actualizar unidades
         labelv3._datos[0].bind("<<ComboboxSelected>>", lambda event:  actualizar_unidades_disponibles(labelv3, event.widget.get(), listaDePlatos, unidadesDisponibles))
-
-
-                 
-
 #flujo de ejecución
     global labelv3
     if labelv3:  # Verifica si labelv3 ya existe
@@ -1116,7 +1586,23 @@ def funcionalidad3():
 
 
 
-   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     
 
@@ -1171,10 +1657,8 @@ labelP4.pack(side='top', fill='x')
 labelP5.pack(expand=True, fill='both')
 labelP6.pack(expand=True, fill='both')
 
-buttonP4.pack(side='bottom',expand = True)
-
 # Asignar los eventos evento
-labelP4.bind("<Enter>", EventoP4)
+P4Superior.bind("<Enter>", EventoP4)
 labelP5.bind("<Button-1>", EventoP5)
 
 
