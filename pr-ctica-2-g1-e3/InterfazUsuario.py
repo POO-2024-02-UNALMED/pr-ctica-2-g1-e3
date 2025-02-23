@@ -955,7 +955,7 @@ def funcionalidad2(restaurante):
     
         btn_ir_pago = tk.Button(framev4, text="Proceder al Pago", bg='#2C2F33', fg='white', 
                         relief="solid", bd=3, font=("Segoe UI", 15, "bold"),
-                        command=lambda: mostrarPantallaPago(nombre, identificacion, domicilio_prioritario, total_precio))  # ✅ PASAMOS los datos
+                        command=lambda: mostrarPantallaPago(nombre, identificacion, domicilio_prioritario, total_precio))
         btn_ir_pago.pack(pady=10)
 
     def mostrarPantallaPago(nombre, identificacion, domicilio_prioritario, total_precio):
@@ -1130,6 +1130,34 @@ def funcionalidad2(restaurante):
         # Botón para continuar
         btn_continuar = tk.Button(frame_alimentos, text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: [frame_alimentos.destroy(), obtenerDatosCliente(informacion1)])
         btn_continuar.grid(row=2, column=2, padx=10, pady=10, columnspan=3)
+
+    def validar_datos_cliente(fieldFrame):
+        """ Valida los datos ingresados en el FieldFrame antes de continuar """
+        try:
+            datos = fieldFrame.obtener_datos()  # Obtiene los valores ingresados
+            nombre, identificacion, domicilio_prioritario = datos
+    
+            # 1Validar el Nombre (Solo letras y espacios)
+            if not re.match(r"^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$", nombre.strip()):
+                raise ValueError("El nombre solo debe contener letras y espacios.")
+    
+            # 2Validar Número de Identificación (Entero entre 8 y 12 dígitos)
+            if not identificacion.isdigit():
+                raise ValueError("El número de identificación debe ser un número entero.")
+            
+            if not (8 <= len(identificacion) <= 12):
+                raise ValueError("El número de identificación debe tener entre 8 y 12 dígitos.")
+    
+            # Validar Domicilio Prioritario (Debe ser "si" o "no")
+            domicilio_prioritario = domicilio_prioritario.strip().lower()
+            if domicilio_prioritario not in ["si", "no"]:
+                raise ValueError("Domicilio prioritario debe ser 'si' o 'no'.")
+    
+            # Si todas las validaciones pasan, continuar con la siguiente pantalla
+            segundo_fieldFrame(fieldFrame)
+    
+        except ValueError as e:
+            messagebox.showerror("Error de validación", str(e))
 
     fieldFrame1 = FieldFrame(
         framev4,
