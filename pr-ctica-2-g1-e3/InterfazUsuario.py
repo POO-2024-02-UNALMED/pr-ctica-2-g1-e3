@@ -50,11 +50,15 @@ def centrarVentana(ventana, ancho, alto):
 
 #Muestra la ventana de dialogo acerca de
 def acercaDe():
-    messagebox.showinfo('Acerca de', 'Matías es un niño rata')
+    messagebox.showinfo('Acerca de', 'Restaurante que prepara comida para comer <3')
 
 #Muestra la ventana de dialogo que explica de forma básica el sistema
 def mensajeAplicacion():
     messagebox.showinfo('Acerca de Aura Gourmet System','Puedes navegar por las distintas funciones que te ofrece nuestro sistema para brindarte la posibilidad de realizar: Reservas, pedidos, domicilios, calificaciones y gestionar recompesas.')
+    
+def descripcionDelSistema():
+    labelP3.config(text="Este es un sistema que te ayudara a gestionar \n" 
+                   + "Reservas, pedidos, domicilios, calificaciones y recompesas.")
 
 #Cierra la ventana principal y serializa
 def salir():
@@ -208,7 +212,7 @@ for i in range(2):
 #Menu inicio
 menuInicio = tk.Menu(ventana)
 subMenuInicio = tk.Menu(menuInicio, tearoff=0, activebackground='#1C2B2D')
-subMenuInicio.add_cascade(label = 'Inicio', command= ventanaUsuario)
+subMenuInicio.add_cascade(label = 'Descripcion del sistema', command= descripcionDelSistema)
 subMenuInicio.add_separator()
 subMenuInicio.add_cascade(label = 'Salir', command=salir)
 menuInicio.add_cascade(label='Inicio', menu= subMenuInicio)
