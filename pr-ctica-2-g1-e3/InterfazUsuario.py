@@ -19,6 +19,7 @@ from baseDatos.deserializador import Deserializador
 from uiMain.Utilidad import Utilidad
 
 
+import re
 from tkinter import ttk
 import tkinter as tk
 from field_frame import FieldFrame
@@ -772,10 +773,10 @@ def funcionalidad2(restaurante):
             widget.destroy()
 
     def mostrarResumen(nombre, identificacion, domicilio_prioritario):
-        """ Muestra el resumen final en framev4 """
         global alimentos_seleccionados  # Asegurar acceso a la lista global
         limpiar_frame()
     
+        total_precio = 0
         resumen = (
             f"Resumen del Domicilio\n"
             f"Nombre: {nombre}\n"
@@ -784,11 +785,8 @@ def funcionalidad2(restaurante):
             "Platos pedidos:\n"
         )
     
-        total_precio = 0
-    
         if alimentos_seleccionados:
             for alimento, cantidad in alimentos_seleccionados:
-                # Buscar el plato en Menu
                 for plato in Menu:
                     if plato.get_nombre() == alimento:
                         precio_plato = plato.get_precio() * int(cantidad)
@@ -800,9 +798,98 @@ def funcionalidad2(restaurante):
     
         resumen += f"\n**Precio Total: {total_precio} COP**"
     
-        label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", font=("Segoe UI", 14), justify="left", anchor="w")
+        # Mostrar resumen en framev4
+        label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", 
+                                 font=("Segoe UI", 14), justify="left", anchor="w")
         label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
     
+        btn_ir_pago = tk.Button(framev4, text="Proceder al Pago", bg='#2C2F33', fg='white', 
+                        relief="solid", bd=3, font=("Segoe UI", 15, "bold"),
+                        command=lambda: mostrarPantallaPago(nombre, identificacion, domicilio_prioritario, total_precio))  # ✅ PASAMOS los datos
+        btn_ir_pago.pack(pady=10)
+
+    def mostrarPantallaPago(nombre, identificacion, domicilio_prioritario, total_precio):
+        """ Muestra la pantalla de pago en framev4 """
+        global framev4
+        limpiar_frame()
+    
+        tk.Label(framev4, text="Ingrese la cantidad con la que va a pagar:", 
+                 fg="white", bg="#1C2B2D", font=("Segoe UI", 14)).pack(pady=10)
+    
+        field_frame = ttk.Frame(framev4)
+        field_frame.pack(pady=10)
+    
+        entrada_pago = ttk.Entry(field_frame, width=10, font=("Segoe UI", 14))
+        entrada_pago.pack(side="left", padx=5)
+        entrada_pago.focus_set()
+    
+        def mostrarPantallaFinal(monto, cambio):
+            """ Muestra el resumen final con los datos del pago y pedido """
+            limpiar_frame()
+    
+            resumen = (
+                f"Resumen de su pedido\n"
+                f"Nombre: {nombre}\n"
+                f"Identificación: {identificacion}\n"
+                f"Domicilio Prioritario: {domicilio_prioritario}\n\n"
+                "Platos pedidos:\n"
+            )
+    
+            if alimentos_seleccionados:
+                for alimento, cantidad in alimentos_seleccionados:
+                    for plato in Menu:
+                        if plato.get_nombre() == alimento:
+                            precio_plato = plato.get_precio() * int(cantidad)
+                            resumen += f"  - {alimento}: {cantidad} unidades ({precio_plato} COP)\n"
+                            break
+            else:
+                resumen += "No se seleccionaron platos.\n"
+    
+            resumen += f"\nTotal a pagar: {total_precio} COP"
+            resumen += f"\nMonto ingresado: {monto} COP"
+            resumen += f"\nCambio devuelto: {cambio} COP"
+    
+            # Mostrar resumen en pantalla
+            label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", 
+                                     font=("Segoe UI", 14), justify="left", anchor="w")
+            label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
+    
+            # Botón para finalizar
+            btn_finalizar = tk.Button(framev4, text="Finalizar", bg='#2C2F33', fg='white', 
+                                      relief="solid", bd=3, font=("Segoe UI", 15, "bold"),
+                                      command=lambda: limpiar_frame())
+            btn_finalizar.pack(pady=10)
+    
+        def procesarPago():
+            valor_ingresado = entrada_pago.get().strip()
+            print(f"DEBUG - Contenido de entrada_pago: '{valor_ingresado}'")  # Para depuración
+    
+            if not valor_ingresado:
+                print("ERROR - No se ingresó ningún valor.")
+                tk.Label(framev4, text="Ingrese un monto válido.", fg="red", bg="#1C2B2D", font=("Segoe UI", 12)).pack(pady=5)
+                return
+    
+            try:
+                monto = int(valor_ingresado)
+                print(f"DEBUG - Monto ingresado: {monto}, Total a pagar: {total_precio}")
+    
+                if monto < total_precio:
+                    tk.Label(framev4, text="Monto insuficiente, intente de nuevo.", 
+                             fg="red", bg="#1C2B2D", font=("Segoe UI", 12)).pack(pady=5)
+                else:
+                    cambio = monto - total_precio
+                    mostrarPantallaFinal(monto, cambio)
+            except ValueError:
+                print(f"ERROR - Entrada inválida: '{valor_ingresado}'")  # Depuración
+                tk.Label(framev4, text="Ingrese un monto válido.", fg="red", bg="#1C2B2D", font=("Segoe UI", 12)).pack(pady=5)
+    
+        btn_pagar = tk.Button(framev4, text="Pagar", bg='#2C2F33', fg='white', font=("Segoe UI", 14), command=procesarPago)
+        btn_pagar.pack(pady=10)
+    
+        btn_regresar = tk.Button(framev4, text="Volver al Resumen", bg='#1C2B2D', fg='white', 
+                                 relief="solid", bd=3, font=("Segoe UI", 12), 
+                                 command=lambda: mostrarResumen(nombre, identificacion, domicilio_prioritario))
+        btn_regresar.pack(pady=10)
 
     def obtenerDatosCliente(informacion1):
         """ Obtiene los datos del cliente y muestra el resumen """
@@ -893,33 +980,44 @@ def funcionalidad2(restaurante):
         # Botón para continuar
         btn_continuar = tk.Button(frame_alimentos, text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: [frame_alimentos.destroy(), obtenerDatosCliente(informacion1)])
         btn_continuar.grid(row=2, column=2, padx=10, pady=10, columnspan=3)
-    
-    
-        
-
 
     fieldFrame1 = FieldFrame(
         framev4,
         "Datos del Cliente",
         ["Nombre", "Número de identificación", "¿Domicilio prioritario? (si/no)"],
         "Información",
-        comandoContinuar=lambda: segundo_fieldFrame(fieldFrame1)
+        comandoContinuar=lambda: validar_datos_cliente(fieldFrame1)
     )
-
+    
     fieldFrame1.grid(sticky="new")
 
-
-
-
-
-
-
-
-
-   
-
+    def validar_datos_cliente(fieldFrame1):
+        """ Valida los datos ingresados en el FieldFrame antes de continuar """
+        try:
+            datos = fieldFrame1.obtener_datos()  # Obtiene los valores ingresados
+            nombre, identificacion, domicilio_prioritario = datos
+ 
+            if not re.match(r"^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$", nombre.strip()):
+                raise ValueError("El nombre solo debe contener letras y espacios.")
     
-
+            # Validar Número de Identificación (Entero entre 8 y 12 dígitos)
+            if not identificacion.isdigit():
+                raise ValueError("El número de identificación debe ser un número entero.")
+            
+            if not (8 <= len(identificacion) <= 12):
+                raise ValueError("El número de identificación debe tener entre 8 y 12 dígitos.")
+    
+            # 3Validar Domicilio Prioritario (Debe ser "si" o "no")
+            domicilio_prioritario = domicilio_prioritario.strip().lower()  # Normalizamos a minúsculas
+            if domicilio_prioritario not in ["si", "no"]:
+                raise ValueError("Domicilio prioritario debe ser 'si' o 'no'.")
+    
+            # Si todas las validaciones pasan, continuar con la siguiente pantalla
+            segundo_fieldFrame(fieldFrame1)
+    
+        except ValueError as e:
+            messagebox.showerror("Error de validación", str(e))
+    
 #Funcion que elimina los widgets dentro de los frames ingresados, para poder ingresar nuevos
 def limpiar_ventana_usuario(framev2, framev3, framev4):
     for widget in framev4.winfo_children():
