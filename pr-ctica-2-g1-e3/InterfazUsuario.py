@@ -25,7 +25,9 @@ import tkinter as tk
 from field_frame import FieldFrame
 from tkinter import messagebox
 
-
+ultimo_cliente_reserva = None 
+# Lista global para almacenar los datos de los clientes
+clientes_globales = []
 Deserializador.deserializarListas()
 
 
@@ -285,6 +287,17 @@ def funcionalidad1(restaurante):
         tipoMesa = informacion2[1]
         fecha = informacion2[2]
         horaReserva = informacion2[3]
+        global clientes_globales
+        cliente = {
+            "nombre": nombre,
+            "identificacion": identificacion,
+            "personas": personas,
+            "tipoMesa": tipoMesa,
+            "fecha": fecha,
+            "horaReserva": horaReserva
+        }
+        clientes_globales.append(cliente)
+        
 
         fechaCorrecta = False
         mesasDisponibles = []
@@ -419,75 +432,99 @@ def funcionalidad1(restaurante):
 
 #Funcionalidad4
 def funcionalidad4(restaurante):
-    labelv1.config(text="Gestión de Recompensas")
-    labelv2.config(text="Desde este menú puedes gestionar las recompensas acumuladas por el cliente. Ingrese los datos que se le solicitan a continuación.")
+    # Configuración inicial de los labels
+    labelv1.config(text="Gestion de Recompensas")
+    labelv2.config(text="Ingrese el número de identificación del cliente para usar sus puntos")
 
-    def mostrar_recompensas(framev4, cliente):
+    # Función para mostrar la información del cliente
+    def mostrar_informacion_cliente(cliente):
+        """Muestra la información del cliente en framev4."""
+        # Limpiar framev4 antes de mostrar el resumen
         for widget in framev4.winfo_children():
             widget.destroy()
 
-        for widget in framev3.winfo_children():
-            if isinstance(widget, tk.Label):
-                widget.config(text="A continuación podrá ver las recompensas del cliente")
-            else:
-                widget.destroy()
-                labelv2 = tk.Label(framev3, text="A continuación podrá ver las recompensas del cliente", fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
-                labelv2.pack(expand=True, fill="both")
-
-        # Obtener las recompensas del cliente
-        puntos = cliente.get_puntos()
-        historial = cliente.get_historial_recompensas()
-
+        # Crear el resumen del cliente
         resumen = (
             f"Nombre: {cliente.get_nombre()}\n"
             f"Identificación: {cliente.get_identificacion()}\n"
-            f"Puntos acumulados: {puntos}\n"
-            f"Historial de recompensas:\n"
         )
 
-        for recompensa in historial:
-            resumen += f"- {recompensa}\n"
+        # Verificar si el cliente tiene una reserva
+        if cliente.get_reserva():
+            reserva = cliente.get_reserva()
+            resumen += (
+                f"Tipo: Reserva\n"
+                f"Personas: {reserva.get_personas()}\n"
+                f"Tipo de Mesa: {reserva.get_mesa().get_tipo()}\n"
+                f"Fecha: {reserva.get_fecha_reserva().strftime('%Y-%m-%d %H:%M')}\n"
+            )
+        # Verificar si el cliente tiene un domicilio
+        else:
+            domicilio_encontrado = None
+            for domicilio in Domicilio.get_domicilios():
+                if domicilio.get_cliente().get_identificacion() == cliente.get_identificacion():
+                    domicilio_encontrado = domicilio
+                    break
+
+            if domicilio_encontrado:
+                resumen += (
+                    f"Tipo: Domicilio\n"
+                    f"Domicilio Prioritario: {'Sí' if domicilio_encontrado.is_domicilio_prioritario() else 'No'}\n"
+                    f"Dirección: {domicilio_encontrado.get_direccion()}\n"
+                    f"Costo de Envío: {domicilio_encontrado.get_costo()}\n"
+                    f"Domiciliario: {domicilio_encontrado.get_domiciliario().get_nombre()}\n"
+                )
+            else:
+                resumen += "El cliente no tiene reservas ni domicilios registrados.\n"
 
         # Crear un label en el framev4 para mostrar el resumen
         label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
         label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
 
-        # Botón para canjear puntos
-        boton_canjear = tk.Button(framev4, text="Canjear Puntos", bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: canjear_puntos(cliente))
-        boton_canjear.pack(side="right", anchor="n", padx=20, pady=125)
+    # Función para buscar el cliente por identificación
+    def buscar_cliente_por_identificacion(identificacion):
+        """Busca al cliente en la lista global."""
+        print(f"Buscando cliente con identificación: {identificacion}")  # Depuración
 
-    def canjear_puntos(cliente):
-        for widget in framev4.winfo_children():
-            widget.destroy()
+        try:
+            identificacion = int(identificacion)  # Convertir la identificación a número
+        except ValueError:
+            messagebox.showerror("Error", "La identificación debe ser un número.")
+            return
 
-        labelv2.config(text="Canjear Puntos")
+        # Buscar el cliente en la lista de clientes del restaurante
+        cliente_encontrado = None
+        for cliente in Restaurante._lista_clientes:
+            if cliente.get_identificacion() == identificacion:
+                cliente_encontrado = cliente
+                break
 
-        frame_canje = FieldFrame(framev4, "Canjear Puntos", ["Puntos a canjear"], "Información", comandoContinuar=lambda: realizar_canje(cliente, frame_canje))
-        frame_canje.grid(sticky="new")
+        # Si no se encuentra en la lista del restaurante, buscar en la lista global
+        if not cliente_encontrado:
+            print("Buscando en la lista global...")  # Depuración
+            for cliente in clientes_globales:
+                if cliente["identificacion"] == identificacion:
+                    # Crear un objeto Cliente con los datos de la lista global
+                    cliente_encontrado = Cliente(cliente["nombre"], cliente["identificacion"])
+                    break
 
-    def realizar_canje(cliente, frame_canje):
-        puntos_a_canjear = int(frame_canje.obtener_datos()[0])
-        if cliente.canjar_puntos(puntos_a_canjear):
-            messagebox.showinfo("Éxito", f"Se han canjeado {puntos_a_canjear} puntos correctamente.")
+        if cliente_encontrado:
+            print(f"Cliente encontrado: {cliente_encontrado.get_nombre()}")  # Depuración
+            mostrar_informacion_cliente(cliente_encontrado)
         else:
-            messagebox.showerror("Error", "No tiene suficientes puntos para canjear.")
-
-        mostrar_recompensas(framev4, cliente)
-
-    def obtener_cliente(fieldFrame1):
-        informacion1 = fieldFrame1.obtener_datos()
-        nombre = informacion1[0]
-        identificacion = int(informacion1[1])
-
-        cliente = restaurante.obtener_cliente_por_identificacion(identificacion)
-        if cliente:
-            mostrar_recompensas(framev4, cliente)
-        else:
+            print("Cliente no encontrado.")  # Depuración
             messagebox.showerror("Error", "Cliente no encontrado.")
 
-    labelv3.destroy()
-    fieldFrame1 = FieldFrame(framev4, "Datos del Cliente", ["Nombre", "Número de identificación"], "Información", comandoContinuar=lambda: obtener_cliente(fieldFrame1))
+    # Crear el FieldFrame para solicitar la identificación
+    fieldFrame1 = FieldFrame(
+        framev4,
+        "Datos del Cliente",
+        ["Número de identificación"],
+        "Información",
+        comandoContinuar=lambda: buscar_cliente_por_identificacion(fieldFrame1.obtener_datos()[0])
+    )
     fieldFrame1.grid(sticky="new")
+
     
 
 # Funcionalidad5
