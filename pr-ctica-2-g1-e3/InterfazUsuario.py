@@ -378,7 +378,7 @@ def funcionalidad1(restaurante):
             fechaActual = datetime.today().date()
             reserva = Reserva(mesaEscogida,fechaReserva,personas,fechaActual)
             meseroAsignado = mesaEscogida.reservar(reserva)
-            cliente = restaurante.obtener_o_crear_cliente(nombre,identificacion)
+            #cliente = restaurante.obtener_o_crear_cliente(nombre,identificacion)
             reserva.set_cliente(cliente)
             reserva.get_factura().set_cliente(Cliente)
 
