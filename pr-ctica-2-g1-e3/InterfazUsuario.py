@@ -1255,8 +1255,10 @@ def funcionalidad3():
         print("platos de cortesia disponibles:", listaDeCortesias) #solo para verificar
 
         def guardarCortesia():
-            global platoCortesiaSeleccionado
+            global platoCortesiaSeleccionado, clienteAsociado
             platoCortesiaSeleccionado = labelv3._datos[0].get()
+            clienteAsociado.get_pedido().set_plato_cortesia(platoCortesiaSeleccionado)
+            print("platoooo: ",clienteAsociado.get_pedido().get_plato_cortesia())
             if platoCortesiaSeleccionado.strip() == 'Seleccione una opción':
                raise BoxVacio('plato de cortesia')
             
@@ -1395,7 +1397,7 @@ def funcionalidad3():
         #asignarle el valor a la factura 
         facturaAsociada = clienteAsociado.get_pedido().get_factura()
         facturaAsociada.set_total_factura(costoTotal + cobrosPorReserva)
-        print("total de la factura: ",clienteAsociado.get_pedido().get_factura().get_total_factura())
+        #print("total de la factura: ",clienteAsociado.get_pedido().get_factura().get_total_factura())
 
         # Insertar el texto en el Text widget
         resumen_texto.insert(tk.END, resumenTexto)
