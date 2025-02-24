@@ -50,3 +50,4 @@ class Deserializador():
         Deserializador.deserializar(PedidoItem.get_pedido_items(), "pedidoItems")
         Deserializador.deserializar(Reserva.get_reservas(), "reservas")
         Deserializador.deserializar(Restaurante.get_restaurantes(), "restaurante")
+        Deserializador.deserializar(Restaurante.get_id_con_reservas(), "idConReservas")

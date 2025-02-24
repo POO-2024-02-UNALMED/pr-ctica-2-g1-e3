@@ -14,6 +14,7 @@ from gestorAplicacion.pedido import Pedido
 from gestorAplicacion.persona import Persona
 from gestorAplicacion.restaurante import Restaurante
 
+
 class Serializador:
     @staticmethod
     def serializar(lista, nombre):
@@ -50,6 +51,6 @@ class Serializador:
         Serializador.serializar(PedidoItem.get_pedido_items(), "pedidoItems")
         Serializador.serializar(Reserva.get_reservas(), "reservas")
         Serializador.serializar(Restaurante.get_restaurantes(), "restaurante")
-        
+        Serializador.serializar(Restaurante.get_id_con_reservas(), "idConReservas")
         
     

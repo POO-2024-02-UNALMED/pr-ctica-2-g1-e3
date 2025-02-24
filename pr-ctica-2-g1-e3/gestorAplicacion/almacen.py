@@ -74,13 +74,14 @@ class Almacen:
         return Almacen._almacen
 
     def actualizar_inventario(self, menu, cantidad):
-        for ingrediente in menu.ingredientes:
+        cantidad=int(cantidad)
+        for ingrediente in menu.get_ingredientes():
             if ingrediente in self._nombres:
                 index = self._nombres.index(ingrediente)
                 self._cantidades[index] -= cantidad
 
     def revertir_inventario(self, menu, cantidad):
-        for ingrediente in menu.ingredientes:
+        for ingrediente in menu.get_ingredientes():
             if ingrediente in self._nombres:
                 index = self._nombres.index(ingrediente)
                 self._cantidades[index] += cantidad

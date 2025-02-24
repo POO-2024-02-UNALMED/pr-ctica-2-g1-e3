@@ -11,8 +11,8 @@ class Cliente(Persona):
             restaurante = self.crear_o_asignar_restaurante("Aura Gourmet")
         self._reserva = reserva
         self._restaurante = restaurante
-        self._visitas = 0
-        self._visitas_para_descuentos = 0
+        self._visitas = 4
+        self._visitas_para_descuentos = 4
         self._descuento_por_visitas = 0
         restaurante._lista_clientes.append(self)
         Cliente._clientes.append(self)
@@ -28,6 +28,7 @@ class Cliente(Persona):
     
     def set_identificacion(self, identificacion):
         self._identificacion = identificacion
+        
     def set_reserva(self, reserva):
         self._reserva = reserva
     
@@ -67,8 +68,8 @@ class Cliente(Persona):
                        f"a Aura Gourmet\n"
                        f"(recuerde que tenemos descuentos por fidelidad cada 5 visitas)")
         else:
-            mensaje = (f"¡Reserva encontrada!\nBienvenid@ {self.get_nombre()},"
-                       f"por ser su visita #{self.get_visitas()} a Aura Gourmet, "
+            mensaje = (f"¡Reserva encontrada!\nBienvenid@ {self.get_nombre()}, "
+                       f"por ser su visita #{self.get_visitas()} a Aura Gourmet,\n"
                        f"obtendrá un descuento del {self.get_descuento_por_visitas()}%"
                        f" sobre el total de su pedido")
         return mensaje
@@ -140,13 +141,5 @@ class Cliente(Persona):
         restaurante = Restaurante(nombre_restaurante)
         return restaurante
 
-#creación de instancias
-clienteParaPrueba1=Cliente(nombre="mariano herrera", identificacion=2004)
-clienteParaPrueba2=Cliente(nombre="maria perez", identificacion=1985)
-clienteParaPrueba3=Cliente(nombre="julian vasquez", identificacion=1990)
 
-# Verificar que el cliente se ha añadido a la lista de clientes del restaurante
-print("Clientes lista de clientes del restaurante:", [c.get_nombre() for c in clienteParaPrueba1._restaurante._lista_clientes])
 
-# Verificar que el cliente se ha añadido a la lista estática de clientes
-print("Todos los clientes desde clientes:", [c.get_nombre() for c in Cliente._clientes])
