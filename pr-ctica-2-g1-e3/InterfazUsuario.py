@@ -1292,6 +1292,16 @@ def funcionalidad3():
                descuento=Restaurante.determinar_descuentos(clienteConReserva)
                clienteConReserva.set_descuento_por_visitas(descuento) #le asigne el atributo al cliente
                clienteAsociado = clienteConReserva
+
+               #crear un objeto pedido al que se le asigna el cliente como titular y aignarle el pedido al cliente
+               pedidoAsociado = Pedido(clienteAsociado, reservaAsociada.get_factura(), restaurante)
+               clienteAsociado.set_pedido(pedidoAsociado)
+               #asignarle el pedido a la mesa asociada a la reserva
+               mesaAsociada = clienteAsociado.get_reserva().get_mesa()
+               mesaAsociada.set_pedido(pedidoAsociado)
+               #print("pedido creado: ", pedidoAsociado)
+               #print("pedido de la mesa: ", mesaAsociada.get_pedido())
+
                limpiar_frame()
                labelv2.config(text= clienteConReserva.saludar(), fg='red') #llama al metodo saludar que le indica al usuario su # de visita al restaurante y su descuento
                
@@ -1381,6 +1391,12 @@ def funcionalidad3():
         resumenTexto += "------------------------------------------------------------\n"
         #resumenTexto += "{:<25} {:<10} {:<15} {:<15}\n".format("", "", "Total", "{:,.2f}".format(costoTotal + cobrosPorReserva).replace(',', '.'))
         resumenTexto += "{:<40} {:<15}\n".format("Total", "{:,.2f}".format(costoTotal + cobrosPorReserva).replace(',', '.'))
+
+        #asignarle el valor a la factura 
+        facturaAsociada = clienteAsociado.get_pedido().get_factura()
+        facturaAsociada.set_total_factura(costoTotal + cobrosPorReserva)
+        print("total de la factura: ",clienteAsociado.get_pedido().get_factura().get_total_factura())
+
         # Insertar el texto en el Text widget
         resumen_texto.insert(tk.END, resumenTexto)
         resumen_texto.configure(state='disabled')  # Deshabilitado para evitar ediciones

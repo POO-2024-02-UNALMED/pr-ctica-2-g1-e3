@@ -29,6 +29,9 @@ class Factura:
 
     def get_total_factura(self):
         return self._total_factura
+    
+    def set_total_factura(self, total):
+        self._total_factura = total
 
     def set_calificacion(self, calificacion):
         self._calificacion = calificacion

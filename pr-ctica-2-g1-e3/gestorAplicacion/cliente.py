@@ -10,6 +10,7 @@ class Cliente(Persona):
         if restaurante is None:
             restaurante = self.crear_o_asignar_restaurante("Aura Gourmet")
         self._reserva = reserva
+        self._pedido = None
         self._restaurante = restaurante
         self._visitas = 0
         self._visitas_para_descuentos = 0
@@ -52,8 +53,14 @@ class Cliente(Persona):
     
     def set_descuento_por_visitas(self, descuento_por_visitas):
         self._descuento_por_visitas = descuento_por_visitas
+
+    def get_pedido(self):
+        return self._pedido
     
-    #MARIA
+    def set_pedido(self, pedido):
+        self._pedido = pedido
+    
+    #M
     def incrementar_visitas(self):
         self._visitas += 1 #visitas generales
         self._visitas_para_descuentos += 1  #visitas necesarias para obtener descuentos adicionales
