@@ -65,7 +65,7 @@ print("Clientes lista de clientes del restaurante:", [c.get_nombre() for c in re
 # Verificar que el cliente se ha añadido a la lista estática de clientes
 print("Todos los clientes desde clientes:", [c.get_nombre() for c in Cliente._clientes])
 #fin de instancias para prueba!!!
- 
+
 #Ubica la ventana en el centro de la pantalla
 def centrarVentana(ventana, ancho, alto):
     # Obtiene las dimensiones de la pantalla
