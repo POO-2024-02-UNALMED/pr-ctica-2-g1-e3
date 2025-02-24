@@ -552,7 +552,7 @@ def funcionalidad1(restaurante):
 #Funcionalidad4
 def funcionalidad4(restaurante):
     # Configuración inicial de los labels
-    labelv1.config(text="Gestion de Recompensas")
+    labelv1.config(text="Gestión de Recompensas")
     labelv2.config(text="Ingrese el número de identificación del cliente para usar sus puntos")
 
     # Función para mostrar la información del cliente
@@ -571,11 +571,14 @@ def funcionalidad4(restaurante):
         # Verificar si el cliente tiene una reserva
         if cliente.get_reserva():
             reserva = cliente.get_reserva()
+            # Asignar un valor arbitrario al costo total de consumo
+            costo_total_consumo = 150000  # Valor arbitrario
             resumen += (
                 f"Tipo: Reserva\n"
                 f"Personas: {reserva._numero_personas}\n"
                 f"Tipo de Mesa: {reserva.get_mesa().get_tipo()}\n"
                 f"Fecha: {reserva.get_fecha_hora().strftime('%Y-%m-%d %H:%M')}\n"
+                f"Costo Total de Consumo: ${costo_total_consumo}\n"
             )
         # Verificar si el cliente tiene un domicilio
         else:
@@ -599,6 +602,173 @@ def funcionalidad4(restaurante):
         # Crear un label en el framev4 para mostrar el resumen
         label_resumen = tk.Label(framev4, text=resumen, fg="white", bg="#1C2B2D", font=("Segoe UI", 15, "bold"))
         label_resumen.pack(padx=20, pady=20, fill="both", expand=True)
+
+        # Si el cliente tiene una reserva, mostrar botones para gestionar puntos
+        if cliente.get_reserva():
+            # Botón para ver los puntos acumulados
+            boton_ver_puntos = tk.Button(
+                framev4,
+                text="Ver Puntos",
+                command=lambda: ver_puntos(cliente, costo_total_consumo)
+            )
+            boton_ver_puntos.pack(pady=10)
+
+            # Botón para usar los puntos
+            boton_usar_puntos = tk.Button(
+                framev4,
+                text="Usar Puntos",
+                command=lambda: usar_puntos(cliente)
+            )
+            boton_usar_puntos.pack(pady=10)
+
+    # Función para calcular y mostrar los puntos acumulados
+    def ver_puntos(cliente, costo_total_consumo):
+        """Calcula y muestra los puntos acumulados por el cliente."""
+        # Calcular puntos (1 punto por cada $1000 de consumo)
+        puntos = costo_total_consumo // 1000
+        messagebox.showinfo("Puntos Acumulados", f"El cliente {cliente.get_nombre()} tiene {puntos} puntos acumulados.")
+
+    # Función para usar los puntos
+    def usar_puntos(cliente):
+        """Muestra las opciones para usar los puntos."""
+        # Limpiar framev4 antes de mostrar el menú
+        for widget in framev4.winfo_children():
+            widget.destroy()
+
+        # Crear un nuevo frame para las opciones de uso de puntos
+        frame_opciones = tk.Frame(framev4, bg="#1C2B2D")
+        frame_opciones.pack(pady=10)
+
+        # Opciones para usar los puntos
+        opciones = ["Servicios Exclusivos", "Reserva", "Producto"]
+        seleccion = tk.StringVar(frame_opciones)
+        seleccion.set(opciones[0])  # Valor por defecto
+
+        # Crear un menú desplegable para seleccionar la opción
+        menu_opciones = tk.OptionMenu(frame_opciones, seleccion, *opciones)
+        menu_opciones.config(font=("Segoe UI", 12), bg="#2C3E50", fg="white")
+        menu_opciones.pack(pady=10)
+
+        # Botón para confirmar la selección
+        boton_confirmar = tk.Button(
+            frame_opciones,
+            text="Confirmar",
+            command=lambda: confirmar_uso_puntos(cliente, seleccion.get())
+        )
+        boton_confirmar.config(font=("Segoe UI", 12), bg="#2C3E50", fg="white")
+        boton_confirmar.pack(pady=10)
+
+    # Función para confirmar el uso de los puntos
+    def confirmar_uso_puntos(cliente, opcion):
+        """Confirma el uso de los puntos según la opción seleccionada."""
+        if opcion == "Producto":
+            mostrar_menu_productos(cliente)
+        elif opcion == "Reserva":
+            mostrar_mensaje_reserva(cliente)
+        elif opcion == "Servicios Exclusivos":
+            mostrar_mesas_deluxe(cliente)
+        else:
+            messagebox.showinfo("Uso de Puntos", f"El cliente {cliente.get_nombre()} ha decidido usar sus puntos para: {opcion}")
+
+    # Función para mostrar el menú de productos
+    def mostrar_menu_productos(cliente):
+        """Muestra el menú de productos disponibles."""
+        # Limpiar framev4 antes de mostrar el menú
+        for widget in framev4.winfo_children():
+            widget.destroy()
+
+        # Crear un label para el título del menú
+        label_titulo = tk.Label(framev4, text="Menú de Productos", fg="white", bg="#1C2B2D", font=("Segoe UI", 20, "bold"))
+        label_titulo.pack(pady=10)
+
+        # Variable para almacenar la selección del producto
+        producto_seleccionado = tk.StringVar(framev4)
+        producto_seleccionado.set("Seleccione un producto")  # Valor por defecto
+
+        # Crear un menú desplegable para seleccionar el producto
+        menu_productos = tk.OptionMenu(framev4, producto_seleccionado, *[plato.get_nombre() for plato in Menu])
+        menu_productos.config(font=("Segoe UI", 12), bg="#2C3E50", fg="white")
+        menu_productos.pack(pady=10)
+
+        # Botón para confirmar la selección del producto
+        boton_confirmar_producto = tk.Button(
+            framev4,
+            text="Confirmar Producto",
+            command=lambda: canjear_producto(cliente, producto_seleccionado.get())
+        )
+        boton_confirmar_producto.config(font=("Segoe UI", 12), bg="#2C3E50", fg="white")
+        boton_confirmar_producto.pack(pady=10)
+
+        # Botón para volver al menú anterior
+        boton_volver = tk.Button(
+            framev4,
+            text="Volver",
+            command=lambda: mostrar_informacion_cliente(cliente)
+        )
+        boton_volver.config(font=("Segoe UI", 12), bg="#2C3E50", fg="white")
+        boton_volver.pack(pady=10)
+
+    # Función para canjear un producto
+    def canjear_producto(cliente, producto):
+        """Muestra un mensaje de confirmación de canje."""
+        messagebox.showinfo("Canje Exitoso", f"Producto '{producto}' canjeado con éxito.")
+
+    # Función para mostrar el mensaje de reserva
+    def mostrar_mensaje_reserva(cliente):
+        """Muestra un mensaje para realizar la reserva con descuento."""
+        messagebox.showinfo("Reserva", "Realice su reserva. Se le hará su descuento.")
+
+    # Función para mostrar las mesas deluxe disponibles
+    def mostrar_mesas_deluxe(cliente):
+        """Muestra las mesas deluxe disponibles."""
+        # Limpiar framev4 antes de mostrar las mesas
+        for widget in framev4.winfo_children():
+            widget.destroy()
+
+        # Crear un label para el título de las mesas
+        label_titulo = tk.Label(framev4, text="Mesas Deluxe Disponibles", fg="white", bg="#1C2B2D", font=("Segoe UI", 20, "bold"))
+        label_titulo.pack(pady=10)
+
+        # Lista de mesas deluxe
+        mesas_deluxe = [
+            "Mesa 2 | Capacidad: 4 | Puntos requeridos: 2000",
+            "Mesa 5 | Capacidad: 6 | Puntos requeridos: 3000",
+            "Mesa 6 | Capacidad: 2 | Puntos requeridos: 2000",
+            "Mesa 9 | Capacidad: 4 | Puntos requeridos: 2000",
+            "Mesa 10 | Capacidad: 2 | Puntos requeridos: 2000"
+        ]
+
+        # Variable para almacenar la selección de la mesa
+        mesa_seleccionada = tk.StringVar(framev4)
+        mesa_seleccionada.set("Seleccione una mesa")  # Valor por defecto
+
+        # Crear un menú desplegable para seleccionar la mesa
+        menu_mesas = tk.OptionMenu(framev4, mesa_seleccionada, *mesas_deluxe)
+        menu_mesas.config(font=("Segoe UI", 12), bg="#2C3E50", fg="white")
+        menu_mesas.pack(pady=10)
+
+        # Botón para confirmar la selección de la mesa
+        boton_confirmar_mesa = tk.Button(
+            framev4,
+            text="Confirmar Mesa",
+            command=lambda: canjear_mesa(cliente, mesa_seleccionada.get())
+        )
+        boton_confirmar_mesa.config(font=("Segoe UI", 12), bg="#2C3E50", fg="white")
+        boton_confirmar_mesa.pack(pady=10)
+
+        # Botón para volver al menú anterior
+        boton_volver = tk.Button(
+            framev4,
+            text="Volver",
+            command=lambda: mostrar_informacion_cliente(cliente)
+        )
+        boton_volver.config(font=("Segoe UI", 12), bg="#2C3E50", fg="white")
+        boton_volver.pack(pady=10)
+
+    # Función para canjear una mesa
+    def canjear_mesa(cliente, mesa):
+        """Muestra un mensaje de confirmación de canje de mesa."""
+        messagebox.showinfo("Canje Exitoso", f"Mesa '{mesa}' canjeada con éxito. Puntos canjeados con éxito.")
 
     # Función para buscar el cliente por identificación
     def buscar_cliente_por_identificacion(identificacion):
