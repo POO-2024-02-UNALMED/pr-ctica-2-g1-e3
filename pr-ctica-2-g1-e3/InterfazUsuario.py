@@ -36,17 +36,16 @@ Deserializador.deserializarListas()
 restPrueba = Restaurante("Aura Gourmet")
 clienteParaPrueba1=Cliente(nombre="mariano herrera", identificacion=2004)
 clienteParaPrueba2=Cliente(nombre="maria perez", identificacion=1990)
-clienteParaPrueba3=Cliente(nombre="julian vasquez", identificacion=1985)
 
 fechaPrueba1 = "23/04/2025"
 horaReservaPrueba1 = "15:00"
 fechaReservaPrueba1 = restPrueba.convertir_fecha_hora(fecha=fechaPrueba1, tiempo=horaReservaPrueba1)
-print(fechaReservaPrueba1)
+#print(fechaReservaPrueba1)
 
 fechaPrueba2 = "27/09/2025"
 horaReservaPrueba2 = "17:00"
 fechaReservaPrueba2 = restPrueba.convertir_fecha_hora(fecha=fechaPrueba2, tiempo=horaReservaPrueba2)
-print(fechaReservaPrueba2)
+#print(fechaReservaPrueba2)
 
 mesaPrueba1=Mesa(numero='6', capacidad='2', tipo="deluxe", restaurante=restPrueba)
 mesaPrueba2=Mesa(numero='4', capacidad='4', tipo="basic", restaurante=restPrueba)
@@ -141,7 +140,7 @@ imagenes = [
    # tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante1.png"), 
    # tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante2.png"),
    # tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante3.png"),
-    #tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante4.png"),
+   #tk.PhotoImage(file="pr-ctica-2-g1-e3/imagenes/restaurante4.png"),
 ]
 indice_imagen = 0  # Índice para alternar entre las imágenes
 
@@ -460,7 +459,7 @@ def funcionalidad1(restaurante):
                 fieldFrameDeluxe.grid(sticky="new")
             else:
                 Restaurante._id_con_reservas.append(identificacion) #agregado
-                Serializador.serializarListas() #agregado
+                # Serializador.serializarListas() #agregado
                 resumenReserva(framev4, nombre, identificacion,personas,tipoMesa,fechaReserva,reserva)
                 # print(Restaurante._id_con_reservas) para probar
         except(ValueError):
@@ -496,7 +495,7 @@ def funcionalidad1(restaurante):
                 "fecha": fecha,
                 "horaReserva": horaReserva
             }
-            clientes_globales.append(cliente) #agrgear a la lissta de clientes 
+            clientes_globales.append(cliente) #agrgear a la lista de clientes 
 
             print("Fecha correcta")
             if not restaurante.validar_fecha(fecha):
@@ -960,7 +959,6 @@ def funcionalidad5():
         labelv3 = FieldFrame(framev4, tipo= 0, tituloCriterios='Dato solicitado', criterios=['Número de identificación (CC/CE):'],tituloValores='Ingrese el dato solicitado', comandoContinuar=continuarInteraccion1)
         labelv3.grid(sticky='new')
         
-       
     
     global labelv3
     labelv3.destroy()
@@ -1254,7 +1252,7 @@ def funcionalidad3():
         listaDeCortesias =[]
         for platoCortesia in MenuCortesias:
             listaDeCortesias.append(platoCortesia.get_nombre().upper())
-        print("platosDisponibles:", listaDeCortesias) #solo para verificar
+        print("platos de cortesia disponibles:", listaDeCortesias) #solo para verificar
 
         def guardarCortesia():
             global platoCortesiaSeleccionado
@@ -1264,34 +1262,35 @@ def funcionalidad3():
             
             frameParaMostrarResumen()  # Llamar a FrameParaMostrarResumen después de guardar la selección
 
-        labelv3 = FieldFrame(framev4, tipo=1, tituloCriterios="¡Su reserva con mesa tipo deluxe incluye un plato de cortesia!", 
+        labelv3 = FieldFrame(framev4, tipo=1, tituloCriterios="¡Su reserva con mesa tipo deluxe" 
+                             " incluye un plato de cortesia!", 
                  criterios=["plato de cortesia"], tituloValores='seleccione una opción', 
-                 valores=[listaDeCortesias], comandoContinuar=guardarCortesia, textoBoton="Guardar selección")
+                 valores=[listaDeCortesias], comandoContinuar=guardarCortesia, textoBoton="Guardar selección"
+                 )
         labelv3.grid(sticky='new')
 
     def buscarReserva(frame):
             global reservaAsociada, ofrecerCortesia, clienteAsociado
             try:
                datos = frame.obtener_datos()
-               if not datos[0].strip():  # Verificar si la entrada está vacía
+               if not datos[0].strip():  #Verificar si la entrada está vacía
                   raise EntryVacio("Identificación")
         
-               id = int(datos[0])  # Intentar convertir la entrada a un número entero
-            except ValueError:  # Manejar la entrada no numérica
+               id = int(datos[0])  #Intentar convertir la entrada a un número entero
+            except ValueError:     #Manejar la entrada no numérica
                     raise IdEntryNoNumerico(datos[0])
     
-            #id=int(frame.obtener_datos()[0])
             reservaEncontrada = Restaurante.buscar_en_lista_reservas(id)
-
            #print(reservaEncontrada)
-            if reservaEncontrada:
+
+            if reservaEncontrada: #si el usuario tiene reserva
                clienteConReserva = Restaurante.retornar_cliente(id) #retorna el objeto cliente asociado al id ingresado
-               print("cliente con reserva: ", clienteConReserva) #para probar
+               #print("cliente con reserva: ", clienteConReserva) #para probar
                reservaAsociada = clienteConReserva.get_reserva() #para obtener la reserva asociada a ese cliente
-               ofrecerCortesia = restaurante.obtener_tipo_mesa(reservaAsociada) #saber si la mesa es deluxe, devuelve true o false
-               print("ofrecerCortesia es: ", ofrecerCortesia)
+               ofrecerCortesia = restaurante.obtener_tipo_mesa(reservaAsociada) #saber si la mesa asociada a la reserva es deluxe, devuelve true o false
+               #print("ofrecerCortesia es: ", ofrecerCortesia)
                descuento=Restaurante.determinar_descuentos(clienteConReserva)
-               clienteConReserva.set_descuento_por_visitas(descuento)
+               clienteConReserva.set_descuento_por_visitas(descuento) #le asigne el atributo al cliente
                clienteAsociado = clienteConReserva
                limpiar_frame()
                labelv2.config(text= clienteConReserva.saludar(), fg='red') #llama al metodo saludar que le indica al usuario su # de visita al restaurante y su descuento
@@ -1307,87 +1306,89 @@ def funcionalidad3():
                botonContinuarConPedido = tk.Button(framev4, text="Continuar con la creación de mi pedido", bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 13, "bold"), command=alDarClick, padx=20, pady=20, cursor='hand2')
                botonContinuarConPedido.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
             else:
-                raise IdNoEncontrado(id)
-            #  print("Reserva no encontrada") excepción 
+                raise IdNoEncontrado(id) #cuando la id ingresada no tenga reserva
+            
             #Para mostrar el resumen del pedido cuando se seleccione el boton "finalizar pedido"
 
     import tkinter as tk
+
     def mostrarResumenPedido():
         limpiar_frame()
         global pedidosResumen, clienteAsociado, framev4, ofrecerCortesia, platoCortesiaSeleccionado, reservaAsociada
         resumen_pedido = pedidosResumen
-        
-        # Crear una nueva ventana
+
+        # Crear una nueva ventana donde mostrar el resumen del pedido
         nueva_ventana = tk.Toplevel()
         nueva_ventana.title("Resumen del Pedido")
-        nueva_ventana.geometry("600x400")  # Ajustar tamaño según sea necesario
+        nueva_ventana.geometry("700x700")  
 
         # Crear un widget Frame para contener el resumen
         frameResumen = tk.Frame(nueva_ventana, bg='#1C2B2D')
         frameResumen.pack(fill='both', expand=True)
 
         # Usar un Text widget para mostrar el resumen del pedido
-        resumen_texto = tk.Text(frameResumen, wrap='word', bg='#1C2B2D', fg='white', font=("Helvetica", 10), borderwidth=0, padx=10, pady=10)
+        resumen_texto = tk.Text(frameResumen, wrap='word', bg='#1C2B2D', fg='white', font=("Helvetica", 12), borderwidth=0, padx=10, pady=10)
         resumen_texto.pack(fill='both', expand=True)
 
         resumenTexto = "\nResumen del Pedido:\n"
-        resumenTexto += "--------------------------------------------------\n"
-        resumenTexto += "{:<15} {:<15} {:<20} {:<20}\n".format("Producto", "Cantidad", "Precio Unitario", "Precio Total")
-        resumenTexto += "--------------------------------------------------\n"
+        resumenTexto += "------------------------------------------------------------\n"
+        resumenTexto += "{:<20} {:<20} {:25} {:<25}\n".format("Producto", "Cantidad", "Precio Unitario", "Precio Total")
+        resumenTexto += "------------------------------------------------------------\n"
 
         costoTotal = 0.0
         for plato, cantidad in resumen_pedido:
-          for menu in Menu:
-              if menu.get_nombre().upper() == plato.upper():
-                 precioUnitario = menu.get_precio()
-                 precioTotal = float(precioUnitario) * int(cantidad)
-                 costoTotal += float(precioTotal)
+            for menu in Menu:
+                if menu.get_nombre().upper() == plato.upper():
+                    precioUnitario = menu.get_precio()
+                    precioTotal = float(precioUnitario) * int(cantidad)
+                    costoTotal += float(precioTotal)
 
-                 precio_unitario_format = "{:,.2f}".format(precioUnitario).replace(',', '.')
-                 precio_total_format = "{:,.2f}".format(precioTotal).replace(',', '.')
+                    precio_unitario_format = "{:,.2f}".format(precioUnitario).replace(',', '.')
+                    precio_total_format = "{:,.2f}".format(precioTotal).replace(',', '.')
 
-                 resumenTexto += "{:<15} {:<15} {:<20} {:<20}\n".format(
-                    menu.get_nombre(), cantidad, precio_unitario_format, precio_total_format)
+                    resumenTexto += "{:<20} {:<20} {:<25} {:<25}\n".format(
+                        menu.get_nombre(), cantidad, precio_unitario_format, precio_total_format)
 
-        resumenTexto += "----------------------------------------------------------------------------\n"
-        resumenTexto += "{:<15} {:<10} {:<15} {:<30}\n".format("", "", "Subtotal", "{:,.2f}".format(costoTotal).replace(',', '.'))
+        resumenTexto += "------------------------------------------------------------\n"
+        resumenTexto += "{:<40} {:<15}\n".format("Subtotal", "{:,.2f}".format(costoTotal).replace(',', '.'))
         if ofrecerCortesia:
-            resumenTexto += "----------------------------------------------------------------------------\n"
+            resumenTexto += "------------------------------------------------------------\n"
             resumenTexto += "PLATO DE CORTESIA: " + platoCortesiaSeleccionado + "\n"
         if clienteAsociado.get_descuento_por_visitas() != 0:
             descuento = costoTotal * (clienteAsociado.get_descuento_por_visitas() / 100)
-            resumenTexto += "----------------------------------------------------------------------------\n"
+            resumenTexto += "------------------------------------------------------------\n"
             resumenTexto += "INFORMACION DE LOS DESCUENTOS POR FIDELIDAD:\n"
-            resumenTexto += "Tienes un descuento por numero de visitas del {}%\n".format(clienteAsociado.get_descuento_por_visitas())
+            resumenTexto += "Descuento por numero de visitas: {}%\n".format(clienteAsociado.get_descuento_por_visitas())
             resumenTexto += "Valor del descuento: {:,.2f}\n".format(descuento).replace(',', '.')
             costoTotal -= descuento
             resumenTexto += "Total de los platos: {:,.2f}\n".format(costoTotal).replace(',', '.')
 
-        resumenTexto += "----------------------------------------------------------------------------\n"
+        resumenTexto += "------------------------------------------------------------\n"
         resumenTexto += "COBROS ASOCIADOS A LA RESERVA:\n"
         cobrosPorReserva = 0
         if ofrecerCortesia:
-            resumenTexto += "reserva con mesa tipo deluxe: {:,.2f}".format(30000).replace(',', '.')
+            resumenTexto += "Reserva con mesa tipo deluxe: {:,.2f}\n".format(30000).replace(',', '.')
             cobrosPorReserva += 30000
         if reservaAsociada.get_recargo_por_fecha():
-            resumenTexto += "\nreserva creada con más de un mes de anticipación: {:,.2f}".format(50000).replace(',', '.')
+            resumenTexto += "Reserva creada con más de un mes de anticipación: {:,.2f}\n".format(50000).replace(',', '.')
             cobrosPorReserva += 50000
 
         if cobrosPorReserva == 0:
-            resumenTexto += "\nNo aplica\n"
+            resumenTexto += "No aplica\n"
         else:
-            resumenTexto += "{:<55} {:<15}\n".format("\nTotal cobros de reserva", "{:,.2f}".format(cobrosPorReserva).replace(',', '.'))
+            resumenTexto += "{:<25} {:<10} {:<15}\n".format("Total cobros de reserva", "", "{:,.2f}".format(cobrosPorReserva).replace(',', '.'))
 
-        resumenTexto += "----------------------------------------------------------------------------\n"
-        resumenTexto += "{:<15} {:<10} {:<15} {:<15}\n".format("", "", "Total", "{:,.2f}".format(costoTotal + cobrosPorReserva).replace(',', '.'))
-       
+        resumenTexto += "------------------------------------------------------------\n"
+        #resumenTexto += "{:<25} {:<10} {:<15} {:<15}\n".format("", "", "Total", "{:,.2f}".format(costoTotal + cobrosPorReserva).replace(',', '.'))
+        resumenTexto += "{:<40} {:<15}\n".format("Total", "{:,.2f}".format(costoTotal + cobrosPorReserva).replace(',', '.'))
         # Insertar el texto en el Text widget
         resumen_texto.insert(tk.END, resumenTexto)
-        resumen_texto.configure(state='disabled')  # Deshabilitar para evitar ediciones
-       
-         # Alinear el texto a la izquierda
+        resumen_texto.configure(state='disabled')  # Deshabilitado para evitar ediciones
+
+        # Alinear el texto a la izquierda
         resumen_texto.tag_configure("left", justify='left')
         resumen_texto.tag_add("left", "1.0", "end")
+
 
     def frameParaMostrarResumen():
         limpiar_frame()
@@ -1433,7 +1434,7 @@ def funcionalidad3():
         for plato in Menu:
            hayIngredientes = almacen.verificar_disponibilidad(plato)
            if hayIngredientes:
-            listaDePlatos.append(plato.get_nombre().upper())
+            listaDePlatos.append(plato.get_nombre().upper()) #mostrar solo los platos disponibles
 
             # Calcular unidades disponibles para el plato
             ingredients = plato.get_ingredientes()
@@ -1441,14 +1442,14 @@ def funcionalidad3():
             for ingrediente in ingredients:
                 cantidad = almacen._cantidades[almacen._nombres.index(ingrediente)]
                 cantidades_disponibles.append(cantidad)
-            unidades_plato = min(cantidades_disponibles)  # El mínimo de los ingredientes disponibles determina cuántas veces se puede preparar el plato
+            unidades_plato = min(cantidades_disponibles)  #El mínimo de los ingredientes disponibles determina cuántas veces se puede preparar el plato
             unidadesDisponibles.append(unidades_plato)
             
-        print("platosDisponibles:", listaDePlatos) #solo para verificar
-        mostrar = [f"{plato} (Unidades: {unidades})" for plato, unidades in zip(listaDePlatos, unidadesDisponibles)]
-        print(mostrar) #solo para verificar
+        #print("platosDisponibles:", listaDePlatos) #para verificar
+        #mostrar = [f"{plato} (Unidades: {unidades})" for plato, unidades in zip(listaDePlatos, unidadesDisponibles)]
+        #print(mostrar) #para verificar
 
-        #actualizar el combobox que muestra las unidades disponibles dependiendo del alimento seleccionado
+        #actualizar el combobox que muestra las unidades disponibles del dependiendo del plato seleccionado
         def actualizar_unidades_disponibles(field_frame, platoSeleccionado, listaDePlatos, unidadesDisponibles):
             if platoSeleccionado in listaDePlatos:
                indice_plato = listaDePlatos.index(platoSeleccionado)
@@ -1463,7 +1464,8 @@ def funcionalidad3():
             nombrePlato = labelv3._datos[0].get()
             unidades = labelv3._datos[1].get()
 
-            if nombrePlato.strip() == 'Seleccione una opción':
+            #Manejar excepiones si no se selecciona una opción
+            if nombrePlato.strip() == 'Seleccione una opción': 
                raise BoxVacio('plato')
             if unidades.strip() == 'Seleccione unidades' or unidades.strip() == 'Seleccione una opción':
                 raise BoxVacio('unidades a pedir')
@@ -1485,8 +1487,8 @@ def funcionalidad3():
         
                limpiar_frame()
 
-               # Mostrar el ultimo plato añadido, la pregunta "¿Qué desea hacer ahora? 
-               # y los botones "Continuar Pidiendo" y "Finalizar Pedido"
+               #Mostrar el ultimo plato añadido, la pregunta "¿Qué desea hacer ahora? 
+               #y los botones "Continuar Pidiendo" y "Finalizar Pedido"
                labelv3 = FieldFrame(
                framev4, 
                tipo=4, 
@@ -1496,30 +1498,27 @@ def funcionalidad3():
                )
                labelv3.grid(sticky='new')
 
-
+       #seleccionar los platos y cantidades
         labelv3 = FieldFrame(framev4, tipo=1, tituloCriterios="A continuación seleccione el nombre\n del plato y la cantidad de unidades que desea pedir", 
                  criterios=["plato", "unidades a pedir"], tituloValores='Platos y unidades disponibles', 
                  valores=[listaDePlatos, []], comandoContinuar=agregarPlatoAlResumen, textoBoton="Agregar plato")
         labelv3.grid(sticky='new')
  
-       # Deshabilitar el combobox de unidades para que no se pueda usar hasta que se seleccione un plato
+       #Deshabilitar el combobox de unidades para que no se pueda usar hasta que se seleccione un plato
         labelv3._datos[1]['state'] = 'disabled'
 
-        # Bind evento de selección para actualizar las unidades que se muestran en el combobox
+        #Bind evento de selección para actualizar las unidades que se muestran en el combobox de unidades
         labelv3._datos[0].bind("<<ComboboxSelected>>", lambda event:  actualizar_unidades_disponibles(labelv3, event.widget.get(), listaDePlatos, unidadesDisponibles))
 
-    
-#flujo de ejecución
+    #por aqui empieza el flujo de la funcionalidad
     global labelv3
     if labelv3:  # Verifica si labelv3 ya existe
-        labelv3.destroy()  # Destruye el FieldFrame anterior
+        labelv3.destroy()  #Destruye el FieldFrame anterior
     
     limpiar_frame() 
 
     fieldFrameParaIdentificacion = FieldFrame(framev4, tipo = 0, tituloCriterios="Confirmación de existencia de reserva", tituloValores='CC/CE', criterios=["Ingrese el número de Identificación asociado a su reserva"], comandoContinuar=lambda: buscarReserva(fieldFrameParaIdentificacion), textoBoton="Verificar")
     fieldFrameParaIdentificacion.grid(sticky="new")
-    
-    
 
 #FinFuncionalidad3
 
@@ -1529,24 +1528,6 @@ def funcionalidad3():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
 
 #Funcion que elimina los widgets dentro de los frames ingresados, para poder ingresar nuevos
 def limpiar_ventana_usuario(framev2, framev3, framev4):

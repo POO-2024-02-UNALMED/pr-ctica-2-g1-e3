@@ -5,7 +5,7 @@ from .mesa import Mesa
 
 class Restaurante:
     _restaurantes = []
-    _id_con_reservas = [1990, 1985, 2004] #para probar
+    _id_con_reservas = [1990, 2004] #para probar
     _lista_clientes = []
 
     def __init__(self, nombre, horario_servicio=None):
@@ -100,7 +100,8 @@ class Restaurante:
                 return True 
         return False
     
-    def obtener_o_crear_cliente(self, nombre, id_cliente): #Al momento de confirmar una reserva crea clientes nuevos y evita repetir clientes ya existentes
+    #Al momento de confirmar una reserva crea clientes nuevos y evita repetir clientes ya existentes
+    def obtener_o_crear_cliente(self, nombre, id_cliente): 
         cliente_existente = self.indicar_cliente(id_cliente)
         if cliente_existente != None:
             print(f"Cliente encontrado: {cliente_existente.get_nombre()}")
@@ -118,27 +119,21 @@ class Restaurante:
     
     def retornar_cliente(id_cliente):
         for cliente in Restaurante.get_lista_clientes():
-            print("desde el metodo retornar cliente: ", cliente.get_identificacion())
+            #print("desde el metodo retornar cliente: ", cliente.get_identificacion())
             if cliente.get_identificacion() == id_cliente:
                 return cliente
         return None
     
     def determinar_descuentos(cliente):
-        print("antes: ", cliente.get_visitas_para_descuentos())
+        #print("antes: ", cliente.get_visitas_para_descuentos())
         cliente.incrementar_visitas() #incrementa en 1 el numero de visitas
         visitas = cliente.get_visitas_para_descuentos()
-        print("despues ", visitas)
+        #print("despues ", visitas)
         if visitas == 5:
             return 10  # se asigna 10% de descuento
         elif visitas == 10:
             return 15  # se asigna 15% de descuento
         return 0
-    
-
-
-
-
-
     #M
 
     @staticmethod

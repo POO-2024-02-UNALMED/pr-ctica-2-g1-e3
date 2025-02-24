@@ -112,6 +112,10 @@ class FieldFrame(tk.Frame):
         if tipo == 4:
             etiquetaPregunta = tk.Label(self, text=self._tituloCriterios, fg="white", bg="#1C2B2D", font=("Segoe UI", 15, 'bold'))
             etiquetaPregunta.grid(row=0, column=0, columnspan=2, pady=20, sticky='new')
+            boton_frame = tk.Frame(self, bg='#1C2B2D')
+            boton_frame.grid(row=1, column=0, columnspan=2)
+            boton_frame.grid_columnconfigure(0, weight=1)
+            boton_frame.grid_columnconfigure(1, weight=1)
             
             for i, (textoBoton, comando) in enumerate(zip(self._criterios, self._valores)):
                 boton = tk.Button(self, text=textoBoton, bg='#2C2F33', fg='white', relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=comando)

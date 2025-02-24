@@ -11,8 +11,8 @@ class Cliente(Persona):
             restaurante = self.crear_o_asignar_restaurante("Aura Gourmet")
         self._reserva = reserva
         self._restaurante = restaurante
-        self._visitas = 4
-        self._visitas_para_descuentos = 4
+        self._visitas = 0
+        self._visitas_para_descuentos = 0
         self._descuento_por_visitas = 0
         restaurante._lista_clientes.append(self)
         Cliente._clientes.append(self)
