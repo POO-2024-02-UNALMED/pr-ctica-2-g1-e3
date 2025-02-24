@@ -573,9 +573,9 @@ def funcionalidad4(restaurante):
             reserva = cliente.get_reserva()
             resumen += (
                 f"Tipo: Reserva\n"
-                f"Personas: {reserva.get_personas()}\n"
+                f"Personas: {reserva._numero_personas}\n"
                 f"Tipo de Mesa: {reserva.get_mesa().get_tipo()}\n"
-                f"Fecha: {reserva.get_fecha_reserva().strftime('%Y-%m-%d %H:%M')}\n"
+                f"Fecha: {reserva.get_fecha_hora().strftime('%Y-%m-%d %H:%M')}\n"
             )
         # Verificar si el cliente tiene un domicilio
         else:
@@ -613,7 +613,7 @@ def funcionalidad4(restaurante):
 
         # Buscar el cliente en la lista de clientes del restaurante
         cliente_encontrado = None
-        for cliente in Restaurante._lista_clientes:
+        for cliente in Cliente.get_clientes():
             if cliente.get_identificacion() == identificacion:
                 cliente_encontrado = cliente
                 break

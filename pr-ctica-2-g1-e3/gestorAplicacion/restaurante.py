@@ -94,9 +94,9 @@ class Restaurante:
     @staticmethod
     def buscar_en_lista_reservas(id):
         print("ingresado: ",id)
-        for identificacion in Restaurante._id_con_reservas:
+        for identificacion in Cliente.get_clientes():
             print("elemento de la lista: ",identificacion) #temporal solo para verificar
-            if identificacion == id:
+            if identificacion.get_identificacion() == id:
                 return True 
         return False
     
@@ -118,7 +118,7 @@ class Restaurante:
         return None
     
     def retornar_cliente(id_cliente):
-        for cliente in Restaurante.get_lista_clientes():
+        for cliente in Cliente.get_clientes():
             #print("desde el metodo retornar cliente: ", cliente.get_identificacion())
             if cliente.get_identificacion() == id_cliente:
                 return cliente
