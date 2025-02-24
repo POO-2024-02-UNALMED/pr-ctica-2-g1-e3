@@ -1257,8 +1257,9 @@ def funcionalidad3():
         def guardarCortesia():
             global platoCortesiaSeleccionado, clienteAsociado
             platoCortesiaSeleccionado = labelv3._datos[0].get()
+            #asignar el atributo plato de cortesia de pedido
             clienteAsociado.get_pedido().set_plato_cortesia(platoCortesiaSeleccionado)
-            print("platoooo: ",clienteAsociado.get_pedido().get_plato_cortesia())
+            #print("platoo: ",clienteAsociado.get_pedido().get_plato_cortesia())
             if platoCortesiaSeleccionado.strip() == 'Seleccione una opción':
                raise BoxVacio('plato de cortesia')
             
