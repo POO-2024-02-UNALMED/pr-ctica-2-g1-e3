@@ -22,5 +22,5 @@ class Persona:
     def get_personas():
         return Persona._personas
 
-    def saludo(self):
+    def saludar(self):
         print(f"hola {self.get_nombre}! :)")
