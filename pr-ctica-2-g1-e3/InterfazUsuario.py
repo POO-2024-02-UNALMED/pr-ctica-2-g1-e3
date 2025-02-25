@@ -155,14 +155,18 @@ descripciones = [
 indice_descripcion = 0  # Índice para alternar entre las descripciones
 
 #PROVISIONAL DE PRUEBA PARA P6
-colores_p6 = [
-    ["red", "blue", "green", "yellow"],
-    ["purple", "orange", "gray", "pink"],
-    ["brown", "cyan", "white", "black"],
-    ["#D4AF37", "#2F4F4F", "black", "white"],
-    ["#D4AF37", "red", "orange", "yellow"],
+fotos_p6 = [
+    [tk.PhotoImage(file=os.path.join(image_dir, "mateo1.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo2.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo3.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo4.png"))],
+    [tk.PhotoImage(file=os.path.join(image_dir, "mateo1.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo2.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo3.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo4.png"))],
+    [tk.PhotoImage(file=os.path.join(image_dir, "andres1.png")), tk.PhotoImage(file=os.path.join(image_dir, "andres2.png")), tk.PhotoImage(file=os.path.join(image_dir, "andres3.png")), tk.PhotoImage(file=os.path.join(image_dir, "andres4.png"))],
+    [tk.PhotoImage(file=os.path.join(image_dir, "maria1.png")), tk.PhotoImage(file=os.path.join(image_dir, "maria2.png")), tk.PhotoImage(file=os.path.join(image_dir, "maria3.png")), tk.PhotoImage(file=os.path.join(image_dir, "maria4.png"))],
+    [tk.PhotoImage(file=os.path.join(image_dir, "diana1.png")), tk.PhotoImage(file=os.path.join(image_dir, "diana2.png")), tk.PhotoImage(file=os.path.join(image_dir, "diana3.png")), tk.PhotoImage(file=os.path.join(image_dir, "diana4.png"))], 
+    #[tk.PhotoImage(file=os.path.join(image_dir, "kevin1.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "kevin2.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "kevin3.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "kevin4.jpg"))],
+    #[tk.PhotoImage(file=os.path.join(image_dir, "andres1.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "andres2.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "andres3.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "andres4.jpg"))],
+    #[tk.PhotoImage(file=os.path.join(image_dir, "maria1.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "maria2.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "maria3.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "maria4.jpg"))],
+    #[tk.PhotoImage(file=os.path.join(image_dir, "diana1.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "diana2.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "diana3.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "diana4.jpg"))],
 ]
-indice_color = 0  # Índice para alternar entre colores
+indice_foto = 0  # Índice para alternar entre colores
 
 def EventoP4(evento):
     global indice_imagen
@@ -170,20 +174,22 @@ def EventoP4(evento):
     imagen_label.config(image=nueva_imagen)
     indice_imagen = (indice_imagen + 1) % len(imagenes)
 
-# Evento para cambiar la descripción en labelP5 Y PROVISIONAL PARA P6
+# Evento para cambiar la descripción en labelP5 y fotos en p6
 def EventoP5(evento):
-    global indice_descripcion, indice_color
+    global indice_descripcion, indice_foto
 
     # Cambia la descripción de labelP5
     labelP5.config(text=descripciones[indice_descripcion])
     indice_descripcion = (indice_descripcion + 1) % len(descripciones)
 
-    # Cambia los colores de las secciones de labelP6
-    colores_actuales = colores_p6[indice_color]
+    # Cambia las imágenes de las secciones de labelP6
+    imagenes_actuales = fotos_p6[indice_foto]
     for i in range(4):
-        secciones_p6[i].config(bg=colores_actuales[i])
-    
-    indice_color = (indice_color + 1) % len(colores_p6)
+        secciones_p6[i].config(image=imagenes_actuales[i])
+        secciones_p6[i].image = imagenes_actuales[i]
+
+    indice_foto = (indice_foto + 1) % len(fotos_p6)
+
 
 
 
@@ -234,7 +240,7 @@ labelP5 = tk.Label(frameP5,bg="#1C2B2D",fg="white",text="Hojas de vida (Click pa
 
 
 
-#PROVISIONAL PARA P6
+# Contenedor de las secciones de p6
 labelP6 = tk.Frame(frameP6, bg="#1C2B2D")  # Contenedor de las secciones
 secciones_p6 = [
     tk.Label(labelP6, bg="#1C2B2D", width=20, height=5),
