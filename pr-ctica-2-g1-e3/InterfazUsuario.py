@@ -150,7 +150,7 @@ descripciones = [
     "Nombre: Kevin Rubiano\nCédula: 1035417435\nCarrera: Ciencias de la computación\nNacimiento: 19/07/2005",
     "Nombre: Andrés Chica\nCédula: 1041351362\nCarrera: Ingeniería de sistemas e informática\nNacimiento: 24/04/2007",
     "Nombre: María de los ángeles\nCédula: 1104936416\nCarrera: Ciencia de la computación\nNacimiento: 24/11/2004",
-    "Nombre: NOMBRE4\nCédula: CEDULA4\nCarrera: CARRERA4\nNacimiento: FECHANACIMIENTO4",
+    "Nombre: Diana Jacanamejoy\nCédula: 1004232264\nCarrera: Ingenieria Fisica\nNacimiento: 01/01/2000",
 ]
 indice_descripcion = 0  # Índice para alternar entre las descripciones
 
@@ -572,7 +572,7 @@ def funcionalidad4(restaurante):
         if cliente.get_reserva():
             reserva = cliente.get_reserva()
             # Asignar un valor arbitrario al costo total de consumo
-            costo_total_consumo = 150000  # Valor arbitrario
+            costo_total_consumo = 300000  # Valor arbitrario
             resumen += (
                 f"Tipo: Reserva\n"
                 f"Personas: {reserva._numero_personas}\n"
@@ -731,11 +731,11 @@ def funcionalidad4(restaurante):
 
         # Lista de mesas deluxe
         mesas_deluxe = [
-            "Mesa 2 | Capacidad: 4 | Puntos requeridos: 2000",
-            "Mesa 5 | Capacidad: 6 | Puntos requeridos: 3000",
-            "Mesa 6 | Capacidad: 2 | Puntos requeridos: 2000",
-            "Mesa 9 | Capacidad: 4 | Puntos requeridos: 2000",
-            "Mesa 10 | Capacidad: 2 | Puntos requeridos: 2000"
+            "Mesa 2 | Capacidad: 4 | Puntos requeridos: 200",
+            "Mesa 5 | Capacidad: 6 | Puntos requeridos: 300",
+            "Mesa 6 | Capacidad: 2 | Puntos requeridos: 200",
+            "Mesa 9 | Capacidad: 4 | Puntos requeridos: 200",
+            "Mesa 10 | Capacidad: 2 | Puntos requeridos: 200"
         ]
 
         # Variable para almacenar la selección de la mesa
