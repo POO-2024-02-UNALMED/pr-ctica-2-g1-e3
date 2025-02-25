@@ -1418,6 +1418,7 @@ def funcionalidad2(restaurante):
         except ValueError as e:
             messagebox.showerror("Error de validación", str(e))
             nuevo_domicilio = Domicilio(cliente=nombre, direccion=direccion, domicilio_prioritario=es_prioritario)
+            nuevo_cliente = Cliente(nombre=nombre, identificacion=identificacion)
         except ValueError as e:
             messagebox.showerror("Error de validación", str(e))
 
