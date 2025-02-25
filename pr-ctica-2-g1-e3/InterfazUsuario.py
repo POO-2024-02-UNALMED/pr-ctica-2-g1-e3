@@ -160,14 +160,10 @@ indice_descripcion = 0  # Índice para alternar entre las descripciones
 #PROVISIONAL DE PRUEBA PARA P6
 fotos_p6 = [
     [tk.PhotoImage(file=os.path.join(image_dir, "mateo1.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo2.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo3.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo4.png"))],
-    [tk.PhotoImage(file=os.path.join(image_dir, "mateo1.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo2.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo3.png")), tk.PhotoImage(file=os.path.join(image_dir, "mateo4.png"))],
+    [tk.PhotoImage(file=os.path.join(image_dir, "kevin1.png")), tk.PhotoImage(file=os.path.join(image_dir, "kevin2.png")), tk.PhotoImage(file=os.path.join(image_dir, "kevin3.png")), tk.PhotoImage(file=os.path.join(image_dir, "kevin4.png"))],
     [tk.PhotoImage(file=os.path.join(image_dir, "andres1.png")), tk.PhotoImage(file=os.path.join(image_dir, "andres2.png")), tk.PhotoImage(file=os.path.join(image_dir, "andres3.png")), tk.PhotoImage(file=os.path.join(image_dir, "andres4.png"))],
     [tk.PhotoImage(file=os.path.join(image_dir, "maria1.png")), tk.PhotoImage(file=os.path.join(image_dir, "maria2.png")), tk.PhotoImage(file=os.path.join(image_dir, "maria3.png")), tk.PhotoImage(file=os.path.join(image_dir, "maria4.png"))],
     [tk.PhotoImage(file=os.path.join(image_dir, "diana1.png")), tk.PhotoImage(file=os.path.join(image_dir, "diana2.png")), tk.PhotoImage(file=os.path.join(image_dir, "diana3.png")), tk.PhotoImage(file=os.path.join(image_dir, "diana4.png"))], 
-    #[tk.PhotoImage(file=os.path.join(image_dir, "kevin1.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "kevin2.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "kevin3.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "kevin4.jpg"))],
-    #[tk.PhotoImage(file=os.path.join(image_dir, "andres1.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "andres2.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "andres3.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "andres4.jpg"))],
-    #[tk.PhotoImage(file=os.path.join(image_dir, "maria1.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "maria2.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "maria3.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "maria4.jpg"))],
-    #[tk.PhotoImage(file=os.path.join(image_dir, "diana1.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "diana2.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "diana3.jpg")), tk.PhotoImage(file=os.path.join(image_dir, "diana4.jpg"))],
 ]
 indice_foto = 0  # Índice para alternar entre colores
 
