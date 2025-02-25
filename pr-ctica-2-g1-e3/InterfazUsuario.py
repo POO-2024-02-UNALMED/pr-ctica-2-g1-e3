@@ -66,7 +66,7 @@ reservaPrueba2.set_cliente(clienteParaPrueba2)
 print("Clientes lista de clientes del restaurante:", [c.get_nombre() for c in restPrueba._lista_clientes])
 
 # Verificar que el cliente se ha añadido a la lista estática de clientes
-print("Todos los clientes desde clientes:", [c.get_nombre() for c in Cliente._clientes])
+#print("Todos los clientes desde clientes:", [c.get_nombre() for c in Cliente._clientes])
 #fin de instancias para prueba!!!
 
 #Ubica la ventana en el centro de la pantalla
@@ -1460,9 +1460,9 @@ def funcionalidad3():
     labelv2.config(text= "Desde esta ventana podrá seleccionar los platos y las"
                     " cantidades que desee ordenar para su\nmesa, por favor ingrese todos los"
                     " datos que se le solicitan a continuación")
-    print("Esta es la lista de reservas: ", Restaurante.get_id_con_reservas()) #para probar
-    print("Esta es la lista de clientes: ", Restaurante.get_lista_clientes()) #para probar
-    print("Todos los clientes:", [c.get_nombre() for c in Cliente._clientes]) #para probar
+    #print("Esta es la lista de reservas: ", Restaurante.get_id_con_reservas()) #para probar
+    #print("Esta es la lista de clientes: ", Restaurante.get_lista_clientes()) #para probar
+    #print("Todos los clientes:", [c.get_nombre() for c in Cliente._clientes]) #para probar
 
     def limpiar_frame(): 
         for widget in framev4.winfo_children():

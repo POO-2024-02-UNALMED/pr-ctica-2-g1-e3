@@ -95,7 +95,7 @@ class Restaurante:
     def buscar_en_lista_reservas(id):
         print("ingresado: ",id)
         for identificacion in Cliente.get_clientes():
-            print("elemento de la lista: ",identificacion) #temporal solo para verificar
+            #print("elemento de la lista: ",identificacion) #temporal solo para verificar
             if identificacion.get_identificacion() == id:
                 return True 
         return False
