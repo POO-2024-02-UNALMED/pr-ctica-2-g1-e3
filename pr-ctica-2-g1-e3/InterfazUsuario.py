@@ -276,7 +276,7 @@ ventana.config(menu= menuInicio)
 #Ventana Usuario
 ventana2 = tk.Tk()
 ventana2.title("Aura Gourmet System")
-ventana.iconbitmap(os.path.join(image_dir, "logoRes.ico")) #modificado
+ventana2.iconbitmap(os.path.join(image_dir, "logoRes.ico")) #modificado
 #ventana.iconbitmap('pr-ctica-2-g1-e3/imagenes/logoRes.ico') #original
 centrarVentana(ventana2, 650, 650)
 ventana2.config(bg='#1E1E1E')
