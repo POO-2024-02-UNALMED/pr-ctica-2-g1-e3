@@ -1149,19 +1149,18 @@ def funcionalidad2(restaurante):
         for widget in framev4.winfo_children():
             widget.destroy()
 
-    def mostrarResumen(nombre, identificacion, domicilio_prioritario):
+    def mostrarResumen(nombre, identificacion, direccion, domicilio_prioritario):
         global alimentos_seleccionados  # Asegurar acceso a la lista global
         limpiar_frame()
-    
-        total_precio = 0
         resumen = (
             f"Resumen del Domicilio\n"
             f"Nombre: {nombre}\n"
             f"Identificación: {identificacion}\n"
-            f"Domicilio Prioritario: {domicilio_prioritario}\n\n"
+            f"Domicilio Prioritario: {domicilio_prioritario}\n"
+            f"Direccion: {direccion}\n"
             "Platos pedidos:\n"
         )
-    
+        total_precio = 0
         if alimentos_seleccionados:
             for alimento, cantidad in alimentos_seleccionados:
                 for plato in Menu:
@@ -1182,10 +1181,10 @@ def funcionalidad2(restaurante):
     
         btn_ir_pago = tk.Button(framev4, text="Proceder al Pago", bg='#2C2F33', fg='white', 
                         relief="solid", bd=3, font=("Segoe UI", 15, "bold"),
-                        command=lambda: mostrarPantallaPago(nombre, identificacion, domicilio_prioritario, total_precio))
+                        command=lambda: mostrarPantallaPago(nombre, identificacion, domicilio_prioritario, direccion, total_precio))
         btn_ir_pago.pack(pady=10)
 
-    def mostrarPantallaPago(nombre, identificacion, domicilio_prioritario, total_precio):
+    def mostrarPantallaPago(nombre, identificacion, direccion, domicilio_prioritario, total_precio):
         """ Muestra la pantalla de pago en framev4 """
         global framev4
         limpiar_frame()
@@ -1208,7 +1207,8 @@ def funcionalidad2(restaurante):
                 f"Resumen de su pedido\n"
                 f"Nombre: {nombre}\n"
                 f"Identificación: {identificacion}\n"
-                f"Domicilio Prioritario: {domicilio_prioritario}\n\n"
+                f"Domicilio Prioritario: {domicilio_prioritario}\n"
+                f"Direccion: {direccion}\n"
                 "Platos pedidos:\n"
             )
     
@@ -1265,7 +1265,7 @@ def funcionalidad2(restaurante):
     
         btn_regresar = tk.Button(framev4, text="Volver al Resumen", bg='#1C2B2D', fg='white', 
                                  relief="solid", bd=3, font=("Segoe UI", 12), 
-                                 command=lambda: mostrarResumen(nombre, identificacion, domicilio_prioritario))
+                                 command=lambda: mostrarResumen(nombre, identificacion, domicilio_prioritario, direccion))
         btn_regresar.pack(pady=10)
 
     def obtenerDatosCliente(informacion1):
@@ -1276,10 +1276,8 @@ def funcionalidad2(restaurante):
         except ValueError:
             identificacion = "Valor inválido"
         domicilio_prioritario = informacion1[2] if len(informacion1) > 2 else "No ingresado"
-
-        mostrarResumen(nombre, identificacion, domicilio_prioritario)
-
-    
+        direccion = informacion1[3] if len(informacion1) > 3 else "No ingresado"
+        mostrarResumen(nombre, identificacion, domicilio_prioritario, direccion)
     
     def segundo_fieldFrame(fieldFrame1):
         """ Frame para la selección de alimentos """
@@ -1358,40 +1356,82 @@ def funcionalidad2(restaurante):
         btn_continuar = tk.Button(frame_alimentos, text="Continuar", bg='#2C2F33', fg='white' ,relief="solid", bd=3, font=("Segoe UI", 15, "bold"), command=lambda: [frame_alimentos.destroy(), obtenerDatosCliente(informacion1)])
         btn_continuar.grid(row=2, column=2, padx=10, pady=10, columnspan=3)
 
-    def validar_datos_cliente(fieldFrame):
-        """ Valida los datos ingresados en el FieldFrame antes de continuar """
-        try:
-            datos = fieldFrame.obtener_datos()  # Obtiene los valores ingresados
-            nombre, identificacion, domicilio_prioritario = datos
+    def seleccionar_domiciliario(es_prioritario):
+        """ Selecciona un domiciliario según la prioridad del cliente """
+        if not Domiciliario._lista_domiciliarios:
+            Domiciliario.inicializar_domiciliarios()  # Asegurar que hay domiciliarios disponibles
     
-            # 1Validar el Nombre (Solo letras y espacios)
+        if es_prioritario:
+            # Prioridad alta: Mejor calificación promedio
+            domiciliario = max(Domiciliario._lista_domiciliarios, key=lambda d: d.get_prom_calificaciones())
+        else:
+            # Prioridad baja: Peor calificación promedio
+            domiciliario = min(Domiciliario._lista_domiciliarios, key=lambda d: d.get_prom_calificaciones())
+    
+        return domiciliario
+
+    def validar_datos_cliente(fieldFrame, precio_total):
+        """ Valida los datos ingresados y crea un objeto Domicilio con el domiciliario adecuado. """
+        try:
+            datos = fieldFrame.obtener_datos()
+            nombre, identificacion, domicilio_prioritario, direccion = datos
+    
+            # Validar Nombre (Solo letras y espacios)
             if not re.match(r"^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$", nombre.strip()):
                 raise ValueError("El nombre solo debe contener letras y espacios.")
     
-            # 2Validar Número de Identificación (Entero entre 8 y 12 dígitos)
-            if not identificacion.isdigit():
-                raise ValueError("El número de identificación debe ser un número entero.")
-            
-            if not (8 <= len(identificacion) <= 12):
-                raise ValueError("El número de identificación debe tener entre 8 y 12 dígitos.")
+            # Validar Identificación (Número entero entre 8 y 12 dígitos)
+            if not identificacion.isdigit() or not (8 <= len(identificacion) <= 12):
+                raise ValueError("La identificación debe tener entre 8 y 12 dígitos.")
     
-            # Validar Domicilio Prioritario (Debe ser "si" o "no")
+            # Validar Domicilio Prioritario ("si" o "no")
             domicilio_prioritario = domicilio_prioritario.strip().lower()
             if domicilio_prioritario not in ["si", "no"]:
                 raise ValueError("Domicilio prioritario debe ser 'si' o 'no'.")
+            es_prioritario = domicilio_prioritario == "si"
     
-            # Si todas las validaciones pasan, continuar con la siguiente pantalla
-            segundo_fieldFrame(fieldFrame)
+            # Validar Dirección (Formato: "Calle/Carrera/Cll/Cr [Número] # [Número]")
+            patron_direccion = r"^(Calle|Carrera|Cll|Cr) \d+ # \d+$"
+            if not re.match(patron_direccion, direccion.strip(), re.IGNORECASE):
+                raise ValueError("La dirección debe tener el formato: 'Calle/Carrera/Cll/Cr [Número] # [Número]'.")
+    
+            # 5Seleccionar un domiciliario según la prioridad
+            domiciliario_asignado = seleccionar_domiciliario(es_prioritario)
+    
+            # Crear y guardar el objeto Domicilio con el domiciliario asignado
+            nuevo_domicilio = Domicilio(
+                cliente=nombre,
+                direccion=direccion,
+                domicilio_prioritario=es_prioritario,
+                costo_envio=precio_total,
+                domiciliario=domiciliario_asignado
+            )
+            
+            print(f"Nuevo domicilio guardado: {nuevo_domicilio}")
+            print(f"Domiciliario asignado: {domiciliario_asignado.get_nombre()} (Calificación: {domiciliario_asignado.get_prom_calificaciones()})")
+    
+            messagebox.showinfo("Éxito", f"Datos guardados correctamente.\nDomiciliario asignado: {domiciliario_asignado.get_nombre()}")
+    
+            # Limpiar los campos del FieldFrame
+            fieldFrame.limpiar_entradas()
     
         except ValueError as e:
             messagebox.showerror("Error de validación", str(e))
+            nuevo_domicilio = Domicilio(cliente=nombre, direccion=direccion, domicilio_prioritario=es_prioritario)
+        except ValueError as e:
+            messagebox.showerror("Error de validación", str(e))
+
+        print(f"Nuevo domicilio guardado: {nuevo_domicilio}")
+        segundo_fieldFrame(fieldFrame)
+    
+    precio_total = 0
 
     fieldFrame1 = FieldFrame(
         framev4,
         "Datos del Cliente",
-        ["Nombre", "Número de identificación", "¿Domicilio prioritario? (si/no)"],
+        ["Nombre", "Número de identificación", "¿Domicilio prioritario? (si/no)", "Direccion"],
         "Información",
-        comandoContinuar=lambda: validar_datos_cliente(fieldFrame1)
+        comandoContinuar=lambda: validar_datos_cliente(fieldFrame1, precio_total)
     )
     
     fieldFrame1.grid(sticky="new")
