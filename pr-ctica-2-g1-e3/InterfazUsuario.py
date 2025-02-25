@@ -42,6 +42,9 @@ horaReservaPrueba1 = "15:00"
 fechaReservaPrueba1 = restPrueba.convertir_fecha_hora(fecha=fechaPrueba1, tiempo=horaReservaPrueba1)
 #print(fechaReservaPrueba1)
 
+
+                
+
 fechaPrueba2 = "27/09/2025"
 horaReservaPrueba2 = "17:00"
 fechaReservaPrueba2 = restPrueba.convertir_fecha_hora(fecha=fechaPrueba2, tiempo=horaReservaPrueba2)
@@ -93,7 +96,7 @@ def descripcionDelSistema():
 
 #Cierra la ventana principal y serializa
 def salir():
-    #Serializador.serializarListas()
+    Serializador.serializarListas()
     ventana.quit()
 
 #Oculta ventana y muestra ventana2
@@ -1405,8 +1408,9 @@ def funcionalidad2(restaurante):
             domiciliario_asignado = seleccionar_domiciliario(es_prioritario)
     
             # Crear y guardar el objeto Domicilio con el domiciliario asignado
+            clientee = Cliente(nombre = nombre, identificacion= int(identificacion))
             nuevo_domicilio = Domicilio(
-                cliente=nombre,
+                cliente=clientee,
                 direccion=direccion,
                 domicilio_prioritario=es_prioritario,
                 costo_envio=precio_total,
@@ -1613,7 +1617,7 @@ def funcionalidad3():
         resumenTexto += "{:<40} {:<15}\n".format("Total", "{:,.2f}".format(costoTotal + cobrosPorReserva).replace(',', '.'))
 
         #asignarle el valor a la factura 
-        facturaAsociada = clienteAsociado.get_pedido().get_factura()
+        facturaAsociada = clienteAsociado.get_reserva().get_mesa().get_pedido().get_factura()
         facturaAsociada.set_total_factura(costoTotal + cobrosPorReserva)
         #print("total de la factura: ",clienteAsociado.get_pedido().get_factura().get_total_factura())
 

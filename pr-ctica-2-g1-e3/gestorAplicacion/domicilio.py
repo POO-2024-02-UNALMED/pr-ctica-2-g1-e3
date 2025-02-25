@@ -25,6 +25,8 @@ class Domicilio:
     @staticmethod
     def indicar_cliente(id_cliente):
         for domicilio in Domicilio._domicilios:
+            if isinstance( domicilio._cliente, str):
+                continue
             if domicilio._cliente.get_identificacion() == id_cliente:
                 return domicilio._cliente
         return None
